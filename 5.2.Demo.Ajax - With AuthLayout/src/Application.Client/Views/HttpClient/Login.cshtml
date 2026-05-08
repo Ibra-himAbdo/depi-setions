@@ -1,0 +1,40 @@
+@{
+    Layout = "_AuthLayout";
+}
+@model LoginDto
+
+<div class="card">
+    <div class="card-body p-4">
+        <h4 class="card-title text-center mb-4">HttpClient Login</h4>
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Identifier" class="form-label">Username or Email</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
+                    <input asp-for="Identifier" class="form-control border-start-0" placeholder="Username or email" required>
+                </div>
+                <span asp-validation-for="Identifier" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                    <input asp-for="Password" type="password" class="form-control border-start-0" placeholder="Password" required>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary btn-lg shadow-sm">Sign In (HttpClient)</button>
+            </div>
+        </form>
+
+        <div class="mt-4 text-center">
+            <p class="mb-0 small text-muted">Don't have an account? <a asp-action="Register" class="text-primary fw-bold text-decoration-none">Register</a></p>
+        </div>
+    </div>
+</div>

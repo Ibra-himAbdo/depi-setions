@@ -1,0 +1,228 @@
+@using Application.Core.Models
+@model PageMetaData<Product>
+@inject IUnitOfWork _unitOfWork
+
+@{
+    ViewData["Title"] = Resource.Products;
+
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+
+    int[] pageSizes = [5, 10, 15, 25, 50];
+
+    var oldSearch = Context.Request.Query[nameof(Model.Search)].ToString();
+
+    var oldSort = Context.Request.Query[nameof(Model.SortBy)].ToString();
+
+    var sortList = Enum.GetValues(typeof(ProductSort)).Cast<ProductSort>().Select(e => new { Value = e.ToString(), Text = e.ToString() }).ToList();
+
+    var brands = await _unitOfWork.Repository<ProductBrand>().GetAllAsync();
+    var categories = await _unitOfWork.Repository<ProductCategory>().GetAllAsync();
+    brands = brands.OrderBy(b => isRtl ? b.NameSecondLanguage : b.Name).ToList();
+    categories = categories.OrderBy(c => isRtl ? c.NameSecondLanguage : c.Name).ToList();
+}
+
+<div class="py-4">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="m-0 text-2xl font-semibold">@Resource.Products</h2>
+        <div class="flex flex-wrap items-center gap-3">
+            <span class="text-base-content/60">@Model.TotalItemsInDb @Resource.Items</span>
+            <a class="btn btn-primary" asp-action="Create">@Resource.Create</a>
+        </div>
+    </div>
+
+    <div class="mb-4 flex flex-col flex-wrap gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <form asp-action="IndexWithPageMetaData" method="get" class="flex flex-col flex-wrap gap-3 sm:flex-row sm:items-end">
+            <input type="hidden" name="@nameof(Model.CurrentPageIndex)" value="1" />
+            <input type="hidden" name="@nameof(Model.CurrentPageSize)" value="@Model.CurrentPageSize" />
+
+            <fieldset class="fieldset max-w-md">
+                <legend class="fieldset-legend px-1">Search</legend>
+                <input id="searchInput" class="input input-bordered w-full min-w-[12rem] sm:w-64" name="@nameof(Model.Search)" value="@oldSearch" />
+            </fieldset>
+
+            <fieldset class="fieldset w-full max-w-xs">
+                <legend class="fieldset-legend px-1">Sort</legend>
+                <select name="@nameof(Model.SortBy)" class="select select-bordered w-full">
+                    @foreach (var sort in sortList)
+                    {
+                        if (sort.Value == oldSort)
+                        {
+                            <option value="@sort.Value" selected>@sort.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@sort.Value">@sort.Text</option>
+                        }
+                    }
+                </select>
+            </fieldset>
+
+            <fieldset class="fieldset w-full max-w-xs">
+                <legend class="fieldset-legend px-1">@Resource.ProductBrand</legend>
+                <select name="@nameof(Model.BrandId)" class="select select-bordered w-full">
+                    <option value="">—</option>
+                    @foreach (var brand in brands)
+                    {
+                        var label = isRtl ? (brand.NameSecondLanguage ?? brand.Name ?? "") : (brand.Name ?? "");
+                        if (Model.BrandId == brand.Id)
+                        {
+                            <option value="@brand.Id" selected>@label</option>
+                        }
+                        else
+                        {
+                            <option value="@brand.Id">@label</option>
+                        }
+                    }
+                </select>
+            </fieldset>
+
+            <fieldset class="fieldset w-full max-w-xs">
+                <legend class="fieldset-legend px-1">@Resource.ProductCategory</legend>
+                <select name="@nameof(Model.CategoryId)" class="select select-bordered w-full">
+                    <option value="">—</option>
+                    @foreach (var category in categories)
+                    {
+                        var label = isRtl ? (category.NameSecondLanguage ?? category.Name ?? "") : (category.Name ?? "");
+                        if (Model.CategoryId == category.Id)
+                        {
+                            <option value="@category.Id" selected>@label</option>
+                        }
+                        else
+                        {
+                            <option value="@category.Id">@label</option>
+                        }
+                    }
+                </select>
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <form asp-action="IndexWithPageMetaData" method="get" class="fieldset w-full max-w-[12rem] shrink-0">
+            <legend class="fieldset-legend px-1">Page size</legend>
+            <input type="hidden" name="@nameof(Model.Search)" value="@oldSearch" />
+            <input type="hidden" name="@nameof(Model.CurrentPageIndex)" value="1" />
+            <input type="hidden" name="@nameof(Model.SortBy)" value="@oldSort" />
+            <input type="hidden" name="@nameof(Model.BrandId)" value="@Model.BrandId" />
+            <input type="hidden" name="@nameof(Model.CategoryId)" value="@Model.CategoryId" />
+            <select name="@nameof(Model.CurrentPageSize)"
+                    class="select select-bordered w-full"
+                    onchange="this.form.submit()">
+                @foreach (var size in pageSizes)
+                {
+                    if (size == Model.CurrentPageSize)
+                    {
+                        <option value="@size" selected>@size</option>
+                    }
+                    else
+                    {
+                        <option value="@size">@size</option>
+                    }
+                }
+            </select>
+        </form>
+    </div>
+
+    @if (Model.Data is null || Model.Data.Count == 0)
+    {
+        <div role="alert" class="alert alert-info mb-0">
+            <span>@Resource.NoProductsFound</span>
+        </div>
+    }
+    else
+    {
+        <div class="overflow-x-auto rounded-lg border border-base-300">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>@Resource.ProductName</th>
+                        <th class="text-end">@Resource.ProductPrice</th>
+                        <th>@Resource.ProductBrand</th>
+                        <th>@Resource.ProductCategory</th>
+                        <th class="text-end">@Resource.Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Data)
+                    {
+                        <tr>
+                            <td>@(isRtl? product.NameSecondLanguage: product.Name)</td>
+                            <td class="text-end">@product.Price.ToString("0.00")</td>
+                            <td>@(isRtl? product.Brand?.NameSecondLanguage ?? "-" : product.Brand?.Name ?? "-")</td>
+                            <td>@(isRtl? product.Category?.NameSecondLanguage ?? "-" : product.Category?.Name ?? "-")</td>
+                            <td class="text-end">
+                                <a class="btn btn-outline btn-sm"
+                                   asp-action="Update"
+                                   asp-route-id="@product.Id">
+                                    @Resource.Update
+                                </a>
+                                <a class="btn btn-error btn-outline btn-sm ms-1"
+                                   asp-action="Delete"
+                                   asp-route-id="@product.Id">
+                                    @Resource.Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (Model.TotalPages > 0)
+    {
+        <nav class="mt-6 flex justify-center" aria-label="Pagination">
+            <div class="join">
+                @if (!Model.HasPrevious)
+                {
+                    <button type="button" class="btn join-item" disabled>Previous</button>
+                }
+                else
+                {
+                    <a class="btn join-item"
+                       asp-action="IndexWithPageMetaData"
+                       asp-route-CurrentPageSize="@Model.CurrentPageSize"
+                       asp-route-Search="@oldSearch"
+                       asp-route-SortBy="@oldSort"
+                       asp-route-BrandId="@Model.BrandId"
+                       asp-route-CategoryId="@Model.CategoryId"
+                       asp-route-CurrentPageIndex="@(Model.CurrentPageIndex - 1)">
+                        Previous
+                    </a>
+                }
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <a class="btn join-item @(i == Model.CurrentPageIndex ? "btn-active" : null)"
+                       asp-action="IndexWithPageMetaData"
+                       asp-route-CurrentPageSize="@Model.CurrentPageSize"
+                       asp-route-Search="@oldSearch"
+                       asp-route-SortBy="@oldSort"
+                       asp-route-BrandId="@Model.BrandId"
+                       asp-route-CategoryId="@Model.CategoryId"
+                       asp-route-CurrentPageIndex="@i">
+                        @i
+                    </a>
+                }
+
+                @if (!Model.HasNext)
+                {
+                    <button type="button" class="btn join-item" disabled>Next</button>
+                }
+                else
+                {
+                    <a class="btn join-item"
+                       asp-action="IndexWithPageMetaData"
+                       asp-route-CurrentPageIndex="@(Model.CurrentPageIndex + 1)"
+                       asp-route-Search="@oldSearch"
+                       asp-route-SortBy="@oldSort"
+                       asp-route-BrandId="@Model.BrandId"
+                       asp-route-CategoryId="@Model.CategoryId"
+                       asp-route-CurrentPageSize="@Model.CurrentPageSize">
+                        Next
+                    </a>
+                }
+            </div>
+        </nav>
+    }
+</div>

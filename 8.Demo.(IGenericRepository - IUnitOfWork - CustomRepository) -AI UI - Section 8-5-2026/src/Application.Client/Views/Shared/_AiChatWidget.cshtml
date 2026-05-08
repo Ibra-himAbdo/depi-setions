@@ -1,0 +1,163 @@
+@* Floating AI Chat Widget — shown only when authenticated *@
+@* Requires: api.js and AppToast (already in _Layout.cshtml) *@
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="fab">
+        <button type="button" id="ai-fab" class="btn btn-lg btn-circle btn-primary shadow-lg" title="AI Assistant" onclick="aipToggle()" aria-expanded="false" aria-controls="ai-panel">🤖</button>
+    </div>
+
+    <div id="ai-panel" class="card fixed bottom-[5.5rem] right-4 z-[1048] flex max-h-[560px] w-[min(100vw-2rem,370px)] -translate-y-2 scale-95 flex-col overflow-hidden border border-base-300 bg-base-100 opacity-0 shadow-2xl pointer-events-none transition-all duration-200">
+        <div class="flex items-center gap-2 bg-gradient-to-r from-primary to-secondary p-3 text-primary-content">
+            <span class="text-xl" aria-hidden="true">🤖</span>
+            <span class="aip-header-title flex-1 font-bold">AI Assistant</span>
+            <button type="button" class="btn btn-ghost btn-sm text-primary-content" onclick="aipToggle()" title="Close" aria-label="Close">✕</button>
+        </div>
+
+        <div role="tablist" class="tabs tabs-boxed m-2 bg-base-200">
+            <button type="button" role="tab" class="tab tab-active min-h-8 flex-1 text-xs" id="aip-tab-basic" onclick="aipSetMode('basic')">💬 Basic</button>
+            <button type="button" role="tab" class="tab min-h-8 flex-1 text-xs" id="aip-tab-advanced" onclick="aipSetMode('advanced')">🧠 Advanced</button>
+        </div>
+
+        <div id="aip-features" class="hidden flex flex-wrap gap-2 border-b border-base-300 bg-accent/10 px-3 py-2">
+            <span class="badge badge-accent badge-sm">🧠 Memory</span>
+            <span class="badge badge-secondary badge-sm">⚡ Function Calling</span>
+            <span class="badge badge-success badge-sm">📦 Live Products</span>
+        </div>
+
+        <div id="aip-messages" class="flex min-h-[220px] max-h-[340px] flex-col gap-2 overflow-y-auto bg-base-200/50 p-3">
+            <div class="chat chat-start" id="aip-welcome-wrap">
+                <div class="chat-bubble chat-bubble-secondary text-sm" id="aip-welcome">
+                    👋 Hello! Ask me anything.
+                </div>
+            </div>
+        </div>
+
+        <div class="aip-input-bar flex items-end gap-2 border-t border-base-300 bg-base-100 p-3">
+            <button type="button" id="aip-clear-btn" class="btn btn-ghost btn-sm hidden" title="Clear conversation history" onclick="aipClearHistory()">🗑</button>
+            <textarea id="aip-input" rows="1" placeholder="Type a message…" maxlength="2000" class="textarea textarea-bordered min-h-10 flex-1 text-sm"></textarea>
+            <button type="button" id="aip-send-btn" class="btn btn-primary btn-sm" onclick="aipSend()">↑</button>
+        </div>
+    </div>
+
+    <form id="aip-clear-form" asp-controller="Ai" asp-action="ClearHistory" method="post" class="hidden"></form>
+
+    <script>
+        let aipMode        = 'basic';
+        let aipPanelOpen   = false;
+
+        const aipPanel     = document.getElementById('ai-panel');
+        const aipFab       = document.getElementById('ai-fab');
+        const aipMessages  = document.getElementById('aip-messages');
+        const aipInput     = document.getElementById('aip-input');
+        const aipSendBtn   = document.getElementById('aip-send-btn');
+        const aipFeatures  = document.getElementById('aip-features');
+        const aipClearBtn  = document.getElementById('aip-clear-btn');
+        const aipWelcome   = document.getElementById('aip-welcome');
+
+        function aipSetPanelOpen(open) {
+            aipPanelOpen = open;
+            aipFab.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) {
+                aipPanel.classList.remove('pointer-events-none', 'opacity-0', '-translate-y-2', 'scale-95');
+                aipPanel.classList.add('pointer-events-auto', 'opacity-100', 'translate-y-0', 'scale-100');
+                aipFab.classList.remove('btn-primary');
+                aipFab.classList.add('btn-neutral');
+            } else {
+                aipPanel.classList.add('pointer-events-none', 'opacity-0', '-translate-y-2', 'scale-95');
+                aipPanel.classList.remove('pointer-events-auto', 'opacity-100', 'translate-y-0', 'scale-100');
+                aipFab.classList.add('btn-primary');
+                aipFab.classList.remove('btn-neutral');
+            }
+        }
+
+        function aipToggle() {
+            const next = !aipPanelOpen;
+            aipSetPanelOpen(next);
+            if (next) {
+                aipInput.focus();
+                aipMessages.scrollTop = aipMessages.scrollHeight;
+            }
+        }
+
+        function aipSetMode(mode) {
+            aipMode = mode;
+
+            document.getElementById('aip-tab-basic').classList.toggle('tab-active', mode === 'basic');
+            document.getElementById('aip-tab-advanced').classList.toggle('tab-active', mode === 'advanced');
+
+            aipFeatures.classList.toggle('hidden', mode !== 'advanced');
+            aipClearBtn.classList.toggle('hidden', mode !== 'advanced');
+
+            aipWelcome.textContent = mode === 'advanced'
+                ? '🧠 Hello! I remember our conversation and can look up live product data.'
+                : '👋 Hello! Ask me anything.';
+
+            aipInput.focus();
+        }
+
+        function aipAppendBubble(text, type) {
+            const wrap = document.createElement('div');
+            wrap.className = type === 'user' ? 'chat chat-end' : 'chat chat-start';
+            const bubble = document.createElement('div');
+            bubble.className = type === 'user'
+                ? 'chat-bubble chat-bubble-primary max-w-[85%] text-sm'
+                : 'chat-bubble chat-bubble-secondary max-w-[85%] text-sm';
+            bubble.textContent = text;
+            wrap.appendChild(bubble);
+            aipMessages.appendChild(wrap);
+            aipMessages.scrollTop = aipMessages.scrollHeight;
+        }
+
+        function aipShowTyping() {
+            const wrap = document.createElement('div');
+            wrap.className = 'chat chat-start';
+            wrap.id = 'aip-typing';
+            const inner = document.createElement('div');
+            inner.className = 'chat-bubble';
+            inner.innerHTML = '<span class="loading loading-dots loading-sm text-primary"></span>';
+            wrap.appendChild(inner);
+            aipMessages.appendChild(wrap);
+            aipMessages.scrollTop = aipMessages.scrollHeight;
+        }
+
+        function aipHideTyping() {
+            document.getElementById('aip-typing')?.remove();
+        }
+
+        aipInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                aipSend();
+            }
+        });
+
+        async function aipSend() {
+            const msg = aipInput.value.trim();
+            if (!msg) return;
+
+            aipInput.value  = '';
+            aipSendBtn.disabled = true;
+
+            aipAppendBubble(msg, 'user');
+            aipShowTyping();
+
+            const url   = aipMode === 'advanced' ? '/Ai/AskAdvancedAsync' : '/Ai/AskAsync';
+            const reply = await api(url, 'POST', msg);
+
+            aipHideTyping();
+
+            if (reply !== null) {
+                aipAppendBubble(reply, 'ai');
+            }
+
+            aipSendBtn.disabled = false;
+            aipInput.focus();
+        }
+
+        function aipClearHistory() {
+            if (!confirm('Clear your conversation history with the AI?')) return;
+            document.getElementById('aip-clear-form').submit();
+        }
+    </script>
+}

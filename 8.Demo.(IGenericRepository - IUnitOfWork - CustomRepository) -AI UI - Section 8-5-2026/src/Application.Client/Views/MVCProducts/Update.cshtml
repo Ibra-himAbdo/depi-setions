@@ -1,0 +1,86 @@
+@model ProductUpsertDto
+@inject IUnitOfWork _unitOfWork
+
+@{
+    ViewData["Title"] = Resource.UpdateProduct;
+
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+    var brands = await _unitOfWork.Repository<ProductBrand>().GetAllAsync();
+    var categories = await _unitOfWork.Repository<ProductCategory>().GetAllAsync();
+
+    IEnumerable<SelectListItem> brandItems = brands.Select(brand => new SelectListItem
+    {
+        Value = brand.Id.ToString(),
+        Text = isRtl ? (brand.NameSecondLanguage ?? brand.Name ?? string.Empty) : (brand.Name ?? string.Empty)
+    });
+
+    IEnumerable<SelectListItem> categoryItems = categories.Select(category => new SelectListItem
+    {
+        Value = category.Id.ToString(),
+        Text = isRtl ? (category.NameSecondLanguage ?? category.Name ?? string.Empty) : (category.Name ?? string.Empty)
+    });
+}
+
+<div class="py-4">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="m-0 text-2xl font-semibold">@Resource.UpdateProduct</h2>
+        <a class="btn btn-outline" asp-action="Index">@Resource.BackToList</a>
+    </div>
+
+    <form asp-action="Update" asp-route-id="@ViewBag.ProductId" method="post" class="card bg-base-200 shadow-md">
+        <div class="card-body gap-4 p-6">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">@Resource.ProductName</legend>
+                    <input asp-for="Name" type="text" class="input input-bordered w-full" />
+                    <span asp-validation-for="Name" class="text-error text-sm"></span>
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">@Resource.ProductNameSecondLanguage</legend>
+                    <input asp-for="NameSecondLanguage" type="text" class="input input-bordered w-full" />
+                    <span asp-validation-for="NameSecondLanguage" class="text-error text-sm"></span>
+                </fieldset>
+
+                <fieldset class="fieldset md:col-span-2">
+                    <legend class="fieldset-legend">@Resource.ProductDescription</legend>
+                    <textarea asp-for="Description" class="textarea textarea-bordered w-full" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-error text-sm"></span>
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">@Resource.ProductPictureUrl</legend>
+                    <input asp-for="PictureUrl" type="text" class="input input-bordered w-full" />
+                    <span asp-validation-for="PictureUrl" class="text-error text-sm"></span>
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">@Resource.ProductPrice</legend>
+                    <input asp-for="Price" class="input input-bordered w-full" />
+                    <span asp-validation-for="Price" class="text-error text-sm"></span>
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">@Resource.ProductBrand</legend>
+                    <select asp-for="BrandId" class="select select-bordered w-full" asp-items="brandItems"></select>
+                    <span asp-validation-for="BrandId" class="text-error text-sm"></span>
+                </fieldset>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">@Resource.ProductCategory</legend>
+                    <select asp-for="CategoryId" class="select select-bordered w-full" asp-items="categoryItems"></select>
+                    <span asp-validation-for="CategoryId" class="text-error text-sm"></span>
+                </fieldset>
+            </div>
+
+            <div class="card-actions justify-end gap-2 pt-2">
+                <a class="btn btn-outline" asp-action="Index">@Resource.Cancel</a>
+                <button type="submit" class="btn btn-primary">@Resource.Update</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

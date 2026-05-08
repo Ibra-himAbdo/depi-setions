@@ -1,0 +1,41 @@
+<h2 class="mb-6 text-center text-2xl font-bold">Ajax Login</h2>
+
+<form id="AjaxLoginForm" class="flex flex-col gap-4">
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Username or Email</legend>
+        <input id="UsernameOrEmail" type="text" name="UsernameOrEmail" class="input input-bordered w-full" placeholder="Enter username or email" required>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Password</legend>
+        <input id="password" type="password" name="Password" class="input input-bordered w-full" placeholder="Enter password" required>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary btn-lg w-full">Login</button>
+</form>
+
+<script>
+    const loginForm = document.getElementById("AjaxLoginForm");
+
+    loginForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const identifier = document.getElementById("UsernameOrEmail").value
+        const password = document.getElementById("password").value
+
+        AppToast.info("Attempting to login...");
+
+        const response = await api('/api/Auth/login', 'POST', {
+            identifier: identifier,
+            password: password
+        });
+
+        if (response) {
+            AppToast.success("Welcome back! Redirecting...");
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1000);
+        }
+    });
+</script>

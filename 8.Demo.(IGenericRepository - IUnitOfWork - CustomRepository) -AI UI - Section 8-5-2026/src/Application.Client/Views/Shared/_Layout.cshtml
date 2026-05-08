@@ -1,0 +1,199 @@
+@{
+    var culture = CultureInfo.CurrentUICulture;
+    var currentCulture = culture.Name;
+    var isRtl = culture.TextInfo.IsRightToLeft;
+}
+
+<!DOCTYPE html>
+<html lang="@currentCulture" dir="@(isRtl ? "rtl" : "ltr")" data-theme="corporate">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Application.Client (MVC App)</title>
+    <script type="importmap"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Application.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="~/lib/toastify-js/toastify.min.css">
+    <script src="~/lib/toastify-js/toastify.min.js"></script>
+
+    <script src="~/js/toast-wrapper.js"></script>
+    <partial name="_ToastNotificationPartial" />
+    <script src="~/js/api.js"></script>
+
+</head>
+<body class="min-h-screen bg-base-100 text-base-content">
+    <div class="drawer">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content flex min-h-screen flex-col">
+            <header class="border-b border-base-300 bg-base-200 shadow-sm">
+                <div class="navbar min-h-14 px-2 lg:px-4 overflow-visible">
+                    <div class="flex-none lg:hidden">
+                        <label for="main-drawer" class="btn btn-square btn-ghost drawer-button" aria-label="Open menu">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </label>
+                    </div>
+                    <div class="flex-1">
+                        <a class="btn btn-ghost text-lg font-semibold" asp-area="" asp-controller="Home" asp-action="Index">
+                            @Resource.Welcome
+                        </a>
+                    </div>
+                    <div class="hidden flex-none lg:block">
+                        <ul class="menu menu-horizontal gap-0 px-1">
+                            <li><a asp-area="" asp-controller="Home" asp-action="Index">@Resource.Home</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="Privacy">@Resource.Privacy</a></li>
+                            <li><a asp-controller="Cascading" asp-action="Index">@Resource.Cascading</a></li>
+                            <li><a asp-controller="MVCProducts" asp-action="Index">@Resource.Products</a></li>
+                            <li><a asp-controller="MVCProducts" asp-action="IndexWithPageMetaData">@Resource.Products 2</a></li>
+                            <li><a asp-controller="MVCBrands" asp-action="Index">@Resource.Brands</a></li>
+                            <li><a asp-controller="MVCCategories" asp-action="Index">@Resource.Categories</a></li>
+                        </ul>
+                    </div>
+                    <div class="hidden flex-none items-center gap-1 lg:flex">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <span class="text-base-content/70 hidden px-2 text-sm xl:inline">
+                                @(User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.GivenName)?.Value)
+                            </span>
+                            <details class="dropdown dropdown-end">
+                                <summary class="btn btn-ghost btn-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden">Logout Options</summary>
+                                <ul class="menu dropdown-content z-[100] w-56 rounded-box bg-base-100 p-2 shadow-lg">
+                                    <li class="w-full"><partial name="AjaxLogout" /></li>
+                                    <li>
+                                        <form asp-controller="HttpClient" asp-action="Logout" method="post">
+                                            <button type="submit" class="font-normal">HttpClient Logout</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form asp-controller="NormalAuth" asp-action="Logout" method="post">
+                                            <button type="submit" class="font-normal">Normal Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </details>
+                        }
+                        else
+                        {
+                            <details class="dropdown dropdown-end">
+                                <summary class="btn btn-ghost btn-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden">Login</summary>
+                                <ul class="menu dropdown-content z-[100] w-56 rounded-box bg-base-100 p-2 shadow-lg">
+                                    <li><a asp-controller="AjaxAuth" asp-action="Login">Ajax Login</a></li>
+                                    <li><a asp-controller="HttpClient" asp-action="Login">HttpClient Login</a></li>
+                                    <li><a asp-controller="NormalAuth" asp-action="Login">Normal Login</a></li>
+                                </ul>
+                            </details>
+                            <details class="dropdown dropdown-end">
+                                <summary class="btn btn-ghost btn-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden">Register</summary>
+                                <ul class="menu dropdown-content z-[100] w-56 rounded-box bg-base-100 p-2 shadow-lg">
+                                    <li><a asp-controller="AjaxAuth" asp-action="Register">Ajax Register</a></li>
+                                    <li><a asp-controller="HttpClient" asp-action="Register">HttpClient Register</a></li>
+                                    <li><a asp-controller="NormalAuth" asp-action="Register">Normal Register</a></li>
+                                </ul>
+                            </details>
+                        }
+                        <details class="dropdown dropdown-end">
+                            <summary class="btn btn-ghost btn-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                                <i class="fas fa-globe me-1"></i> @Resource.Language
+                            </summary>
+                            <ul class="menu dropdown-content z-[100] min-w-[12rem] rounded-box bg-base-100 p-2 shadow-lg">
+                                @foreach (var langCode in ApplicationConstants.SupportedCultures)
+                                {
+                                    var cultureInfo = new CultureInfo(langCode);
+                                    <li>
+                                        <a class="@(currentCulture == langCode ? "active" : null)"
+                                           asp-controller="Home" asp-action="ChangeLanguage"
+                                           asp-route-selectedLanguageCode="@langCode"
+                                           asp-route-returnUrl="@Context.Request.GetEncodedPathAndQuery()">
+                                            @cultureInfo.NativeName
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </details>
+                    </div>
+                </div>
+            </header>
+
+            <main role="main" class="grow pb-8">
+                <div class="container mx-auto max-w-7xl px-4">
+                    @RenderBody()
+                </div>
+            </main>
+
+            <footer class="footer footer-center border-t border-base-300 bg-base-200 p-4 text-base-content">
+                <aside>
+                    <p class="text-sm opacity-80">&copy; 2026 - Application.Client (MVC App) — <a asp-area="" asp-controller="Home" asp-action="Privacy" class="link link-hover">Privacy</a></p>
+                </aside>
+            </footer>
+        </div>
+
+        <div class="drawer-side z-40">
+            <label for="main-drawer" aria-label="close menu" class="drawer-overlay"></label>
+            <ul class="menu min-h-full w-72 gap-1 bg-base-200 p-4">
+                <li class="menu-title text-base">@Resource.Welcome</li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">@Resource.Home</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Privacy">@Resource.Privacy</a></li>
+                <li><a asp-controller="Cascading" asp-action="Index">@Resource.Cascading</a></li>
+                <li><a asp-controller="MVCProducts" asp-action="Index">@Resource.Products</a></li>
+                <li><a asp-controller="MVCProducts" asp-action="IndexWithPageMetaData">@Resource.Products 2</a></li>
+                <li><a asp-controller="MVCBrands" asp-action="Index">@Resource.Brands</a></li>
+                <li><a asp-controller="MVCCategories" asp-action="Index">@Resource.Categories</a></li>
+                <li class="menu-title mt-2">@Resource.Language</li>
+                @foreach (var langCode in ApplicationConstants.SupportedCultures)
+                {
+                    var cultureInfo = new CultureInfo(langCode);
+                    <li>
+                        <a class="@(currentCulture == langCode ? "active" : null)"
+                           asp-controller="Home" asp-action="ChangeLanguage"
+                           asp-route-selectedLanguageCode="@langCode"
+                           asp-route-returnUrl="@Context.Request.GetEncodedPathAndQuery()">
+                            @cultureInfo.NativeName
+                        </a>
+                    </li>
+                }
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <li class="menu-title mt-2">Account</li>
+                    @if (!string.IsNullOrEmpty(User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.GivenName)?.Value))
+                    {
+                        <li class="disabled"><span>@(User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.GivenName)?.Value)</span></li>
+                    }
+                    <li class="w-full"><partial name="AjaxLogout" /></li>
+                    <li>
+                        <form asp-controller="HttpClient" asp-action="Logout" method="post">
+                            <button type="submit" class="font-normal">HttpClient Logout</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form asp-controller="NormalAuth" asp-action="Logout" method="post">
+                            <button type="submit" class="font-normal">Normal Logout</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="menu-title mt-2">Login</li>
+                    <li><a asp-controller="AjaxAuth" asp-action="Login">Ajax Login</a></li>
+                    <li><a asp-controller="HttpClient" asp-action="Login">HttpClient Login</a></li>
+                    <li><a asp-controller="NormalAuth" asp-action="Login">Normal Login</a></li>
+                    <li class="menu-title mt-2">Register</li>
+                    <li><a asp-controller="AjaxAuth" asp-action="Register">Ajax Register</a></li>
+                    <li><a asp-controller="HttpClient" asp-action="Register">HttpClient Register</a></li>
+                    <li><a asp-controller="NormalAuth" asp-action="Register">Normal Register</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <partial name="_AiChatWidget" />
+</body>
+</html>

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+	  <PackageReference Include="Hangfire.AspNetCore" Version="1.8.23" />
+	  <PackageReference Include="Hangfire.LiteDB" Version="0.4.1" />
+	  <PackageReference Include="LiteDB" Version="5.0.21" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
+      <PackageReference Include="MailKit" Version="4.16.0" />
+      <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.17.0" />
+      <PackageReference Include="MimeKit" Version="4.16.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Application.Core\Application.Core.csproj" />
+      <ProjectReference Include="..\Application.Resources\Application.Resources.csproj" />
+    </ItemGroup>
+
+</Project>

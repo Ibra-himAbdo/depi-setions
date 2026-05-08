@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "AI Assistant";
+}
+
+<div class="ai-hero shadow-lg">
+    <div class="ai-pulse">🤖</div>
+    <h1>AI Assistant</h1>
+    <p>Choose a chat mode to start a conversation with your AI assistant.</p>
+</div>
+
+<div class="row g-4 justify-content-center">
+
+    <!-- Basic Chat Card -->
+    <div class="col-md-5">
+        <div class="card chat-card card-basic shadow">
+            <div class="card-header">
+                <span>💬</span> Basic Chat
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3" style="font-size:.95rem;">
+                    A simple, stateless single-turn chatbot. Each message is sent independently — the AI has no memory of previous turns.
+                </p>
+                <div class="mb-3">
+                    <span class="badge-feature badge-blue">Single-turn</span>
+                    <span class="badge-feature badge-purple">Stateless</span>
+                    <span class="badge-feature badge-blue">Fast</span>
+                </div>
+                <a asp-controller="MVCAi" asp-action="Ask" class="btn btn-go btn-basic">
+                    Open Basic Chat &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Chat Card -->
+    <div class="col-md-5">
+        <div class="card chat-card card-advanced shadow">
+            <div class="card-header">
+                <span>🧠</span> Advanced Chat
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3" style="font-size:.95rem;">
+                    A fully stateful chatbot with conversation memory and live function-calling. The AI remembers context and can query real product data.
+                </p>
+                <div class="mb-3">
+                    <span class="badge-feature badge-purple">Memory</span>
+                    <span class="badge-feature badge-pink">Function Calling</span>
+                    <span class="badge-feature badge-green">Live Data</span>
+                </div>
+                <a asp-controller="MVCAi" asp-action="AskAdvanced" class="btn btn-go btn-advanced">
+                    Open Advanced Chat &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

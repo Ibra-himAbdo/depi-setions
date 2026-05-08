@@ -1,0 +1,55 @@
+@{
+    ViewData["Title"] = "Cascading Dropdowns";
+}
+
+<div class="mx-auto max-w-lg py-8">
+    <div class="card bg-base-200 shadow-xl">
+        <div class="card-body gap-4">
+            <h2 class="card-title text-primary">Location Selector</h2>
+
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">State</legend>
+                <select id="stateSelect" class="select select-bordered w-full">
+                    <option value="">-- Select State --</option>
+                    @foreach (var state in (List<State>)ViewBag.States)
+                    {
+                        <option value="@state.Id">@state.Name</option>
+                    }
+                </select>
+            </fieldset>
+
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">City</legend>
+                <select id="citySelect" class="select select-bordered w-full" disabled>
+                    <option value="">-- Select City --</option>
+                </select>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('stateSelect').addEventListener('change', async function () {
+            const stateId = this.value;
+            const citySelect = document.getElementById('citySelect');
+
+            citySelect.innerHTML = '<option value="">-- Select City --</option>';
+            citySelect.disabled = true;
+
+            if (!stateId) return;
+
+            const data = await api(`/Cascading/GetCities?stateId=${stateId}`);
+
+            if (data) {
+                data.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city.id;
+                    option.textContent = city.name;
+                    citySelect.appendChild(option);
+                });
+                citySelect.disabled = false;
+            }
+        });
+    </script>
+}

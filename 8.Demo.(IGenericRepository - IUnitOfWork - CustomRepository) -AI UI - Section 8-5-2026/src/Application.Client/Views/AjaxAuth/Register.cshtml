@@ -1,0 +1,53 @@
+<h2 class="mb-6 text-center text-2xl font-bold">Ajax Register</h2>
+
+<form id="AjaxRegisterForm" class="flex flex-col gap-4">
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Full Name</legend>
+        <input id="fullName" type="text" name="FullName" class="input input-bordered w-full" placeholder="Enter your full name" required>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Username</legend>
+        <input id="userName" type="text" name="UserName" class="input input-bordered w-full" placeholder="Choose a username" required>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Email Address</legend>
+        <input id="email" type="email" name="Email" class="input input-bordered w-full" placeholder="Enter your email" required>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Password</legend>
+        <input id="password" type="password" name="Password" class="input input-bordered w-full" placeholder="Create a password" required>
+    </fieldset>
+
+    <button type="submit" class="btn btn-success btn-lg w-full">Register</button>
+</form>
+
+<script>
+    const registerForm = document.getElementById("AjaxRegisterForm");
+
+    registerForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const fullName = document.getElementById("fullName").value
+        const userName = document.getElementById("userName").value
+        const email = document.getElementById("email").value
+        const password = document.getElementById("password").value
+
+        AppToast.info("Creating your account...");
+
+        const response = await api('/api/Auth/Register', 'POST', {
+            fullName: fullName,
+            userName: userName,
+            email: email,
+            password: password
+        });
+
+        if (response) {
+            AppToast.success("Account created successfully! Redirecting to login...");
+            setTimeout(() => window.location.href = "/Auth/Login", 1000);
+        }
+    });
+</script>

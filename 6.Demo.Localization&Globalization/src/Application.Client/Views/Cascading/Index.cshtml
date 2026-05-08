@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Cascading Dropdowns";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Location Selector</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">State</label>
+                        <select id="stateSelect" class="form-select">
+                            <option value="">-- Select State --</option>
+                            @foreach (var state in (List<State>)ViewBag.States)
+                            {
+                                <option value="@state.Id">@state.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+                        <select id="citySelect" class="form-select" disabled>
+                            <option value="">-- Select City --</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('stateSelect').addEventListener('change', async function () {
+            const stateId = this.value;
+            const citySelect = document.getElementById('citySelect');
+
+            citySelect.innerHTML = '<option value="">-- Select City --</option>';
+            citySelect.disabled = true;
+
+            if (!stateId) return;
+
+            const data = await api(`/Cascading/GetCities?stateId=${stateId}`);
+            
+            if (data) {
+                data.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city.id;
+                    option.textContent = city.name;
+                    citySelect.appendChild(option);
+                });
+                citySelect.disabled = false;
+            }
+        });
+    </script>
+}

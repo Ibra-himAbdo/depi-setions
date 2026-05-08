@@ -1,0 +1,22 @@
+@{
+    var fid = $"ajaxLogout_{Guid.NewGuid():N}";
+}
+<form id="@fid" class="ajax-logout-form w-full">
+    <button type="submit" class="btn btn-ghost h-auto min-h-8 w-full justify-start rounded-none font-normal">Ajax Logout</button>
+</form>
+
+<script>
+    (function () {
+        const formObj = document.getElementById("@fid");
+        if (!formObj) return;
+        formObj.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            AppToast.info("Logging out...");
+            const response = await api('/api/Auth/logout', 'POST');
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1000);
+        });
+    })();
+</script>

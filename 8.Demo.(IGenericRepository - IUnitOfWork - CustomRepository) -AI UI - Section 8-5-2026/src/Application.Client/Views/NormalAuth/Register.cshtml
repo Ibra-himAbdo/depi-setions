@@ -1,0 +1,56 @@
+@{
+    Layout = "_AuthLayout";
+}
+@model RegisterDto
+
+<h2 class="mb-6 text-center text-2xl font-bold">Create Account</h2>
+
+<form asp-action="Register" method="post" class="flex flex-col gap-4">
+    <div asp-validation-summary="ModelOnly" class="text-error text-sm"></div>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Full Name</legend>
+        <div class="join w-full">
+            <span class="join-item btn btn-neutral btn-square border border-base-300"><i class="fas fa-id-card opacity-70"></i></span>
+            <input asp-for="FullName" class="input join-item input-bordered w-full grow" placeholder="Full name" required />
+        </div>
+        <span asp-validation-for="FullName" class="text-error text-sm"></span>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Username</legend>
+        <div class="join w-full">
+            <span class="join-item btn btn-neutral btn-square border border-base-300"><i class="fas fa-user opacity-70"></i></span>
+            <input asp-for="UserName" class="input join-item input-bordered w-full grow" placeholder="Username" required />
+        </div>
+        <span asp-validation-for="UserName" class="text-error text-sm"></span>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Email Address</legend>
+        <div class="join w-full">
+            <span class="join-item btn btn-neutral btn-square border border-base-300"><i class="fas fa-envelope opacity-70"></i></span>
+            <input asp-for="Email" type="email" class="input join-item input-bordered w-full grow" placeholder="Email address" required />
+        </div>
+        <span asp-validation-for="Email" class="text-error text-sm"></span>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Password</legend>
+        <div class="join w-full">
+            <span class="join-item btn btn-neutral btn-square border border-base-300"><i class="fas fa-lock opacity-70"></i></span>
+            <input asp-for="Password" type="password" class="input join-item input-bordered w-full grow" placeholder="Password" required />
+        </div>
+        <span asp-validation-for="Password" class="text-error text-sm"></span>
+    </fieldset>
+
+    <button type="submit" class="btn btn-success btn-lg mt-2 w-full">Sign Up</button>
+</form>
+
+<div class="mt-6 text-center text-sm text-base-content/70">
+    <p>Already have an account? <a asp-action="Login" class="link link-success font-semibold">Login</a></p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

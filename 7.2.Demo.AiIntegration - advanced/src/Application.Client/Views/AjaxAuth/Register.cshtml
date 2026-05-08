@@ -1,0 +1,78 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h4 class="card-title text-center mb-4">Ajax Register</h4>
+
+                    <form id="AjaxRegisterForm">
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input id="fullName" type="text" name="FullName" class="form-control" placeholder="Enter your full name" required>
+                        </div>
+
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">Username</label>
+                            <input id="userName" type="text" name="UserName" class="form-control" placeholder="Choose a username" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input id="email" type="email" name="Email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input id="password" type="password" name="Password" class="form-control" placeholder="Create a password" required>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Register</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const registerForm = document.getElementById("AjaxRegisterForm");
+
+    registerForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const fullName = document.getElementById("fullName").value
+        const userName = document.getElementById("userName").value
+        const email = document.getElementById("email").value
+        const password = document.getElementById("password").value
+
+        // const formData = new FormData(registerForm);
+        // const data = Object.fromEntries(formData.entries());
+
+        AppToast.info("Creating your account...");
+
+        const response = await api('/api/Auth/Register', 'POST', {
+            fullName: fullName,
+            userName: userName,
+            email: email,
+            password: password
+        });
+
+        if (response) {
+            AppToast.success("Account created successfully! Redirecting to login...");
+            setTimeout(() => window.location.href = "/Auth/Login", 1000);
+        }
+    });
+</script>

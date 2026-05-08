@@ -1,0 +1,85 @@
+@model ProductUpsertDto
+@inject IUnitOfWork _unitOfWork
+
+@{
+    ViewData["Title"] = Resource.UpdateProduct;
+
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+    var brands = await _unitOfWork.Repository<ProductBrand>().GetAllAsync();
+    var categories = await _unitOfWork.Repository<ProductCategory>().GetAllAsync();
+
+    IEnumerable<SelectListItem> brandItems = brands.Select(brand => new SelectListItem
+    {
+        Value = brand.Id.ToString(),
+        Text = isRtl ? (brand.NameSecondLanguage ?? brand.Name ?? string.Empty) : (brand.Name ?? string.Empty)
+    });
+
+    IEnumerable<SelectListItem> categoryItems = categories.Select(category => new SelectListItem
+    {
+        Value = category.Id.ToString(),
+        Text = isRtl ? (category.NameSecondLanguage ?? category.Name ?? string.Empty) : (category.Name ?? string.Empty)
+    });
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="m-0">@Resource.UpdateProduct</h2>
+        <a class="btn btn-outline-secondary" asp-action="Index">@Resource.BackToList</a>
+    </div>
+
+    <form asp-action="Update" asp-route-id="@ViewBag.ProductId" method="post" class="card p-3">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label">@Resource.ProductName</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="NameSecondLanguage" class="form-label">@Resource.ProductNameSecondLanguage</label>
+                <input asp-for="NameSecondLanguage" class="form-control" />
+                <span asp-validation-for="NameSecondLanguage" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Description" class="form-label">@Resource.ProductDescription</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="PictureUrl" class="form-label">@Resource.ProductPictureUrl</label>
+                <input asp-for="PictureUrl" class="form-control" />
+                <span asp-validation-for="PictureUrl" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Price" class="form-label">@Resource.ProductPrice</label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="BrandId" class="form-label">@Resource.ProductBrand</label>
+                <select asp-for="BrandId" class="form-select" asp-items="brandItems"></select>
+                <span asp-validation-for="BrandId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="CategoryId" class="form-label">@Resource.ProductCategory</label>
+                <select asp-for="CategoryId" class="form-select" asp-items="categoryItems"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex justify-content-end gap-2">
+            <a class="btn btn-outline-secondary" asp-action="Index">@Resource.Cancel</a>
+            <button type="submit" class="btn btn-primary">@Resource.Update</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

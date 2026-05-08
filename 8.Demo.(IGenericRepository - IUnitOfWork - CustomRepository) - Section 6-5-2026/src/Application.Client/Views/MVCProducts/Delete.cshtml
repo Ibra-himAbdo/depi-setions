@@ -1,0 +1,43 @@
+@model Product
+
+@{
+    ViewData["Title"] = Resource.DeleteProduct;
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+    var displayName = isRtl
+        ? (Model.NameSecondLanguage ?? Model.Name ?? string.Empty)
+        : (Model.Name ?? string.Empty);
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="m-0">@Resource.DeleteProduct</h2>
+        <a class="btn btn-outline-secondary" asp-action="Index">@Resource.BackToList</a>
+    </div>
+
+    <div class="alert alert-warning">
+        <div class="fw-semibold">@Resource.ConfirmDelete</div>
+        <div class="mt-1">@Resource.DeleteProductQuestion</div>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">@Resource.ProductName</dt>
+            <dd class="col-sm-9">@displayName</dd>
+
+            <dt class="col-sm-3">@Resource.ProductPrice</dt>
+            <dd class="col-sm-9">@Model.Price.ToString("0.00")</dd>
+
+            <dt class="col-sm-3">@Resource.ProductBrand</dt>
+            <dd class="col-sm-9">@((isRtl ? Model.Brand?.NameSecondLanguage : Model.Brand?.Name) ?? "-")</dd>
+
+            <dt class="col-sm-3">@Resource.ProductCategory</dt>
+            <dd class="col-sm-9">@((isRtl ? Model.Category?.NameSecondLanguage : Model.Category?.Name) ?? "-")</dd>
+        </dl>
+    </div>
+
+    <form asp-action="DeleteConfirmed" asp-route-id="@Model.Id" method="post" class="d-flex justify-content-end gap-2">
+        <a class="btn btn-outline-secondary" asp-action="Index">@Resource.Cancel</a>
+        <button type="submit" class="btn btn-danger">@Resource.Delete</button>
+    </form>
+</div>
+

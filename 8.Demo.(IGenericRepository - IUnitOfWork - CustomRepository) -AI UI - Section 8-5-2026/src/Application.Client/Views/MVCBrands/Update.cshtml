@@ -1,0 +1,37 @@
+@model BrandUpsertDto
+
+@{
+    ViewData["Title"] = Resource.UpdateBrand;
+}
+
+<div class="py-4">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="m-0 text-2xl font-semibold">@Resource.UpdateBrand</h2>
+        <a class="btn btn-outline" asp-action="Index">@Resource.BackToList</a>
+    </div>
+
+    <form asp-action="Update" asp-route-id="@ViewBag.BrandId" method="post" class="card bg-base-200 shadow-md">
+        <div class="card-body gap-4 p-6">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">@Resource.ProductName</legend>
+                    <input asp-for="Name" class="input input-bordered w-full" type="text" />
+                    <span asp-validation-for="Name" class="text-error text-sm"></span>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">@Resource.ProductNameSecondLanguage</legend>
+                    <input asp-for="NameSecondLanguage" class="input input-bordered w-full" type="text" />
+                    <span asp-validation-for="NameSecondLanguage" class="text-error text-sm"></span>
+                </fieldset>
+            </div>
+            <div class="card-actions justify-end gap-2 pt-2">
+                <a class="btn btn-outline" asp-action="Index">@Resource.Cancel</a>
+                <button type="submit" class="btn btn-primary">@Resource.Update</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

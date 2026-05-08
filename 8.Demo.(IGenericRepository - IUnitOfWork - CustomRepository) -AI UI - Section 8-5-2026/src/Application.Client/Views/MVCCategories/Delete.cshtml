@@ -1,0 +1,37 @@
+@model ProductCategory
+
+@{
+    ViewData["Title"] = Resource.DeleteCategory;
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+    var displayName = isRtl
+        ? (Model.NameSecondLanguage ?? Model.Name ?? string.Empty)
+        : (Model.Name ?? string.Empty);
+}
+
+<div class="py-4">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="m-0 text-2xl font-semibold">@Resource.DeleteCategory</h2>
+        <a class="btn btn-outline" asp-action="Index">@Resource.BackToList</a>
+    </div>
+
+    <div role="alert" class="alert alert-warning mb-4">
+        <div class="font-semibold">@Resource.ConfirmDelete</div>
+        <div class="text-sm">@Resource.DeleteCategoryQuestion</div>
+    </div>
+
+    <div class="card bg-base-200 shadow-md">
+        <div class="card-body">
+            <dl class="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(8rem,auto)_1fr] sm:gap-x-4">
+                <dt class="font-semibold opacity-80">@Resource.ProductName</dt>
+                <dd>@displayName</dd>
+                <dt class="font-semibold opacity-80">@Resource.ProductNameSecondLanguage</dt>
+                <dd>@(isRtl ? Model.Name : Model.NameSecondLanguage)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="DeleteConfirmed" asp-route-id="@Model.Id" method="post" class="mt-4 flex justify-end gap-2">
+        <a class="btn btn-outline" asp-action="Index">@Resource.Cancel</a>
+        <button type="submit" class="btn btn-error">@Resource.Delete</button>
+    </form>
+</div>

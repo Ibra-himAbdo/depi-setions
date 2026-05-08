@@ -1,0 +1,171 @@
+@using Application.Core.Models
+@model PageMetaData<Product>
+
+@{
+    ViewData["Title"] = Resource.Products;
+
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+
+    int[] pageSizes = [5, 10, 15, 25, 50];
+
+    var oldSearch = Context.Request.Query[nameof(Model.Search)].ToString();
+
+
+    var oldSort = Context.Request.Query[nameof(Model.SortBy)].ToString();
+
+    var sortList = Enum.GetValues(typeof(ProductSort)).Cast<ProductSort>().Select(e => new { Value = e.ToString(), Text = e.ToString() }).ToList();
+
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="m-0">@Resource.Products</h2>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-muted">@Model.TotalItemsInDb @Resource.Items</span>
+            <a class="btn btn-primary" asp-action="Create">@Resource.Create</a>
+        </div>
+    </div>
+
+    @if (Model.Data is null || Model.Data.Count == 0)
+    {
+        <div class="alert alert-info mb-0">@Resource.NoProductsFound</div>
+    }
+    else
+    {
+
+        <div class="row mb-2 ">
+            <div class="col-md-12">
+
+                <form  asp-action="IndexWithPageMetaData" method="get">
+                    <input style="display:none;" name="@nameof(Model.CurrentPageIndex)" value="1" />
+                    <input style="display:none;" name="@nameof(Model.CurrentPageSize)" value="@Model.CurrentPageSize" />
+
+                    <label class="form-label me-2" for="searchInput">Search</label>
+                    <input class="from-control" name="@nameof(Model.Search)" value="@oldSearch" />
+
+                    <select name="@nameof(Model.SortBy)" class="form-select">
+                        @foreach (var sort in sortList)
+                        {
+                            <option value="@sort.Value" class="@(sort.Value == oldSort ? "selected" : "")">@sort.Text</option>
+                        }
+                    </select>   
+
+                    <button type="submit" class="btn btn-primary">Search</button>
+
+                </form>
+
+
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Page size - @Model.CurrentPageSize
+                    </button>
+                    <ul class="dropdown-menu">
+                        @foreach (var size in pageSizes)
+                        {
+                            <li>
+                                <a class="dropdown-item @(size == Model.CurrentPageSize ? "active" : "")"
+                                   asp-action="IndexWithPageMetaData"
+                                   asp-route-Search="@oldSearch"
+                                   asp-route-CurrentPageSize="@size">
+                                    @size
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>@Resource.ProductName</th>
+                        <th class="text-end">@Resource.ProductPrice</th>
+                        <th>@Resource.ProductBrand</th>
+                        <th>@Resource.ProductCategory</th>
+                        <th class="text-end">@Resource.Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Data)
+                    {
+                        <tr>
+                            <td>@(isRtl? product.NameSecondLanguage: product.Name)</td>
+                            <td class="text-end">@product.Price.ToString("0.00")</td>
+                            <td>@(isRtl? product.Brand?.NameSecondLanguage ?? "-" : product.Brand?.Name ?? "-")</td>
+                            <td>@(isRtl? product.Category?.NameSecondLanguage ?? "-" : product.Category?.Name ?? "-")</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   asp-action="Update"
+                                   asp-route-id="@product.Id">
+                                    @Resource.Update
+                                </a>
+                                <a class="btn btn-sm btn-outline-danger ms-1"
+                                   asp-action="Delete"
+                                   asp-route-id="@product.Id">
+                                    @Resource.Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                @if (!Model.HasPrevious)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">Previous</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="IndexWithPageMetaData"
+                           asp-route-CurrentPageSize="@Model.CurrentPageSize"
+                           asp-route-Search="@oldSearch"
+                           asp-route-CurrentPageIndex="@(Model.CurrentPageIndex - 1)">
+                            Previous
+                        </a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPageIndex ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="IndexWithPageMetaData"
+                           asp-route-CurrentPageSize="@Model.CurrentPageSize"
+                           asp-route-Search="@oldSearch"
+                           asp-route-CurrentPageIndex="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                @if (!Model.HasNext)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="IndexWithPageMetaData"
+                           asp-route-CurrentPageIndex="@(Model.CurrentPageIndex + 1)"
+                           asp-route-Search="@oldSearch"
+                           asp-route-CurrentPageSize="@Model.CurrentPageSize">
+                            Next
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

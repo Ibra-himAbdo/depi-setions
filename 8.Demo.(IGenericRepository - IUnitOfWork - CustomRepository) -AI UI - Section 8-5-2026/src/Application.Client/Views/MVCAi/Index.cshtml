@@ -1,0 +1,55 @@
+@{
+    ViewData["Title"] = "AI Assistant";
+}
+
+<div class="card bg-gradient-to-br from-neutral to-base-300 mb-10 rounded-2xl p-10 text-center text-neutral-content shadow-xl">
+    <div class="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-base-100/20 text-4xl">
+        🤖
+    </div>
+    <h1 class="text-3xl font-bold">AI Assistant</h1>
+    <p class="mt-3 opacity-90">Choose a chat mode to start a conversation with your AI assistant.</p>
+</div>
+
+<div class="grid grid-cols-1 gap-6 justify-center md:grid-cols-2">
+    <div class="card border border-base-300 bg-base-100 shadow-xl transition hover:shadow-2xl">
+        <div class="card-body">
+            <h2 class="card-title text-primary">
+                <span>💬</span> Basic Chat
+            </h2>
+            <p class="text-sm text-base-content/70">
+                A simple, stateless single-turn chatbot. Each message is sent independently — the AI has no memory of previous turns.
+            </p>
+            <div class="card-actions mt-2 flex flex-wrap gap-2">
+                <span class="badge badge-primary badge-outline">Single-turn</span>
+                <span class="badge badge-secondary badge-outline">Stateless</span>
+                <span class="badge badge-accent badge-outline">Fast</span>
+            </div>
+            <div class="card-actions justify-end pt-4">
+                <a asp-controller="MVCAi" asp-action="Ask" class="btn btn-primary btn-wide w-full max-w-xs sm:w-auto">
+                    Open Basic Chat →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border border-secondary/30 bg-base-100 shadow-xl transition hover:shadow-2xl">
+        <div class="card-body">
+            <h2 class="card-title text-secondary">
+                <span>🧠</span> Advanced Chat
+            </h2>
+            <p class="text-sm text-base-content/70">
+                A fully stateful chatbot with conversation memory and live function-calling. The AI remembers context and can query real product data.
+            </p>
+            <div class="card-actions mt-2 flex flex-wrap gap-2">
+                <span class="badge badge-secondary badge-outline">Memory</span>
+                <span class="badge badge-accent badge-outline">Function Calling</span>
+                <span class="badge badge-success badge-outline">Live Data</span>
+            </div>
+            <div class="card-actions justify-end pt-4">
+                <a asp-controller="MVCAi" asp-action="AskAdvanced" class="btn btn-secondary btn-wide w-full max-w-xs sm:w-auto">
+                    Open Advanced Chat →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

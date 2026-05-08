@@ -1,0 +1,38 @@
+@{
+    Layout = "_AuthLayout";
+}
+@model LoginDto
+
+<h2 class="mb-6 text-center text-2xl font-bold">Login</h2>
+
+<form asp-action="Login" method="post" class="flex flex-col gap-4">
+    <div asp-validation-summary="ModelOnly" class="text-error text-sm"></div>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Username or Email</legend>
+        <div class="join w-full">
+            <span class="join-item btn btn-neutral btn-square border border-base-300"><i class="fas fa-user opacity-70"></i></span>
+            <input asp-for="Identifier" class="input join-item input-bordered w-full grow" placeholder="Username or email" required />
+        </div>
+        <span asp-validation-for="Identifier" class="text-error text-sm"></span>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend class="fieldset-legend">Password</legend>
+        <div class="join w-full">
+            <span class="join-item btn btn-neutral btn-square border border-base-300"><i class="fas fa-lock opacity-70"></i></span>
+            <input asp-for="Password" type="password" class="input join-item input-bordered w-full grow" placeholder="Password" required />
+        </div>
+        <span asp-validation-for="Password" class="text-error text-sm"></span>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary btn-lg mt-2 w-full">Sign In</button>
+</form>
+
+<div class="mt-6 text-center text-sm text-base-content/70">
+    <p>Don&apos;t have an account? <a asp-action="Register" class="link link-primary font-semibold">Register</a></p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

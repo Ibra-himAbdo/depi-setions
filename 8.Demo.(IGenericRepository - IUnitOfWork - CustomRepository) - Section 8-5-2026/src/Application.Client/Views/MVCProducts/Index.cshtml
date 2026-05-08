@@ -1,0 +1,62 @@
+@model IReadOnlyList<Product>
+
+@{
+    ViewData["Title"] = Resource.Products;
+
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="m-0">@Resource.Products</h2>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-muted">@Model.Count @Resource.Items</span>
+            <a class="btn btn-primary" asp-action="Create">@Resource.Create</a>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info mb-0">@Resource.NoProductsFound</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>@Resource.ProductName</th>
+                        <th class="text-end">@Resource.ProductPrice</th>
+                        <th>@Resource.ProductBrand</th>
+                        <th>@Resource.ProductCategory</th>
+                        <th class="text-end">@Resource.Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td>@(isRtl ? product.NameSecondLanguage : product.Name)</td>
+                            <td class="text-end">@product.Price.ToString("0.00")</td>
+                            <td>@(isRtl ? product.Brand?.NameSecondLanguage ?? "-" : product.Brand?.Name ?? "-")</td>
+                            <td>@(isRtl ? product.Category?.NameSecondLanguage ?? "-" : product.Category?.Name ?? "-")</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   asp-action="Update"
+                                   asp-route-id="@product.Id">
+                                    @Resource.Update
+                                </a>
+                                <a class="btn btn-sm btn-outline-danger ms-1"
+                                   asp-action="Delete"
+                                   asp-route-id="@product.Id">
+                                    @Resource.Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+

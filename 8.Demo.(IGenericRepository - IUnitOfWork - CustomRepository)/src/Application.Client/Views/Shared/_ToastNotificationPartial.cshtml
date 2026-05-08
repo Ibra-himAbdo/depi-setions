@@ -1,0 +1,8 @@
+﻿@if (TempData["ToastMessage"] is not null)
+{
+    <div id="server-toast"
+         data-type="@(TempData["ToastType"] ?? "info")"
+         data-message="@TempData["ToastMessage"]"
+         style="display: none;">
+    </div>
+}

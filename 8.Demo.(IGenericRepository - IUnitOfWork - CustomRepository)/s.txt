@@ -1,0 +1,18 @@
+public Task UpdateAsync(T entity)
+    {
+        var entry = dbContext.Entry(entity);
+
+        if (entry.State == EntityState.Detached)
+        {
+            dbContext.Set<T>().Attach(entity);
+            entry.State = EntityState.Modified;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteAsync(T entity)
+    {
+        dbContext.Set<T>().Remove(entity);
+        return Task.CompletedTask;
+    }
