@@ -1,0 +1,11 @@
+global using Application.Client;
+global using Application.Core;
+global using Application.Resources;
+global using Application;
+global using FluentValidation;
+global using Mapster;
+global using Microsoft.AspNetCore.Mvc;
+global using Scalar.AspNetCore;
+global using System.Globalization;
+global using System.Net;
+global using System.Text.Json;

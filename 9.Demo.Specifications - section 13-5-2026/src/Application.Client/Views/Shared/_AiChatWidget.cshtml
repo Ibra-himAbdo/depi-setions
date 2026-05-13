@@ -1,0 +1,158 @@
+@* Floating AI Chat Widget — shown only when authenticated *@
+@* Requires: api.js and AppToast (already in _Layout.cshtml) *@
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+
+<!-- Floating action button -->
+<button id="ai-fab" title="AI Assistant" onclick="aipToggle()">🤖</button>
+
+<!-- Chat panel -->
+<div id="ai-panel">
+
+    <!-- Header -->
+    <div class="aip-header">
+        <span>🤖</span>
+        <span class="aip-header-title">AI Assistant</span>
+        <button onclick="aipToggle()" style="background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;line-height:1;"
+                title="Close">✕</button>
+    </div>
+
+    <!-- Mode tabs -->
+    <div class="aip-tabs">
+        <button class="aip-tab active" id="aip-tab-basic"    onclick="aipSetMode('basic')">💬 Basic</button>
+        <button class="aip-tab"        id="aip-tab-advanced" onclick="aipSetMode('advanced')">🧠 Advanced</button>
+    </div>
+
+    <!-- Feature pills (Advanced only) -->
+    <div id="aip-features" style="display:none;">
+        <span class="aip-pill pill-purple">🧠 Memory</span>
+        <span class="aip-pill pill-pink">⚡ Function Calling</span>
+        <span class="aip-pill pill-green">📦 Live Products</span>
+    </div>
+
+    <!-- Messages -->
+    <div id="aip-messages">
+        <div class="aip-bubble aip-bubble-ai" id="aip-welcome">
+            👋 Hello! Ask me anything.
+        </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="aip-input-bar">
+        <!-- Clear history (Advanced only) -->
+        <button id="aip-clear-btn" title="Clear conversation history" onclick="aipClearHistory()">🗑</button>
+
+        <textarea id="aip-input" rows="1" placeholder="Type a message…" maxlength="2000"></textarea>
+        <button id="aip-send-btn" onclick="aipSend()">↑</button>
+    </div>
+
+</div>
+
+<!-- Hidden anti-forgery form for ClearHistory POST -->
+<form id="aip-clear-form" asp-controller="Ai" asp-action="ClearHistory" method="post" style="display:none;"></form>
+
+<script>
+    // ── State ────────────────────────────────────────────────
+    let aipMode        = 'basic';   // 'basic' | 'advanced'
+    let aipPanelOpen   = false;
+
+    const aipPanel     = document.getElementById('ai-panel');
+    const aipFab       = document.getElementById('ai-fab');
+    const aipMessages  = document.getElementById('aip-messages');
+    const aipInput     = document.getElementById('aip-input');
+    const aipSendBtn   = document.getElementById('aip-send-btn');
+    const aipFeatures  = document.getElementById('aip-features');
+    const aipClearBtn  = document.getElementById('aip-clear-btn');
+    const aipWelcome   = document.getElementById('aip-welcome');
+
+    // ── Toggle open/close ────────────────────────────────────
+    function aipToggle() {
+        aipPanelOpen = !aipPanelOpen;
+        aipPanel.classList.toggle('open', aipPanelOpen);
+        aipFab.classList.toggle('open',   aipPanelOpen);
+        if (aipPanelOpen) {
+            aipInput.focus();
+            aipMessages.scrollTop = aipMessages.scrollHeight;
+        }
+    }
+
+    // ── Switch mode ──────────────────────────────────────────
+    function aipSetMode(mode) {
+        aipMode = mode;
+
+        document.getElementById('aip-tab-basic').classList.toggle('active',    mode === 'basic');
+        document.getElementById('aip-tab-advanced').classList.toggle('active', mode === 'advanced');
+
+        aipFeatures.style.display = mode === 'advanced' ? 'flex' : 'none';
+        aipClearBtn.style.display = mode === 'advanced' ? 'inline-block' : 'none';
+
+        // Update welcome message
+        aipWelcome.textContent = mode === 'advanced'
+            ? '🧠 Hello! I remember our conversation and can look up live product data.'
+            : '👋 Hello! Ask me anything.';
+
+        aipInput.focus();
+    }
+
+    // ── Append bubble ────────────────────────────────────────
+    function aipAppendBubble(text, type) {
+        const div = document.createElement('div');
+        div.className = `aip-bubble aip-bubble-${type}`;
+        div.textContent = text;
+        aipMessages.appendChild(div);
+        aipMessages.scrollTop = aipMessages.scrollHeight;
+    }
+
+    // ── Typing indicator ─────────────────────────────────────
+    function aipShowTyping() {
+        const el = document.createElement('div');
+        el.className = 'aip-typing';
+        el.id = 'aip-typing';
+        el.innerHTML = '<div class="aip-dot"></div><div class="aip-dot"></div><div class="aip-dot"></div>';
+        aipMessages.appendChild(el);
+        aipMessages.scrollTop = aipMessages.scrollHeight;
+    }
+
+    function aipHideTyping() {
+        document.getElementById('aip-typing')?.remove();
+    }
+
+    // ── Send message ─────────────────────────────────────────
+    aipInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            aipSend();
+        }
+    });
+
+    async function aipSend() {
+        const msg = aipInput.value.trim();
+        if (!msg) return;
+
+        aipInput.value  = '';
+        aipSendBtn.disabled = true;
+
+        aipAppendBubble(msg, 'user');
+        aipShowTyping();
+
+        const url   = aipMode === 'advanced' ? '/Ai/AskAdvancedAsync' : '/Ai/AskAsync';
+        const reply = await api(url, 'POST', msg);
+
+        aipHideTyping();
+
+        if (reply !== null) {
+            aipAppendBubble(reply, 'ai');
+        }
+
+        aipSendBtn.disabled = false;
+        aipInput.focus();
+    }
+
+    // ── Clear history ─────────────────────────────────────────
+    function aipClearHistory() {
+        if (!confirm('Clear your conversation history with the AI?')) return;
+        document.getElementById('aip-clear-form').submit();
+    }
+</script>
+}

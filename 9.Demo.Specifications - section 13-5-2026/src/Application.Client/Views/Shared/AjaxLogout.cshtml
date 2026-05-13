@@ -1,0 +1,17 @@
+<form id="logoutForm">
+    <button type="submit" class="dropdown-item">Ajax Logout</button>
+</form>
+
+<script>
+    const formObj = document.getElementById("logoutForm");
+
+    formObj.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        AppToast.info("Logging out...");
+        const response = await api('/api/Auth/logout', 'POST');
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 1000);
+    });
+</script>
