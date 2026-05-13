@@ -1,3 +1,6 @@
+using Application.Core;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace Application.Client;
 
 public class MVCProductsController : Controller
@@ -21,11 +24,26 @@ public class MVCProductsController : Controller
         return View(products);
     }
 
-    public async Task<IActionResult> IndexWithPageMetaData(PageMetaData<Product> pageMeta, CancellationToken cancellationToken)
+    public async Task<IActionResult> IndexWithPageMetaData(ProductPageMetaData pageMeta, CancellationToken cancellationToken)
     {
-        PageMetaData<Product> metaDate = await _unitOfWork
-            .ProductRepository
-            .GetProductsWithBrandsAndCategoryAsync(pageMeta, cancellationToken);
+        var spec = new ProductSpecificationsWithCategoryAndBrand(pageMeta);
+
+        var products = await _unitOfWork.Repository<Product>().GetAllWithSpecificationsAsync(spec);
+
+        var countSpec = new ProductCountSpecifications(pageMeta);
+        var count = await _unitOfWork.Repository<Product>().GetCountAsync(countSpec);
+
+        //PageMetaData<Product> metaDate = await _unitOfWork
+        //    .ProductRepository
+        //    .GetProductsWithBrandsAndCategoryAsync(pageMeta, cancellationToken);
+
+        var metaDate = new PageMetaData<Product>
+        {
+            Data = products.ToList(),
+            CurrentPageIndex = pageMeta.CurrentPageIndex,
+            CurrentPageSize = pageMeta.CurrentPageSize,
+            TotalItemsInDb = count
+        };
 
         return View(metaDate);
     }

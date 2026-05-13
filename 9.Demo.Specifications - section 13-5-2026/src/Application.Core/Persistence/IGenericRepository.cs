@@ -21,4 +21,9 @@ public interface IGenericRepository<T> where T : class , IEntity
     Task<int> GetCountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+
+    // Specifications
+    Task<IReadOnlyList<T>> GetAllWithSpecificationsAsync(ISpecifications<T> specifications, CancellationToken cancellationToken = default);
+    Task<T?> GetByIdWithSpecificationsAsync(ISpecifications<T> specifications, CancellationToken cancellationToken = default);
+    Task<int> GetCountAsync(ISpecifications<T> specifications, CancellationToken cancellationToken = default);
 }

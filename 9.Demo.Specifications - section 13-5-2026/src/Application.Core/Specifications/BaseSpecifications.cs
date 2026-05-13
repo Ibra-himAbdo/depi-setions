@@ -4,7 +4,7 @@ public class BaseSpecifications<T> : ISpecifications<T> where T : class, IEntity
 {
     public Expression<Func<T, bool>>? Criteria { get; protected set; }
 
-    public List<Expression<Func<T, object>>>? Includes { get; protected set; }
+    public List<Expression<Func<T, object?>>>? Includes { get; protected set; }
 
     public Expression<Func<T, object>>? OrderBy { get; protected set; }
 

@@ -79,4 +79,22 @@ internal class GenericRepository<T>(ApplicationDbContext dbContext)
             .Where(predicate)
             .ToListAsync(cancellationToken: cancellationToken);
     }
+
+    public async Task<IReadOnlyList<T>> GetAllWithSpecificationsAsync(ISpecifications<T> specifications, CancellationToken cancellationToken = default)
+    {
+        return await ApplySpecifications(specifications).AsNoTracking().ToListAsync(cancellationToken);
+    }
+
+    public async Task<T?> GetByIdWithSpecificationsAsync(ISpecifications<T> specifications, CancellationToken cancellationToken = default)
+    {
+        return await ApplySpecifications(specifications).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<int> GetCountAsync(ISpecifications<T> specifications, CancellationToken cancellationToken = default)
+    {
+        return await ApplySpecifications(specifications).AsNoTracking().CountAsync(cancellationToken);
+    }
+
+    private IQueryable<T> ApplySpecifications(ISpecifications<T> specifications)
+        => SpecificationEvaluator<T>.GetQueryFromSpecifications(dbContext.Set<T>(), specifications);
 }

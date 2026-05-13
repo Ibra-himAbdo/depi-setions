@@ -25,6 +25,8 @@ public class PageMetaData<T>
 
     public string? SortBy { get; set; }
 
+    public bool IsRtl { get; set; }
+
     public int TotalPages => (int)Math.Ceiling((double)TotalItemsInDb / CurrentPageSize);  // عدد الصفحات
     public bool HasNext => CurrentPageIndex < TotalPages;
     public bool HasPrevious => CurrentPageIndex > 1;
