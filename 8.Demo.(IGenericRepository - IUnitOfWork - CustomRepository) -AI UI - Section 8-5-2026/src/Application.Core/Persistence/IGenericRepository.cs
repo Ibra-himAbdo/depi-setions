@@ -1,4 +1,4 @@
-﻿namespace Application.Core;
+namespace Application.Core;
 
 public interface IGenericRepository<T> where T : class , IEntity
 {
@@ -18,6 +18,8 @@ public interface IGenericRepository<T> where T : class , IEntity
 
 
     // helpers
+    Task<int> CountAsync(CancellationToken cancellationToken = default);
+
     Task<int> GetCountAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);

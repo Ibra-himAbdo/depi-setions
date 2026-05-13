@@ -45,6 +45,13 @@ internal class GenericRepository<T>(ApplicationDbContext dbContext)
         return Task.CompletedTask;
     }
 
+    public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Set<T>()
+            .AsNoTracking()
+            .CountAsync(cancellationToken: cancellationToken);
+    }
+
     public async Task<int> GetCountAsync(Expression<Func<T, bool>> predicate,
         CancellationToken cancellationToken = default)
     {

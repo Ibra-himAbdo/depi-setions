@@ -2,32 +2,64 @@
 
 @{
     ViewData["Title"] = Resource.Products;
-
     var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
 }
 
-<div class="py-4">
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 class="m-0 text-2xl font-semibold">@Resource.Products</h2>
-        <div class="flex flex-wrap items-center gap-3">
-            <span class="text-base-content/60">@Model.Count @Resource.Items</span>
-            <a class="btn btn-primary" asp-action="Create">@Resource.Create</a>
+<div class="py-6">
+    @* Page Header *@
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-6">
+        <div>
+            <div class="mb-1 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                Inventory Management
+            </div>
+            <h2 class="m-0 text-4xl font-black tracking-tight">@Resource.Products</h2>
         </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="stats bg-base-200 shadow-sm">
+                <div class="stat py-2 px-4">
+                    <div class="stat-title text-[10px] font-bold uppercase opacity-50">Total Records</div>
+                    <div class="stat-value text-xl">@Model.Count</div>
+                </div>
+            </div>
+            <a class="btn btn-primary px-8 rounded-2xl shadow-lg shadow-primary/20 transition-transform hover:-translate-y-1" asp-action="Create">
+                <i class="fa-solid fa-plus me-2"></i> @Resource.Create
+            </a>
+        </div>
+    </div>
+
+    @* Search & Filter Bar Mockup *@
+    <div class="mb-6 flex flex-wrap gap-4 rounded-3xl bg-base-200/50 p-4 border border-base-300 shadow-inner">
+        <div class="relative flex-1 min-w-[200px]">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 opacity-30"></i>
+            <input type="text" placeholder="Search products..." class="input input-bordered w-full pl-11 rounded-2xl bg-base-100 border-none shadow-sm" />
+        </div>
+        <select class="select select-bordered rounded-2xl bg-base-100 border-none shadow-sm">
+            <option disabled selected>Filter by Brand</option>
+        </select>
+        <select class="select select-bordered rounded-2xl bg-base-100 border-none shadow-sm">
+            <option disabled selected>Filter by Category</option>
+        </select>
+        <button class="btn btn-square btn-ghost hover:bg-base-300 transition-colors">
+            <i class="fa-solid fa-sliders"></i>
+        </button>
     </div>
 
     @if (!Model.Any())
     {
-        <div role="alert" class="alert alert-info">
-            <span>@Resource.NoProductsFound</span>
+        <div class="card bg-base-200 border-2 border-dashed border-base-300 py-16 text-center">
+            <div class="mb-4 text-5xl opacity-20"><i class="fa-solid fa-inbox"></i></div>
+            <h3 class="text-xl font-bold opacity-50">@Resource.NoProductsFound</h3>
+            <p class="mt-2 text-sm opacity-40">Start by adding your first product to the repository.</p>
         </div>
     }
     else
     {
-        <div class="overflow-x-auto rounded-lg border border-base-300">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>@Resource.ProductName</th>
+        <div class="overflow-hidden rounded-3xl border border-base-300 bg-base-100 shadow-2xl">
+            <table class="table table-lg">
+                <thead class="bg-base-200/50">
+                    <tr class="text-[10px] font-black uppercase tracking-widest opacity-60">
+                        <th class="py-6">@Resource.ProductName</th>
                         <th class="text-end">@Resource.ProductPrice</th>
                         <th>@Resource.ProductBrand</th>
                         <th>@Resource.ProductCategory</th>
@@ -37,22 +69,48 @@
                 <tbody>
                     @foreach (var product in Model)
                     {
-                        <tr>
-                            <td>@(isRtl ? product.NameSecondLanguage : product.Name)</td>
-                            <td class="text-end">@product.Price.ToString("0.00")</td>
-                            <td>@(isRtl ? product.Brand?.NameSecondLanguage ?? "-" : product.Brand?.Name ?? "-")</td>
-                            <td>@(isRtl ? product.Category?.NameSecondLanguage ?? "-" : product.Category?.Name ?? "-")</td>
+                        <tr class="hover:bg-base-200/30 transition-colors group">
+                            <td class="py-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary font-black shadow-inner">
+                                        @(product.Name.Substring(0, 1).ToUpper())
+                                    </div>
+                                    <div>
+                                        <div class="font-black text-base-content/90">@(isRtl ? product.NameSecondLanguage : product.Name)</div>
+                                        <div class="text-[10px] font-bold opacity-40">ID: @product.Id.ToString().Substring(0, 8)...</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-end font-mono font-bold text-lg">
+                                <span class="text-xs opacity-40 me-1">$</span>@product.Price.ToString("N2")
+                            </td>
+                            <td>
+                                <span class="badge badge-secondary badge-soft font-bold px-3 py-3">
+                                    <i class="fa-solid fa-tag me-2 opacity-50"></i>
+                                    @(isRtl ? product.Brand?.NameSecondLanguage ?? "-" : product.Brand?.Name ?? "-")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-accent badge-soft font-bold px-3 py-3">
+                                    <i class="fa-solid fa-folder me-2 opacity-50"></i>
+                                    @(isRtl ? product.Category?.NameSecondLanguage ?? "-" : product.Category?.Name ?? "-")
+                                </span>
+                            </td>
                             <td class="text-end">
-                                <a class="btn btn-outline btn-sm"
-                                   asp-action="Update"
-                                   asp-route-id="@product.Id">
-                                    @Resource.Update
-                                </a>
-                                <a class="btn btn-error btn-outline btn-sm ms-1"
-                                   asp-action="Delete"
-                                   asp-route-id="@product.Id">
-                                    @Resource.Delete
-                                </a>
+                                <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <a class="btn btn-ghost btn-sm btn-square hover:bg-primary/10 hover:text-primary"
+                                       asp-action="Update"
+                                       asp-route-id="@product.Id"
+                                       title="@Resource.Update">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a class="btn btn-ghost btn-sm btn-square hover:bg-error/10 hover:text-error"
+                                       asp-action="Delete"
+                                       asp-route-id="@product.Id"
+                                       title="@Resource.Delete">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -61,3 +119,4 @@
         </div>
     }
 </div>
+

@@ -1,21 +1,100 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Architecture Hub";
+    var productCount = ViewBag.ProductCount ?? 0;
+    var brandCount = ViewBag.BrandCount ?? 0;
+    var categoryCount = ViewBag.CategoryCount ?? 0;
 }
 
-<div class="hero bg-base-200 rounded-box py-12">
-    <div class="hero-content text-center">
-        <div class="max-w-lg">
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <h1 class="text-4xl font-bold">@Resource.Welcome @(User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.GivenName)?.Value)</h1>
-            }
-            else
-            {
-                <h1 class="text-4xl font-bold">@Resource.Welcome</h1>
-            }
-            <p class="mt-4 py-2 text-base-content/80">
-                Learn about <a href="https://learn.microsoft.com/aspnet/core" class="link link-primary">building Web apps with ASP.NET Core</a>.
+@* Hero Section *@
+<div class="relative mb-12 overflow-hidden rounded-3xl bg-linear-to-br from-primary via-secondary to-accent p-8 text-primary-content shadow-2xl sm:p-16">
+    <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+    <div class="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-black/10 blur-3xl"></div>
+    
+    <div class="relative z-10 grid grid-cols-1 gap-12 lg:grid-cols-2">
+        <div class="flex flex-col justify-center text-center lg:text-left">
+            <div class="mb-4 inline-flex items-center gap-2 self-center rounded-full bg-white/20 px-4 py-1.5 text-xs font-black uppercase tracking-widest backdrop-blur-md lg:self-start">
+                <i class="fa-solid fa-code"></i>
+                Enterprise Architecture
+            </div>
+            <h1 class="text-4xl font-black tracking-tighter uppercase sm:text-6xl">
+                Advanced <span class="opacity-70">Repository</span> Patterns
+            </h1>
+            <p class="mt-6 text-lg font-medium leading-relaxed opacity-90">
+                A high-fidelity demonstration of <strong>IGenericRepository</strong>, <strong>IUnitOfWork</strong>, and <strong>Custom Repositories</strong> integrated with an <strong>AI-Native UI</strong>.
             </p>
+            <div class="mt-10 flex flex-wrap justify-center gap-4 lg:justify-start">
+                <a asp-controller="MVCProducts" asp-action="Index" class="btn btn-neutral btn-lg px-8 rounded-2xl shadow-xl shadow-black/10 transition-transform hover:-translate-y-1">
+                    <i class="fa-solid fa-box-open me-2"></i> Manage Products
+                </a>
+                <a asp-controller="MVCAi" asp-action="Index" class="btn btn-ghost btn-lg border-white/20 bg-white/10 px-8 rounded-2xl backdrop-blur-md transition-transform hover:-translate-y-1">
+                    <i class="fa-solid fa-robot me-2"></i> Neural Core
+                </a>
+            </div>
+        </div>
+
+        @* Live Stats Grid *@
+        <div class="flex items-center justify-center">
+            <div class="grid w-full grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-1">
+                <div class="flex items-center gap-6 rounded-3xl bg-white/10 p-6 backdrop-blur-xl border border-white/10 shadow-lg">
+                    <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-primary shadow-lg">
+                        <i class="fa-solid fa-layer-group text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black">@productCount</div>
+                        <div class="text-[10px] font-black uppercase tracking-widest opacity-60">Products Tracked</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6 rounded-3xl bg-white/10 p-6 backdrop-blur-xl border border-white/10 shadow-lg">
+                    <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-secondary shadow-lg">
+                        <i class="fa-solid fa-tag text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black">@brandCount</div>
+                        <div class="text-[10px] font-black uppercase tracking-widest opacity-60">Active Brands</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6 rounded-3xl bg-white/10 p-6 backdrop-blur-xl border border-white/10 shadow-lg">
+                    <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-accent shadow-lg">
+                        <i class="fa-solid fa-folder-tree text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black">@categoryCount</div>
+                        <div class="text-[10px] font-black uppercase tracking-widest opacity-60">Categories</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+@* Pattern Details *@
+<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+    <div class="card border border-base-300 bg-base-100 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1">
+        <div class="card-body">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <i class="fa-solid fa-recycle text-xl"></i>
+            </div>
+            <h2 class="card-title font-black uppercase tracking-tight">Generic Repo</h2>
+            <p class="text-sm text-base-content/70">Standardized CRUD operations across all entities using a robust, typesafe generic abstraction layer.</p>
+        </div>
+    </div>
+    <div class="card border border-base-300 bg-base-100 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1">
+        <div class="card-body">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
+                <i class="fa-solid fa-code-commit text-xl"></i>
+            </div>
+            <h2 class="card-title font-black uppercase tracking-tight">Unit of Work</h2>
+            <p class="text-sm text-base-content/70">Coordinating multiple repository operations into a single transaction to ensure data integrity.</p>
+        </div>
+    </div>
+    <div class="card border border-base-300 bg-base-100 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1">
+        <div class="card-body">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+            </div>
+            <h2 class="card-title font-black uppercase tracking-tight">Custom Logic</h2>
+            <p class="text-sm text-base-content/70">Specialized repository methods for complex filtering, sorting, and AI-optimized data fetching.</p>
+        </div>
+    </div>
+</div>
+

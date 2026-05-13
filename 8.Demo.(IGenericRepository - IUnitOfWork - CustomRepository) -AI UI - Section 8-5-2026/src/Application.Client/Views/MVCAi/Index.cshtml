@@ -1,55 +1,88 @@
 @{
-    ViewData["Title"] = "AI Assistant";
+    ViewData["Title"] = "AI Assistant Hub";
 }
 
-<div class="card bg-gradient-to-br from-neutral to-base-300 mb-10 rounded-2xl p-10 text-center text-neutral-content shadow-xl">
-    <div class="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-base-100/20 text-4xl">
-        🤖
+@* Hero Section *@
+<div class="card relative mb-12 overflow-hidden rounded-3xl bg-linear-to-br from-neutral-900 via-neutral-800 to-primary/20 p-12 text-center text-white shadow-2xl">
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+    <div class="relative z-10">
+        <div class="mb-6 inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-white/10 backdrop-blur-xl shadow-inner shadow-white/20">
+            <i class="fa-solid fa-robot text-5xl animate-bounce"></i>
+        </div>
+        <h1 class="text-4xl font-black tracking-tighter uppercase sm:text-5xl">AI Assistant <span class="text-primary">Hub</span></h1>
+        <p class="mx-auto mt-4 max-w-xl text-lg font-medium opacity-70">
+            Select an operational mode to interact with the neural core.
+        </p>
     </div>
-    <h1 class="text-3xl font-bold">AI Assistant</h1>
-    <p class="mt-3 opacity-90">Choose a chat mode to start a conversation with your AI assistant.</p>
 </div>
 
-<div class="grid grid-cols-1 gap-6 justify-center md:grid-cols-2">
-    <div class="card border border-base-300 bg-base-100 shadow-xl transition hover:shadow-2xl">
-        <div class="card-body">
-            <h2 class="card-title text-primary">
-                <span>💬</span> Basic Chat
-            </h2>
-            <p class="text-sm text-base-content/70">
-                A simple, stateless single-turn chatbot. Each message is sent independently — the AI has no memory of previous turns.
-            </p>
-            <div class="card-actions mt-2 flex flex-wrap gap-2">
-                <span class="badge badge-primary badge-outline">Single-turn</span>
-                <span class="badge badge-secondary badge-outline">Stateless</span>
-                <span class="badge badge-accent badge-outline">Fast</span>
+@* Selection Grid *@
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:px-12">
+    @* Basic Chat Card *@
+    <div class="group relative card border border-base-300 bg-base-100 shadow-xl transition-all hover:-translate-y-2 hover:shadow-2xl">
+        <div class="card-body p-8">
+            <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-content">
+                <i class="fa-solid fa-comment-dots text-2xl"></i>
             </div>
-            <div class="card-actions justify-end pt-4">
-                <a asp-controller="MVCAi" asp-action="Ask" class="btn btn-primary btn-wide w-full max-w-xs sm:w-auto">
-                    Open Basic Chat →
+            <h2 class="card-title text-2xl font-black">Basic Interaction</h2>
+            <p class="text-sm leading-relaxed text-base-content/70">
+                A stateless, high-speed single-turn interface. Ideal for quick queries where historical context is not required.
+            </p>
+            
+            <div class="mt-6 space-y-3">
+                <div class="flex items-center gap-3 text-xs font-bold opacity-60">
+                    <i class="fa-solid fa-check text-success"></i>
+                    SINGLE-TURN LOGIC
+                </div>
+                <div class="flex items-center gap-3 text-xs font-bold opacity-60">
+                    <i class="fa-solid fa-check text-success"></i>
+                    LOW LATENCY
+                </div>
+            </div>
+
+            <div class="card-actions mt-8">
+                <a asp-controller="MVCAi" asp-action="Ask" class="btn btn-primary btn-block rounded-xl font-bold shadow-lg shadow-primary/20">
+                    LAUNCH STANDARD →
                 </a>
             </div>
         </div>
     </div>
 
-    <div class="card border border-secondary/30 bg-base-100 shadow-xl transition hover:shadow-2xl">
-        <div class="card-body">
-            <h2 class="card-title text-secondary">
-                <span>🧠</span> Advanced Chat
-            </h2>
-            <p class="text-sm text-base-content/70">
-                A fully stateful chatbot with conversation memory and live function-calling. The AI remembers context and can query real product data.
-            </p>
-            <div class="card-actions mt-2 flex flex-wrap gap-2">
-                <span class="badge badge-secondary badge-outline">Memory</span>
-                <span class="badge badge-accent badge-outline">Function Calling</span>
-                <span class="badge badge-success badge-outline">Live Data</span>
+    @* Advanced Chat Card *@
+    <div class="group relative card border border-secondary/20 bg-base-100 shadow-xl transition-all hover:-translate-y-2 hover:shadow-2xl">
+        <div class="absolute -top-3 -right-3 z-20">
+            <span class="badge badge-secondary py-3 px-4 font-black shadow-lg">RECOMMENDED</span>
+        </div>
+        <div class="card-body p-8">
+            <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/10 text-secondary transition-colors group-hover:bg-secondary group-hover:text-secondary-content">
+                <i class="fa-solid fa-brain text-2xl"></i>
             </div>
-            <div class="card-actions justify-end pt-4">
-                <a asp-controller="MVCAi" asp-action="AskAdvanced" class="btn btn-secondary btn-wide w-full max-w-xs sm:w-auto">
-                    Open Advanced Chat →
+            <h2 class="card-title text-2xl font-black">Neural Core Advanced</h2>
+            <p class="text-sm leading-relaxed text-base-content/70">
+                Full persistence engine with memory buffers and function invocation. The AI can query live repositories and maintain deep context.
+            </p>
+
+            <div class="mt-6 space-y-3">
+                <div class="flex items-center gap-3 text-xs font-bold opacity-60">
+                    <i class="fa-solid fa-check text-secondary"></i>
+                    PERSISTENT MEMORY
+                </div>
+                <div class="flex items-center gap-3 text-xs font-bold opacity-60">
+                    <i class="fa-solid fa-check text-secondary"></i>
+                    FUNCTION INVOCATION
+                </div>
+                <div class="flex items-center gap-3 text-xs font-bold opacity-60">
+                    <i class="fa-solid fa-check text-secondary"></i>
+                    LIVE REPO ACCESS
+                </div>
+            </div>
+
+            <div class="card-actions mt-8">
+                <a asp-controller="MVCAi" asp-action="AskAdvanced" class="btn btn-secondary btn-block rounded-xl font-bold shadow-lg shadow-secondary/20">
+                    LAUNCH ADVANCED →
                 </a>
             </div>
         </div>
     </div>
 </div>
+

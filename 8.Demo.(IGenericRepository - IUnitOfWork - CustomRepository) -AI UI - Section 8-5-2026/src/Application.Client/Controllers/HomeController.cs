@@ -6,10 +6,26 @@ namespace Application.Client;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly IUnitOfWork _unitOfWork;
+
+    public HomeController(IUnitOfWork unitOfWork)
     {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<IActionResult> IndexAsync()
+    {
+        var productCount = await _unitOfWork.Repository<Product>().CountAsync();
+        var brandCount = await _unitOfWork.Repository<ProductBrand>().CountAsync();
+        var categoryCount = await _unitOfWork.Repository<ProductCategory>().CountAsync();
+
+        ViewBag.ProductCount = productCount;
+        ViewBag.BrandCount = brandCount;
+        ViewBag.CategoryCount = categoryCount;
+
         return View();
     }
+
 
     public IActionResult Privacy()
     {
@@ -49,6 +65,6 @@ public class HomeController : Controller
             && string.Equals(refererUri.Host, Request.Host.Host, StringComparison.OrdinalIgnoreCase))
             return LocalRedirect(refererUri.PathAndQuery);
 
-        return LocalRedirect(Url.Action(nameof(Index)) ?? "/");
+        return LocalRedirect(Url.Action(nameof(IndexAsync)) ?? "/");
     }
 }

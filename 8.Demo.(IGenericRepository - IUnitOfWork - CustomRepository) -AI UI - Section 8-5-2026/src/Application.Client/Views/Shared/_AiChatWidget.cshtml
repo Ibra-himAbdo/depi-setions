@@ -3,40 +3,87 @@
 
 @if (User.Identity?.IsAuthenticated == true)
 {
-    <div class="fab">
-        <button type="button" id="ai-fab" class="btn btn-lg btn-circle btn-primary shadow-lg" title="AI Assistant" onclick="aipToggle()" aria-expanded="false" aria-controls="ai-panel">🤖</button>
+    <div class="fab fixed bottom-4 right-4 z-[1050]">
+        <button type="button" id="ai-fab" 
+                class="btn btn-lg btn-circle border-none bg-linear-to-tr from-primary to-accent text-primary-content shadow-xl hover:scale-110 transition-all duration-300 active:scale-95" 
+                title="AI Assistant" onclick="aipToggle()" aria-expanded="false" aria-controls="ai-panel">
+            <span class="text-2xl animate-pulse">🤖</span>
+        </button>
     </div>
 
-    <div id="ai-panel" class="card fixed bottom-[5.5rem] right-4 z-[1048] flex max-h-[560px] w-[min(100vw-2rem,370px)] -translate-y-2 scale-95 flex-col overflow-hidden border border-base-300 bg-base-100 opacity-0 shadow-2xl pointer-events-none transition-all duration-200">
-        <div class="flex items-center gap-2 bg-gradient-to-r from-primary to-secondary p-3 text-primary-content">
-            <span class="text-xl" aria-hidden="true">🤖</span>
-            <span class="aip-header-title flex-1 font-bold">AI Assistant</span>
-            <button type="button" class="btn btn-ghost btn-sm text-primary-content" onclick="aipToggle()" title="Close" aria-label="Close">✕</button>
+    <div id="ai-panel" 
+         class="card fixed bottom-20 right-4 z-[1048] flex max-h-[600px] w-[min(100vw-2rem,400px)] -translate-y-4 scale-95 flex-col overflow-hidden border border-base-300 bg-base-100/95 backdrop-blur-xl opacity-0 shadow-[0_20px_50px_rgba(0,0,0,0.2)] pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]">
+        
+        @* Header *@
+        <div class="flex items-center gap-3 bg-linear-to-r from-primary via-secondary to-accent p-4 text-primary-content">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-md shadow-inner">
+                <span class="text-xl" aria-hidden="true">🤖</span>
+            </div>
+            <div class="flex-1">
+                <span class="block text-sm font-black tracking-tight uppercase opacity-80">Assistant</span>
+                <span class="aip-header-title block font-bold leading-none">Neural Core</span>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm btn-circle text-primary-content hover:bg-white/20" onclick="aipToggle()" title="Close" aria-label="Close">✕</button>
         </div>
 
-        <div role="tablist" class="tabs tabs-boxed m-2 bg-base-200">
-            <button type="button" role="tab" class="tab tab-active min-h-8 flex-1 text-xs" id="aip-tab-basic" onclick="aipSetMode('basic')">💬 Basic</button>
-            <button type="button" role="tab" class="tab min-h-8 flex-1 text-xs" id="aip-tab-advanced" onclick="aipSetMode('advanced')">🧠 Advanced</button>
+        @* Mode Selector *@
+        <div class="p-3 bg-base-200/50">
+            <div role="tablist" class="tabs tabs-box bg-base-300 p-1 rounded-xl">
+                <button type="button" role="tab" class="tab tab-active transition-all" id="aip-tab-basic" onclick="aipSetMode('basic')">
+                    <span class="text-xs font-bold">Standard</span>
+                </button>
+                <button type="button" role="tab" class="tab transition-all" id="aip-tab-advanced" onclick="aipSetMode('advanced')">
+                    <span class="text-xs font-bold">Advanced</span>
+                </button>
+            </div>
         </div>
 
-        <div id="aip-features" class="hidden flex flex-wrap gap-2 border-b border-base-300 bg-accent/10 px-3 py-2">
-            <span class="badge badge-accent badge-sm">🧠 Memory</span>
-            <span class="badge badge-secondary badge-sm">⚡ Function Calling</span>
-            <span class="badge badge-success badge-sm">📦 Live Products</span>
+        @* Features Status (Advanced Only) *@
+        <div id="aip-features" class="hidden flex flex-wrap gap-1.5 border-b border-base-300 bg-linear-to-b from-base-200/50 to-base-100 px-4 py-2">
+            <span class="badge badge-xs badge-outline border-primary/30 text-primary font-medium py-2 px-2">Memory: Active</span>
+            <span class="badge badge-xs badge-outline border-accent/30 text-accent font-medium py-2 px-2">Tools: Connected</span>
+            <span class="badge badge-xs badge-outline border-success/30 text-success font-medium py-2 px-2">Database: Live</span>
         </div>
 
-        <div id="aip-messages" class="flex min-h-[220px] max-h-[340px] flex-col gap-2 overflow-y-auto bg-base-200/50 p-3">
+        @* Messages Area *@
+        <div id="aip-messages" class="flex min-h-[300px] flex-1 flex-col gap-4 overflow-y-auto bg-linear-to-b from-base-100 to-base-200/30 p-4 scroll-smooth">
             <div class="chat chat-start" id="aip-welcome-wrap">
-                <div class="chat-bubble chat-bubble-secondary text-sm" id="aip-welcome">
-                    👋 Hello! Ask me anything.
+                <div class="chat-image avatar">
+                    <div class="w-8 rounded-full bg-primary/10 p-1">
+                        <span class="text-xs">🤖</span>
+                    </div>
+                </div>
+                <div class="chat-header text-[10px] opacity-50 mb-1">AI CORE</div>
+                <div class="chat-bubble bg-base-200 text-base-content border border-base-300 shadow-sm text-sm leading-relaxed" id="aip-welcome">
+                    👋 Hello! System initialized. How can I assist you today?
                 </div>
             </div>
         </div>
 
-        <div class="aip-input-bar flex items-end gap-2 border-t border-base-300 bg-base-100 p-3">
-            <button type="button" id="aip-clear-btn" class="btn btn-ghost btn-sm hidden" title="Clear conversation history" onclick="aipClearHistory()">🗑</button>
-            <textarea id="aip-input" rows="1" placeholder="Type a message…" maxlength="2000" class="textarea textarea-bordered min-h-10 flex-1 text-sm"></textarea>
-            <button type="button" id="aip-send-btn" class="btn btn-primary btn-sm" onclick="aipSend()">↑</button>
+        @* Input Area *@
+        <div class="aip-input-bar bg-base-100 border-t border-base-300 p-4">
+            <div class="relative flex items-end gap-2 group">
+                <button type="button" id="aip-clear-btn" 
+                        class="btn btn-ghost btn-sm btn-circle hidden hover:bg-error/10 hover:text-error transition-colors" 
+                        title="Reset Neural Memory" onclick="aipClearHistory()">
+                    <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+                
+                <div class="relative flex-1">
+                    <textarea id="aip-input" rows="1" placeholder="Ask anything..." maxlength="2000" 
+                              class="textarea textarea-bordered w-full min-h-[44px] max-h-[120px] bg-base-200/50 focus:bg-base-100 transition-all border-base-300 pr-10 text-sm py-3 resize-none scrollbar-hide"></textarea>
+                    
+                    <button type="button" id="aip-send-btn" 
+                            class="absolute right-2 bottom-1.5 btn btn-primary btn-sm btn-square shadow-md hover:shadow-lg transition-all" 
+                            onclick="aipSend()">
+                        <i class="fa-solid fa-arrow-up text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-2 flex justify-between px-1">
+                <span class="text-[10px] uppercase tracking-widest opacity-40 font-bold">Neural Engine v5.5</span>
+                <span class="text-[10px] opacity-40">Markdown Enabled</span>
+            </div>
         </div>
     </div>
 
@@ -55,19 +102,23 @@
         const aipClearBtn  = document.getElementById('aip-clear-btn');
         const aipWelcome   = document.getElementById('aip-welcome');
 
+        // Auto-expand textarea
+        aipInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
         function aipSetPanelOpen(open) {
             aipPanelOpen = open;
             aipFab.setAttribute('aria-expanded', open ? 'true' : 'false');
             if (open) {
-                aipPanel.classList.remove('pointer-events-none', 'opacity-0', '-translate-y-2', 'scale-95');
+                aipPanel.classList.remove('pointer-events-none', 'opacity-0', '-translate-y-4', 'scale-95');
                 aipPanel.classList.add('pointer-events-auto', 'opacity-100', 'translate-y-0', 'scale-100');
-                aipFab.classList.remove('btn-primary');
-                aipFab.classList.add('btn-neutral');
+                aipFab.classList.add('ring-4', 'ring-primary/20', 'rotate-90');
             } else {
-                aipPanel.classList.add('pointer-events-none', 'opacity-0', '-translate-y-2', 'scale-95');
+                aipPanel.classList.add('pointer-events-none', 'opacity-0', '-translate-y-4', 'scale-95');
                 aipPanel.classList.remove('pointer-events-auto', 'opacity-100', 'translate-y-0', 'scale-100');
-                aipFab.classList.add('btn-primary');
-                aipFab.classList.remove('btn-neutral');
+                aipFab.classList.remove('ring-4', 'ring-primary/20', 'rotate-90');
             }
         }
 
@@ -76,7 +127,9 @@
             aipSetPanelOpen(next);
             if (next) {
                 aipInput.focus();
-                aipMessages.scrollTop = aipMessages.scrollHeight;
+                setTimeout(() => {
+                    aipMessages.scrollTop = aipMessages.scrollHeight;
+                }, 100);
             }
         }
 
@@ -90,20 +143,28 @@
             aipClearBtn.classList.toggle('hidden', mode !== 'advanced');
 
             aipWelcome.textContent = mode === 'advanced'
-                ? '🧠 Hello! I remember our conversation and can look up live product data.'
-                : '👋 Hello! Ask me anything.';
+                ? '🧠 Advanced mode initialized. Context memory and function calling are now active.'
+                : '👋 Basic mode active. Ready for your questions.';
 
             aipInput.focus();
         }
 
         function aipAppendBubble(text, type) {
             const wrap = document.createElement('div');
-            wrap.className = type === 'user' ? 'chat chat-end' : 'chat chat-start';
+            wrap.className = type === 'user' ? 'chat chat-end mb-2' : 'chat chat-start mb-2';
+            
+            const header = document.createElement('div');
+            header.className = 'chat-header text-[10px] opacity-40 mb-1 uppercase tracking-tighter font-bold';
+            header.textContent = type === 'user' ? 'You' : 'AI Assistant';
+            
             const bubble = document.createElement('div');
             bubble.className = type === 'user'
-                ? 'chat-bubble chat-bubble-primary max-w-[85%] text-sm'
-                : 'chat-bubble chat-bubble-secondary max-w-[85%] text-sm';
+                ? 'chat-bubble bg-linear-to-br from-primary to-secondary text-primary-content shadow-md text-sm border-none'
+                : 'chat-bubble bg-base-200 text-base-content border border-base-300 shadow-sm text-sm';
+            
             bubble.textContent = text;
+            
+            wrap.appendChild(header);
             wrap.appendChild(bubble);
             aipMessages.appendChild(wrap);
             aipMessages.scrollTop = aipMessages.scrollHeight;
@@ -114,8 +175,8 @@
             wrap.className = 'chat chat-start';
             wrap.id = 'aip-typing';
             const inner = document.createElement('div');
-            inner.className = 'chat-bubble';
-            inner.innerHTML = '<span class="loading loading-dots loading-sm text-primary"></span>';
+            inner.className = 'chat-bubble bg-base-200 border border-base-300 py-4 px-6';
+            inner.innerHTML = '<span class="loading loading-dots loading-md text-primary"></span>';
             wrap.appendChild(inner);
             aipMessages.appendChild(wrap);
             aipMessages.scrollTop = aipMessages.scrollHeight;
@@ -137,6 +198,7 @@
             if (!msg) return;
 
             aipInput.value  = '';
+            aipInput.style.height = 'auto';
             aipSendBtn.disabled = true;
 
             aipAppendBubble(msg, 'user');
@@ -156,8 +218,9 @@
         }
 
         function aipClearHistory() {
-            if (!confirm('Clear your conversation history with the AI?')) return;
+            if (!confirm('Clear your conversation history and reset neural memory?')) return;
             document.getElementById('aip-clear-form').submit();
         }
     </script>
 }
+
