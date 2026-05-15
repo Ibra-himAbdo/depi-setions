@@ -1,0 +1,278 @@
+@model Pagination<Product>
+@inject IUnitOfWork _unitOfWork
+
+@{
+    ViewData["Title"] = Resource.ProductsWithPagination;
+
+    var totalPages = (int)Math.Ceiling((double)Model.Count / Model.PageSize);
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+
+    string? searchQuery = Context.Request.Query[nameof(BaseSpecificationParams.Search)];
+    Guid? brandFilter = Guid.TryParse(Context.Request.Query[nameof(ProductSpecParams.BrandId)], out Guid parseBrandId) ? parseBrandId : null;
+    Guid? categoryFilter = Guid.TryParse(Context.Request.Query[nameof(ProductSpecParams.CategoryId)], out Guid parseCategoryId) ? parseCategoryId : null;
+
+    var brandsList = await _unitOfWork.Repository<ProductBrand>().GetAllAsync();
+    var categoriesList = await _unitOfWork.Repository<ProductCategory>().GetAllAsync();
+
+    Dictionary<string, string> sortOptions = new Dictionary<string, string>
+    {
+        { "Name", Resource.ProductName },
+        { "priceAsc", Resource.SortPriceAsc },
+        { "priceDesc", Resource.SortPriceDesc }
+    };
+
+    string sortRaw = Context.Request.Query[nameof(BaseSpecificationParams.Sort)].ToString();
+    string sortedBy = string.IsNullOrWhiteSpace(sortRaw) ? "Name" : sortRaw;
+    if (!sortOptions.ContainsKey(sortedBy))
+    {
+        sortedBy = "Name";
+    }
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="m-0">@Resource.Products</h2>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-muted">@Model.Count @Resource.Items</span>
+            <a class="btn btn-primary" asp-action="Create">@Resource.Create</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body py-3">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-lg">
+                    <form asp-action="IndexWithPagination" method="get" class="flex-grow-1">
+                        <!-- inputs as value holders -->
+                        <input type="hidden" name="@nameof(BaseSpecificationParams.PageIndex)" value="1" />
+                        <input type="hidden" name="@nameof(BaseSpecificationParams.PageSize)" value="@Model.PageSize" />
+                        <input type="hidden" name="@nameof(BaseSpecificationParams.Sort)" value="@sortedBy" />
+
+                        <!-- Search -->
+                        <div class="d-flex flex-wrap gap-2 align-items-stretch">
+                            <input class="form-control flex-grow-1"
+                                   style="min-width: 12rem;"
+                                   name="@nameof(BaseSpecificationParams.Search)"
+                                   value="@searchQuery"
+                                   placeholder="@Resource.Search..." />
+                        </div>
+
+                        <!-- selectors -->
+                        <div class="row g-2 my-3">
+                            <div class="col-sm-6 col-xl-4">
+                                <label class="form-label small text-muted mb-0" for="filterBrandId">@Resource.ProductBrand</label>
+                                <select id="filterBrandId" name="@nameof(ProductSpecParams.BrandId)" class="form-select">
+                                    <option value="">@Resource.FilterAllOption</option>
+                                    @foreach (var brand in brandsList)
+                                    {
+                                        var label = isRtl
+                                        ? (brand.NameSecondLanguage ?? brand.Name ?? brand.Id.ToString())
+                                        : (brand.Name ?? brand.Id.ToString());
+
+                                        <option value="@brand.Id" selected="@(brandFilter.HasValue && brandFilter == brand.Id)">
+                                            @label
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-6 col-xl-4">
+                                <label class="form-label small text-muted mb-0" for="filterCategoryId">@Resource.ProductCategory</label>
+                                <select id="filterCategoryId" name="@nameof(ProductSpecParams.CategoryId)" class="form-select">
+                                    <option value="">@Resource.FilterAllOption</option>
+
+                                    @foreach (var category in categoriesList)
+                                    {
+                                        var label = isRtl
+                                        ? (category.NameSecondLanguage ?? category.Name ?? category.Id.ToString())
+                                        : (category.Name ?? category.Id.ToString());
+
+                                        <option value="@category.Id" selected="@(categoryFilter.HasValue && categoryFilter == category.Id)">
+                                            @label
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <button type="submit" class="btn btn-primary">@Resource.Search</button>
+                        <a asp-action="IndexWithPagination"
+                           asp-route-PageIndex="1"
+                           asp-route-PageSize="@Model.PageSize"
+                           class="btn btn-outline-secondary text-nowrap">Clear</a>
+                    </form>
+                </div>
+                <div class="col-12 col-lg-auto">
+                    <label id="sortByLabel" for="sortDropdown" class="form-label mb-1 small text-muted">@Resource.SortBy</label>
+                    <div class="dropdown">
+                        <button id="sortDropdown"
+                                class="btn btn-outline-secondary dropdown-toggle w-100 w-lg-auto text-start"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                data-bs-display="static"
+                                aria-expanded="false"
+                                aria-labelledby="sortByLabel">
+                            @if (sortedBy == "priceAsc")
+                            {
+                                <i class="fa-solid fa-sort-up me-1" aria-hidden="true"></i>
+                            }
+                            else if (sortedBy == "priceDesc")
+                            {
+                                <i class="fa-solid fa-sort-down me-1" aria-hidden="true"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-sort-alpha-down me-1" aria-hidden="true"></i>
+                            }
+                            @sortOptions[sortedBy]
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            @foreach (var option in sortOptions)
+                            {
+                                <li>
+                                    <a class="dropdown-item @(option.Key == sortedBy ? "active" : "")"
+                                       asp-action="IndexWithPagination"
+                                       asp-route-PageIndex="@Model.PageIndex"
+                                       asp-route-PageSize="@Model.PageSize"
+                                       asp-route-Search="@searchQuery"
+                                       asp-route-BrandId="@brandFilter"
+                                       asp-route-CategoryId="@categoryFilter"
+                                       asp-route-Sort="@option.Key">
+                                        @switch (option.Key)
+                                        {
+                                            case "priceAsc":
+                                                <i class="fa-solid fa-sort-up me-1 text-secondary" aria-hidden="true"></i>
+                                                break;
+                                            case "priceDesc":
+                                                <i class="fa-solid fa-sort-down me-1 text-secondary" aria-hidden="true"></i>
+                                                break;
+                                            default:
+                                                <i class="fa-solid fa-sort-alpha-down me-1 text-secondary" aria-hidden="true"></i>
+                                                break;
+                                        }
+                                        @option.Value
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @if (Model.Data?.Count == 0)
+    {
+        <div class="alert alert-info mb-0">@Resource.NoProductsFound</div>
+    }
+    else
+    {
+
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>@Resource.ProductName</th>
+                        <th class="text-end">@Resource.ProductPrice</th>
+                        <th>@Resource.ProductBrand</th>
+                        <th>@Resource.ProductCategory</th>
+                        <th class="text-end">@Resource.Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Data ?? Array.Empty<Product>())
+                    {
+                        <tr>
+                            <td>@(isRtl? product.NameSecondLanguage: product.Name)</td>
+                            <td class="text-end">@product.Price.ToString("0.00")</td>
+                            <td>@(isRtl? product.Brand?.NameSecondLanguage ?? "-" : product.Brand?.Name ?? "-")</td>
+                            <td>@(isRtl? product.Category?.NameSecondLanguage ?? "-" : product.Category?.Name ?? "-")</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   asp-action="Update"
+                                   asp-route-id="@product.Id">
+                                    @Resource.Update
+                                </a>
+                                <a class="btn btn-sm btn-outline-danger ms-1"
+                                   asp-action="Delete"
+                                   asp-route-id="@product.Id">
+                                    @Resource.Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Products pagination">
+            <ul class="pagination justify-content-center">
+                @if (Model.PageIndex <= 1)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">@Resource.Previous</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a asp-action="IndexWithPagination"
+                           asp-route-PageIndex="@(Model.PageIndex - 1)"
+                           asp-route-PageSize="@Model.PageSize"
+                           asp-route-Search="@searchQuery"
+                           asp-route-BrandId="@brandFilter"
+                           asp-route-CategoryId="@categoryFilter"
+                           asp-route-Sort="@(sortedBy == "Name" ? null : sortedBy)"
+                           asp-route-BrandId="@(brandFilter?.ToString())"
+                           asp-route-CategoryId="@(categoryFilter?.ToString())"
+                           class="page-link">
+                            @Resource.Previous
+                        </a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a asp-action="IndexWithPagination"
+                           asp-route-PageIndex="@i"
+                           asp-route-PageSize="@Model.PageSize"
+                           asp-route-Search="@searchQuery"
+                           asp-route-BrandId="@(brandFilter?.ToString())"
+                           asp-route-CategoryId="@(categoryFilter?.ToString())"
+                           asp-route-Sort="@(sortedBy == "Name" ? null : sortedBy)"
+                           class="page-link">@i</a>
+                    </li>
+                }
+
+                @if (Model.PageIndex >= totalPages)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">@Resource.Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a asp-action="IndexWithPagination"
+                           asp-route-PageIndex="@(Model.PageIndex + 1)"
+                           asp-route-PageSize="@Model.PageSize"
+                           asp-route-Search="@searchQuery"
+                           asp-route-BrandId="@brandFilter"
+                           asp-route-CategoryId="@categoryFilter"
+                           asp-route-BrandId="@(brandFilter?.ToString())"
+                           asp-route-CategoryId="@(categoryFilter?.ToString())"
+                           asp-route-Sort="@(sortedBy == "Name" ? null : sortedBy)"
+                           class="page-link">
+                            @Resource.Next
+                        </a>
+                    </li>
+                }
+
+
+
+            </ul>
+        </nav>
+    }
+</div>

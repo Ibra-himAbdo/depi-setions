@@ -37,12 +37,15 @@ public class MVCProductsController : Controller
         //    .ProductRepository
         //    .GetProductsWithBrandsAndCategoryAsync(pageMeta, cancellationToken);
 
-        var metaDate = new PageMetaData<Product>
+        var metaDate = new ProductPageMetaData
         {
             Data = products.ToList(),
             CurrentPageIndex = pageMeta.CurrentPageIndex,
             CurrentPageSize = pageMeta.CurrentPageSize,
-            TotalItemsInDb = count
+            TotalItemsInDb = count,
+            MinPrice = pageMeta.MinPrice,
+            MaxPrice = pageMeta.MaxPrice
+
         };
 
         return View(metaDate);

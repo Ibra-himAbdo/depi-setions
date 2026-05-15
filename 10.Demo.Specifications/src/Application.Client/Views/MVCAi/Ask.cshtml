@@ -1,0 +1,101 @@
+@{
+    ViewData["Title"] = "Basic Chat";
+}
+
+<!-- Back link -->
+<div class="mb-3">
+    <a asp-controller="MVCAi" asp-action="Index" class="text-decoration-none text-muted" style="font-size:.9rem;">
+        ← Back to AI Assistant
+    </a>
+</div>
+
+<div class="chat-wrapper">
+    <div style="border-radius:1.25rem; overflow:hidden; box-shadow: 0 8px 32px rgba(0,0,0,.12);">
+
+        <!-- Header -->
+        <div class="chat-header basic-chat-header">
+            <span style="font-size:1.5rem;">💬</span>
+            <div>
+                <h5>Basic Chat</h5>
+                <small>
+                    <span class="chat-badge">Stateless</span>&nbsp;
+                    Each message is sent independently — no memory between turns.
+                </small>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages basic-messages" id="chatMessages">
+            <div class="bubble bubble-ai">
+                👋 Hello! I'm your AI assistant. Ask me anything.
+            </div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input-area">
+            <textarea id="userInput" rows="1" placeholder="Type a message…" maxlength="2000"></textarea>
+            <button id="sendBtn" class="basic-send" onclick="sendMessage()">Send ↑</button>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const messagesEl = document.getElementById('chatMessages');
+        const inputEl    = document.getElementById('userInput');
+        const sendBtn    = document.getElementById('sendBtn');
+
+        // Enter = send, Shift+Enter = new line
+        inputEl.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function appendBubble(text, type) {
+            const div = document.createElement('div');
+            div.className = `bubble bubble-${type} ${type === 'user' ? 'basic-bubble-user' : ''}`;
+            div.textContent = text;
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function showTyping() {
+            const el = document.createElement('div');
+            el.className = 'typing-indicator';
+            el.id = 'typingIndicator';
+            el.innerHTML = '<div class="typing-dot basic-dot"></div><div class="typing-dot basic-dot"></div><div class="typing-dot basic-dot"></div>';
+            messagesEl.appendChild(el);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function hideTyping() {
+            document.getElementById('typingIndicator')?.remove();
+        }
+
+        async function sendMessage() {
+            const msg = inputEl.value.trim();
+            if (!msg) return;
+
+            inputEl.value = '';
+            sendBtn.disabled = true;
+
+            appendBubble(msg, 'user');
+            showTyping();
+
+            // api() handles Content-Type, JSON serialisation, and error toasts automatically
+            const reply = await api('/Ai/AskAsync', 'POST', msg);
+
+            hideTyping();
+
+            if (reply !== null) {
+                appendBubble(reply, 'ai');
+            }
+
+            sendBtn.disabled = false;
+            inputEl.focus();
+        }
+    </script>
+}

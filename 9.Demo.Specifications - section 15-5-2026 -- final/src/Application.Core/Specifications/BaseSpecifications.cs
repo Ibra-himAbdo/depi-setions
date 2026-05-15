@@ -31,7 +31,7 @@ public class BaseSpecifications<T> : ISpecifications<T> where T : class, IEntity
     protected void AddOrderByDescending(Expression<Func<T, object>>? orderByDescendingExpression)
         => OrderByDescending = orderByDescendingExpression;
 
-    protected void ApplPagination(int skip, int take)
+    protected void ApplyPagination(int skip, int take)
     {
         IsPaginationEnable = true;
         Skip = skip;

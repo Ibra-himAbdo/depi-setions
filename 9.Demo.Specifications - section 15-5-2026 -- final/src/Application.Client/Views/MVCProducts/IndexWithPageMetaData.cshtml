@@ -1,5 +1,6 @@
 @using Application.Core.Models
-@model PageMetaData<Product>
+@model ProductPageMetaData
+@inject IUnitOfWork unitOfWork
 
 @{
     ViewData["Title"] = Resource.Products;
@@ -14,6 +15,22 @@
     var oldSort = Context.Request.Query[nameof(Model.SortBy)].ToString();
 
     var sortList = Enum.GetValues(typeof(ProductSort)).Cast<ProductSort>().Select(e => new { Value = e.ToString(), Text = e.ToString() }).ToList();
+
+    var oldMinPrice = Context.Request.Query[nameof(Model.MinPrice)].ToString();
+    var oldMaxPrice = Context.Request.Query[nameof(Model.MaxPrice)].ToString();
+
+
+    var brandItems = await unitOfWork.Repository<ProductBrand>().ProjectToAsync<SelectListItem>();
+
+
+    var categoryItems = await unitOfWork.Repository<ProductCategory>().ProjectAsync(e => new SelectListItem
+    {
+        Value = e.Id.ToString(),
+        Text = isRtl ? e.NameSecondLanguage : e.Name
+    });
+
+    var maxPrice = await unitOfWork.Repository<Product>().GetMaxAsync(e => e.Price);
+    var minPrice = await unitOfWork.Repository<Product>().GetMinAsync(e => e.Price);
 
 }
 
@@ -36,21 +53,58 @@
         <div class="row mb-2 ">
             <div class="col-md-12">
 
-                <form  asp-action="IndexWithPageMetaData" method="get">
-                    <input style="display:none;" name="@nameof(Model.CurrentPageIndex)" value="1" />
-                    <input style="display:none;" name="@nameof(Model.CurrentPageSize)" value="@Model.CurrentPageSize" />
+                <form asp-action="IndexWithPageMetaData" method="get">
+                    <div class="row mb-2">
 
-                    <label class="form-label me-2" for="searchInput">Search</label>
-                    <input class="from-control" name="@nameof(Model.Search)" value="@oldSearch" />
+                        <input class="d-none" asp-for="CurrentPageIndex" value="1" />
+                        <input class="d-none" asp-for="CurrentPageSize" value="@Model.CurrentPageSize" />
 
-                    <select name="@nameof(Model.SortBy)" class="form-select">
-                        @foreach (var sort in sortList)
-                        {
-                            <option value="@sort.Value" class="@(sort.Value == oldSort ? "selected" : "")">@sort.Text</option>
-                        }
-                    </select>   
+                        <div class="col-md-8 mb-2">
+                            <label class="form-label me-2" asp-for="Search">Search</label>
+                            <input class="form-control" asp-for="Search" value="@oldSearch" />
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label me-2" asp-for="SortBy">Sort By</label>
+                            <select asp-for="SortBy" class="form-select">
+                                @foreach (var sort in sortList)
+                                {
+                                    <option value="@sort.Value" class="@(sort.Value == oldSort ? "selected" : "")">@sort.Text</option>
+                                }
+                            </select>
+                        </div>
 
-                    <button type="submit" class="btn btn-primary">Search</button>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label me-2" asp-for="BrandId">Brands</label>
+                            <select asp-for="BrandId" class="form-select" asp-items="brandItems">
+                                <option value="@null">-- Choose Brand --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label me-2" asp-for="CategoryId">Categories</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="categoryItems">
+                                <option value="@null">-- Choose Category --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12 px-3 mb-2">
+
+                            <input class="d-none" id="max-price-value" value="@maxPrice" readonly />
+                            <input class="d-none" id="min-price-value" value="@minPrice" readonly />
+
+                            <p id="price-text" class="form-label"></p>
+                            <div id="price-slider"></div>
+
+                            <input class="d-none" asp-for="MinPrice" />
+                            <input class="d-none" asp-for="MaxPrice" />
+
+                        </div>
+
+                        <div class="d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary @(isRtl ? "me-auto" : "ms-auto")">Search</button>
+                        </div>
+
+                    </div>
 
                 </form>
 
@@ -169,3 +223,49 @@
         </nav>
     }
 </div>
+
+
+
+@section Scripts {
+    <script>
+
+        const dbMinPrice = parseFloat($("#min-price-value").val()) || 0;
+        const dbMaxPrice = parseFloat($("#max-price-value").val()) || 1000;
+
+        // old values from query string
+        const oldMinPrice = '@oldMinPrice';
+        const oldMaxPrice = '@oldMaxPrice';
+
+        // use old values if exist, otherwise use db values
+        const currentMinPrice = oldMinPrice !== ''
+            ? parseFloat(oldMinPrice)
+            : dbMinPrice;
+
+        const currentMaxPrice = oldMaxPrice !== ''
+            ? parseFloat(oldMaxPrice)
+            : dbMaxPrice;
+
+        $("#price-slider").slider({
+            range: true,
+            min: dbMinPrice,
+            max: dbMaxPrice,
+            values: [currentMinPrice, currentMaxPrice],
+
+            slide: function (_, ui) {
+
+                $("#MinPrice").val(ui.values[0]);
+                $("#MaxPrice").val(ui.values[1]);
+
+                $("#price-text").text(ui.values[0] + " - " + ui.values[1]);
+            }
+        });
+
+        // initialize hidden inputs
+        $("#MinPrice").val(currentMinPrice);
+        $("#MaxPrice").val(currentMaxPrice);
+
+        // initialize text
+        $("#price-text").text(currentMinPrice + " - " + currentMaxPrice);
+
+    </script>
+}

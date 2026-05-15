@@ -1,0 +1,179 @@
+@{
+    var culture = CultureInfo.CurrentUICulture;
+    var currentCulture = culture.Name;
+    var isRtl = culture.TextInfo.IsRightToLeft;
+}
+
+<!DOCTYPE html>
+<html lang="@currentCulture" dir="@(isRtl ? "rtl" : "ltr")">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Application.Client (MVC App)</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Application.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="~/lib/toastify-js/toastify.min.css">
+    <script src="~/lib/toastify-js/toastify.min.js"></script>
+
+    <script src="~/js/toast-wrapper.js"></script>
+    <partial name="_ToastNotificationPartial" />
+    <script src="~/js/api.js"></script>
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+
+                <!-- Brand -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    @Resource.Welcome
+                </a>
+
+                <!-- Toggler -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04"
+                        aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navbar content -->
+                <div class="collapse navbar-collapse" id="navbarColor04">
+                    <!-- Left -->
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">
+                                @Resource.Home
+                                <span class="visually-hidden">(current)</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                @Resource.Privacy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Cascading" asp-action="Index">
+                                @Resource.Cascading
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="MVCProducts" asp-action="Index">
+                                @Resource.Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="MVCProducts" asp-action="IndexWithPagination">
+                                @Resource.ProductsWithPagination
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Right -->
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <!-- User -->
+                            <li class="nav-item">
+                                <span class="navbar-text me-lg-3 small text-muted">
+                                    @(User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.GivenName)?.Value)
+                                </span>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Logout Options</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <!-- Ajax -->
+                                    <partial name="AjaxLogout" />
+                                    <div class="dropdown-divider"></div>
+                                    <!-- Http -->
+                                    <form asp-controller="HttpClient" asp-action="Logout" method="post">
+                                        <button type="submit" class="dropdown-item">HttpClient Logout</button>
+                                    </form>
+                                    <div class="dropdown-divider"></div>
+                                    <!-- Normal -->
+                                    <form asp-controller="NormalAuth" asp-action="Logout" method="post">
+                                        <button type="submit" class="dropdown-item">Normal Logout</button>
+                                    </form>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Login</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <!-- Ajax -->
+                                    <a class="dropdown-item" asp-controller="AjaxAuth" asp-action="Login">Ajax Login</a>
+                                    <div class="dropdown-divider"></div>
+                                    <!-- Http -->
+                                    <a class="dropdown-item" asp-controller="HttpClient" asp-action="Login">HttpClient Login</a>
+                                    <div class="dropdown-divider"></div>
+                                    <!-- Normal -->
+                                    <a class="dropdown-item" asp-controller="NormalAuth" asp-action="Login">Normal Login</a>
+                                </div>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Register</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <!-- Ajax -->
+                                    <a class="dropdown-item" asp-controller="AjaxAuth" asp-action="Register">Ajax Register</a>
+                                    <div class="dropdown-divider"></div>
+                                    <!-- Http -->
+                                    <a class="dropdown-item" asp-controller="HttpClient" asp-action="Register">HttpClient Register</a>
+                                    <div class="dropdown-divider"></div>
+                                    <!-- Normal -->
+                                    <a class="dropdown-item" asp-controller="NormalAuth" asp-action="Register">Normal Register</a>
+                                </div>
+                            </li>
+                        }
+
+                        <!-- Localization -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-globe me-1"></i> @Resource.Language
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                @foreach (var langCode in ApplicationConstants.SupportedCultures)
+                                {
+                                    var cultureInfo = new CultureInfo(langCode);
+                                    <a class="dropdown-item @(currentCulture == langCode ? "active" : "")" 
+                                       asp-controller="Home" asp-action="ChangeLanguage" 
+                                       asp-route-selectedLanguageCode="@langCode">
+                                        @cultureInfo.NativeName
+                                    </a>
+                                }
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - Application.Client (MVC App) - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <partial name="_AiChatWidget" />
+</body>
+</html>

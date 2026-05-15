@@ -1,3 +1,5 @@
+using Mapster;
+
 namespace Application.Infrastructure;
 
 internal class GenericRepository<T>(ApplicationDbContext dbContext)
@@ -62,6 +64,16 @@ internal class GenericRepository<T>(ApplicationDbContext dbContext)
                 .AnyAsync(predicate, cancellationToken: cancellationToken);
     }
 
+    public async Task<TResult> GetMaxAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Set<T>().AsNoTracking().MaxAsync(selector, cancellationToken: cancellationToken);
+    }
+
+    public async Task<TResult> GetMinAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Set<T>().AsNoTracking().MinAsync(selector, cancellationToken: cancellationToken);
+    }
+
     public async Task<T?> FindAsync(
         Expression<Func<T, bool>> predicate,
         CancellationToken cancellationToken = default)
@@ -97,4 +109,21 @@ internal class GenericRepository<T>(ApplicationDbContext dbContext)
 
     private IQueryable<T> ApplySpecifications(ISpecifications<T> specifications)
         => SpecificationEvaluator<T>.GetQueryFromSpecifications(dbContext.Set<T>(), specifications);
+
+    // projection
+    public async Task<IReadOnlyList<TResult?>> ProjectAsync<TResult>(Expression<Func<T, TResult?>> selector, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Set<T>()
+            .AsNoTracking()
+            .Select(selector)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<TResult?>> ProjectToAsync<TResult>(CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Set<T>()
+           .AsNoTracking()
+           .ProjectToType<TResult>()
+           .ToListAsync(cancellationToken);
+    }
 }

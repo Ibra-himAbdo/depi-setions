@@ -1,0 +1,121 @@
+@{
+    ViewData["Title"] = "Advanced Chat";
+}
+
+<!-- Back link -->
+<div class="mb-3">
+    <a asp-controller="MVCAi" asp-action="Index" class="text-decoration-none text-muted" style="font-size:.9rem;">
+        ← Back to AI Assistant
+    </a>
+</div>
+
+<div class="chat-wrapper">
+    <div style="border-radius:1.25rem; overflow:hidden; box-shadow: 0 8px 32px rgba(0,0,0,.12);">
+
+        <!-- Header -->
+        <div class="chat-header advanced-chat-header">
+            <div class="chat-header-left">
+                <span style="font-size:1.5rem;">🧠</span>
+                <div>
+                    <h5>Advanced Chat</h5>
+                    <small>
+                        <span class="chat-badge">Memory</span>&nbsp;
+                        <span class="chat-badge">Function Calling</span>&nbsp;
+                        AI remembers your conversation.
+                    </small>
+                </div>
+            </div>
+            <!-- Clear history form (POST with anti-forgery) -->
+            <form asp-controller="Ai" asp-action="ClearHistory" method="post" id="clearForm">
+                <button type="button" class="btn-clear" onclick="clearHistory()">🗑 Clear History</button>
+            </form>
+        </div>
+
+        <!-- Feature pills -->
+        <div class="feature-strip">
+            <span class="feature-pill pill-purple">🧠 Remembers previous messages</span>
+            <span class="feature-pill pill-pink">⚡ Function calling enabled</span>
+            <span class="feature-pill pill-green">📦 Can query live product data</span>
+        </div>
+
+        <!-- Messages -->
+        <div id="chatMessages" class="chat-messages advanced-messages">
+            <div class="bubble bubble-ai">
+                🧠 Hello! I'm your advanced AI assistant. I remember our full conversation and can query live product data when you ask.
+            </div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input-area">
+            <textarea id="userInput" class="advanced-input" rows="1" placeholder="Type a message…" maxlength="2000"></textarea>
+            <button id="sendBtn" class="advanced-send" onclick="sendMessage()">Send ↑</button>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const messagesEl = document.getElementById('chatMessages');
+    const inputEl    = document.getElementById('userInput');
+    const sendBtn    = document.getElementById('sendBtn');
+
+    // Enter = send, Shift+Enter = new line
+    inputEl.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function appendBubble(text, type) {
+        const div = document.createElement('div');
+        div.className = `bubble bubble-${type} ${type === 'user' ? 'advanced-bubble-user' : ''}`;
+        div.textContent = text;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function showTyping() {
+        const el = document.createElement('div');
+        el.className = 'typing-indicator';
+        el.id = 'typingIndicator';
+        el.innerHTML = '<div class="typing-dot advanced-dot"></div><div class="typing-dot advanced-dot"></div><div class="typing-dot advanced-dot"></div>';
+        messagesEl.appendChild(el);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function hideTyping() {
+        document.getElementById('typingIndicator')?.remove();
+    }
+
+    async function sendMessage() {
+        const msg = inputEl.value.trim();
+        if (!msg) return;
+
+        inputEl.value = '';
+        sendBtn.disabled = true;
+
+        appendBubble(msg, 'user');
+        showTyping();
+
+        // api() handles Content-Type, JSON serialisation, and error toasts automatically
+        const reply = await api('/Ai/AskAdvancedAsync', 'POST', msg);
+
+        hideTyping();
+
+        if (reply !== null) {
+            appendBubble(reply, 'ai');
+        }
+
+        sendBtn.disabled = false;
+        inputEl.focus();
+    }
+
+    function clearHistory() {
+        if (!confirm('Clear the entire conversation history with the AI?')) return;
+        // Submit the anti-forgery-protected form
+        document.getElementById('clearForm').submit();
+    }
+</script>
+}

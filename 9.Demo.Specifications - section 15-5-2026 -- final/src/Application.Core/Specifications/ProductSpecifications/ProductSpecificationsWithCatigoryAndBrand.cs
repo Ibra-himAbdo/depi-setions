@@ -9,7 +9,9 @@ public class ProductSpecificationsWithCategoryAndBrand : BaseSpecifications<Prod
             (string.IsNullOrWhiteSpace(pageMetaData.Search) ||
                 (pageMetaData.IsRtl ? p.NormalizedNameSecondLanguage : p.NormalizedName)!.Contains(pageMetaData.Search!)) &&
             (!pageMetaData.BrandId.HasValue || p.BrandId == pageMetaData.BrandId) &&
-            (!pageMetaData.CategoryId.HasValue || p.CategoryId == pageMetaData.CategoryId)
+            (!pageMetaData.CategoryId.HasValue || p.CategoryId == pageMetaData.CategoryId) && 
+            (!pageMetaData.MaxPrice.HasValue || p.Price <= pageMetaData.MaxPrice) &&
+            (!pageMetaData.MinPrice.HasValue || p.Price >= pageMetaData.MinPrice)
         )
     {
         AddIncludes();
@@ -54,7 +56,7 @@ public class ProductSpecificationsWithCategoryAndBrand : BaseSpecifications<Prod
             AddOrderBy(p => p.CreatedAt);
         }
 
-        ApplPagination((pageMetaData.CurrentPageIndex - 1) * pageMetaData.CurrentPageSize, pageMetaData.CurrentPageSize);
+        ApplyPagination((pageMetaData.CurrentPageIndex - 1) * pageMetaData.CurrentPageSize, pageMetaData.CurrentPageSize);
     }
 
     public ProductSpecificationsWithCategoryAndBrand(Guid id)
