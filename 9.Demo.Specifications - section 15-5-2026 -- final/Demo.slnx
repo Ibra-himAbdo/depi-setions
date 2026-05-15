@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="src/Application.Client/Application.Client.csproj" />
+  <Project Path="src/Application.Core/Application.Core.csproj" />
+  <Project Path="src/Application.Infrastructure/Application.Infrastructure.csproj" />
+  <Project Path="src/Application.Resources/Application.Resources.csproj" Id="a936f597-1c82-489b-888c-79cab007386a" />
+  <Project Path="src/Application.Services/Application.Services.csproj" />
+  <Project Path="src/Application/Application.csproj" />
+</Solution>
