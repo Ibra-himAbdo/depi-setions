@@ -1,0 +1,39 @@
+﻿@model List<Department>
+
+<div>
+    <a asp-action="Create" class="btn btn-primary mb-2">Create new Department</a>
+</div>
+
+@if (Model is null || Model.Count == 0)
+{
+    <div class="alert alert-primary" role="alert">
+        There is no Department!!
+    </div>
+}
+else
+{
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Code</th>
+                <th scope="col">Date of Creation</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ((int index, Department department) in Model.Index())
+            {
+                <tr>
+                    <td>@(index + 1)</td>
+                    <td>@department.Name</td>
+                    <td>@department.Code</td>
+                    <td>@department.DateOfCreation</td>
+                    <td></td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
