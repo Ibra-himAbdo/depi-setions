@@ -1,0 +1,14 @@
+﻿@model TodoItem
+
+@{
+    ViewData["Title"] = "Edit Page";
+}
+
+<form asp-action="Edit">
+    <div class="row mb-3">
+        <input asp-for="Id" class="d-none"/>
+        <label asp-for="Content">Task Content</label>
+        <input class="form-control" asp-for="Content">
+    </div>
+    <button type="submit" class="btn btn-primary">Edit</button>
+</form>

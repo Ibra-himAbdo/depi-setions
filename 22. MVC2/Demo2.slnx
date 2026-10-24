@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Demo.MVC.Views/Demo.MVC.Views.csproj" Id="621e40d0-abe3-4553-9262-e61c0896ee0c" />
+  <Project Path="Demo.Todo/Demo.Todo.csproj" Id="12451395-c953-49ba-89b0-c0a35f9d59e7" />
+</Solution>

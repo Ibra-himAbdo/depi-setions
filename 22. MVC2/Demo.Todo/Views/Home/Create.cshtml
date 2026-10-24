@@ -1,0 +1,13 @@
+﻿@model TodoItem
+
+@{
+    ViewData["Title"] = "Create Page";
+}
+
+<form asp-action="Create">
+    <div class="row mb-3">
+        <label asp-for="Content">Task Content</label>
+        <input placeholder="Add new Task" class="form-control" asp-for="Content">
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>

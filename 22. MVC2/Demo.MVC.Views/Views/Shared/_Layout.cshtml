@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html>
+
+
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="mt-5">
+        <center>
+            @* Html tag *@
+            @* <a href="/Home/Index" class="btn btn-primary">Home</a> *@
+
+            @* html tag helpers *@
+            @* @Html.ActionLink("Home", "Index", "Home", new { id = 5 }, new { @class = "btn btn-primary" }) *@
+
+            @* Tag helpers *@
+            <a asp-Controller="Home" asp-Action="Index" asp-route-id="5" class="btn btn-primary">Home</a>
+            <a asp-Controller="Home" asp-Action="AboutUs" class="btn btn-secondary">About Us</a>
+            <a asp-Controller="Home" asp-Action="Privacy" class="btn btn-warning">Privacy</a>
+            <a asp-Controller="Account" asp-Action="Login" class="btn btn-warning">Login</a>
+            <a asp-Controller="Account" asp-Action="Register" class="btn btn-warning">Register</a>
+        </center>
+    </nav>
+
+    <div style="border: 5px dotted #09c">
+        @RenderBody()
+    </div>
+
+    <section>
+        <center class="p-5 mt-2 bg-warning">
+            <h1>copyright &copy; for S2</h1>
+        </center>
+    </section>
+</body>
+</html>

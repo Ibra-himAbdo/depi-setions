@@ -1,0 +1,91 @@
+﻿@model List<TodoItem>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+ <a asp-controller="Home"
+    asp-action="Create"
+    class="btn btn-primary mb-2">
+    <i class="fa-regular fa-square-plus"></i>
+    Create New Task
+</a>
+
+
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Done</th>
+                    <th scope="col">Content</th>
+                    <th scope="col">Detiles</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ((int index, TodoItem item) in Model.Index())
+                {
+                    <tr>
+                        <th>@(index + 1)</th>
+                        <td>
+                            @if (item.IsDone)
+                            {
+                                <a asp-controller="Home"
+                                   asp-action="Done"
+                                   asp-route-id="@item.Id"
+                                   class="btn-outline-success">
+                                    <i class="fa-regular fa-square-check"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Home"
+                                   asp-action="Done"
+                                   asp-route-id="@item.Id"
+                                   class="btn-outline-primary">
+                                    <i class="fa-regular fa-square"></i>
+                                </a>
+                            }
+                           
+                        </td>
+                        <td>@item.Content</td>
+                        <td>
+                            <a asp-controller="Home"
+                               asp-action="Detiles"
+                               asp-route-id="@item.Id"
+                               class="btn btn-info">
+                                <i class="fa-solid fa-info"></i>
+                                Detiles
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-controller="Home"
+                               asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-warning">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                Edit
+                            </a>
+                        </td>
+                        <td>
+                            @if(!item.IsDone)
+                            {
+                                <a asp-controller="Home"
+                                   asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-danger">
+                                    <i class="fa-solid fa-trash"></i>
+                                    Delete
+                                </a>
+                            }
+                            
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

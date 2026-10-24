@@ -1,0 +1,12 @@
+﻿@model TodoItem
+
+@{
+    ViewData["Title"] = "Detiles Page";
+}
+
+<div class="row mb-3">
+    <input asp-for="Id" class="d-none" />
+    <label asp-for="Content">Task Content</label>
+    <input class="form-control" asp-for="Content" disabled>
+    <a asp-action="index" class="btn btn-outline-dark">Back to List</a>
+</div>
