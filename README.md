@@ -1,67 +1,102 @@
-# depi-setions
+# DEPI — Section 1 (SWD5-S1) — Student Map
 
-DEPI training sessions — ASP.NET Core demos, section by section.
+A guided tour of the **19 sessions** in this section: from C# basics to a layered
+ASP.NET Core MVC application.
 
-> **📦 The code is not on this branch.**
->
-> All source code, demos, archives and full commit history live on the
-> **`Depi-SHR4-SWD5`** branch. This `main` branch intentionally contains only
-> this README, `LICENSE` and `.gitignore`.
+> **Branch:** `Depi-SHR5-SWD5-S1`
+> Everything for this section lives here — one folder per session.
 
-## Where did the content go?
+## Quick start
 
-Everything moved to the **`Depi-SHR4-SWD5`** branch, which is a full clone of the
-former `main` (same commits, same history — nothing was rewritten or lost).
+```bash
+git clone -b Depi-SHR5-SWD5-S1 https://github.com/Ibra-himAbdo/depi-setions.git
+cd depi-setions
+```
 
-## How to get it
-
-Already have the repo cloned? Just switch branches:
+Already cloned? Just switch:
 
 ```bash
 git fetch origin
-git switch Depi-SHR4-SWD5
+git switch Depi-SHR5-SWD5-S1
 ```
 
-Fresh clone of the code branch:
+Open the folder you need in Visual Studio / VS Code / Rider, then:
 
 ```bash
-git clone -b Depi-SHR4-SWD5 https://github.com/Ibra-himAbdo/depi-setions.git
+# console sessions
+dotnet run --project "01. Csharp1/Csharp1"
+
+# web sessions
+dotnet run --project "17. MVC1/Demo.MVC"
 ```
 
-## What is on `Depi-SHR4-SWD5`
+## The map
 
-Progressive ASP.NET Core / Clean Architecture training projects, each one building
-on the previous session:
+### Part A — C# language (sessions 01–08)
 
-| Path | Topic |
-| --- | --- |
-| `1.Demo.Base` | Base Web API project |
-| `2.Demo.Serilog` | Structured logging with Serilog |
-| `3.Demo.JWT` | JWT authentication |
-| `4.Demo.Background_Jobs` | Hangfire background jobs (also shipped as `.7z`) |
-| `5.1.Demo.Ajax - without AuthLayout` | AJAX auth, basic layout |
-| `5.2.Demo.Ajax - With AuthLayout` | AJAX auth with auth layout |
-| `5.3.Demo.Ajax - extra ex` | Extra AJAX examples |
-| `6.Demo.Localization&Globalization` | Localization & globalization |
-| `7.1.Demo.AiIntegration - http` | AI integration over HTTP |
-| `7.2.Demo.AiIntegration - advanced` | Advanced AI integration |
-| `8.Demo.(IGenericRepository - IUnitOfWork - CustomRepository)` | Repository / Unit of Work pattern |
-| `8.Demo.(…)- Section 6-5-2026` | Snapshot of the above, 6 May 2026 (also `.7z`) |
-| `8.Demo.(…)- Section 8-5-2026` | Snapshot, 8 May 2026 |
-| `8.Demo.(…)-AI UI - Section 8-5-2026` | Snapshot with AI UI, 8 May 2026 |
-| `9.Demo.Projection` | DTO projection |
-| `9.Demo.Specifications - section 13-5-2026` | Specification pattern, 13 May 2026 |
-| `9.Demo.Specifications - section 15-5-2026 -- final` | Final specification-pattern version, 15 May 2026 |
-| `10.Demo.Specifications` | Latest specification-pattern project |
-| `callApiByC#` | C# console client consuming the API |
-| `*.rar` / `*.7z` | Archived snapshots of older sections |
+| # | Folder | What you learn |
+| - | ------ | -------------- |
+| 01 | `01. Csharp1` | C# basics: variables, types, operators, conditions |
+| 02 | `02. Csharp2` | Loops, arrays, strings, methods |
+| 03 | `03. Csharp3Function` | Functions/methods in depth |
+| 04 | `04. Csharp3Function - Copy` | Second take on the same session (review + practice) |
+| 05 | `05. CsharpFunction2` | More function practice: parameters, overloading, recursion |
+| 06 | `06. OOP1` | Classes, objects, constructors, properties |
+| 07 | `07. OOP2` | Inheritance, polymorphism, abstraction, interfaces |
+| 08 | `08. MISC_CSharp_1` | Assorted language features you'll meet in real code |
 
-## History
+### Part B — Advanced C# (sessions 09–14)
 
-The `Depi-SHR4-SWD5` branch starts from the same root commit and keeps every
-commit that was ever on `main` (from `Initial commit` through
-`spec + projection and final changes`). Nothing was squashed, and the files are
-still reachable from `main`'s history as well if you ever need to look back.
+| # | Folder | What you learn |
+| - | ------ | -------------- |
+| 09 | `09. ReflictionAndExceptionHandling` | Reflection, exception handling, and a plug-in style translator demo (`Refliction`, `Refliction.Lib1`, `TranslationProvider`, `TranslatorProject`) |
+| 10 | `10. Generics` | Generic types & methods, plus `Collections` |
+| 11 | `11. Delegates` | Delegates, events, callbacks |
+| 12 | `12. LINQ` | Query syntax, method syntax, `LINQ` / `LINQP2` with `SampleData` |
+| 13 | `13. FromAdoToDapper` | Data access from raw ADO.NET to Dapper |
+| 14 | `14. EfCore` | Entity Framework Core + database-first scaffolding (`EfCore_Scaffolding`) |
+
+### Part C — Web (sessions 15–19)
+
+| # | Folder | What you learn |
+| - | ------ | -------------- |
+| 15 | `15. HTML&CSS` | HTML structure, CSS styling, assets in `images/` |
+| 16 | `16. JS` | JavaScript basics: DOM, events, functions |
+| 17 | `17. MVC1` | ASP.NET Core MVC: controllers, views, routing (`Demo.MVC`) |
+| 18 | `18. MVC2` | Views & layouts, tag helpers, ToDo sample (`Demo.View`, `Demo.ToDo`) |
+| 19 | `19. MVC3` | Layered MVC: `Demo.DAL` → `Demo.BLL` → `Demo.MVC` with EF Core |
+
+## Suggested study order
+
+```
+C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC
+   01–05      06–07      08–12         13–14         15–16       17–19
+```
+
+Do the sessions in order — every web session reuses concepts from the C# ones.
+The `- Copy` folders (04, and in other sections) are alternative takes on the same
+lesson; use them for revision, not as a separate topic.
+
+## Repo layout
+
+```
+Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–19)
+├── 01. Csharp1/
+├── ...
+├── 19. MVC3/
+├── .gitignore
+├── LICENSE
+└── README.md               ← this map
+```
+
+Other branches in this repository:
+
+| Branch | Contents |
+| ------ | -------- |
+| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–19 |
+| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–24 (includes `ApiCall` and `MVC4`) |
+| `Depi-SHR4-SWD5` | previous ASP.NET Core track (sections 1–10: JWT, Serilog, Hangfire, AI, Specifications…) |
+| `main` | repo map / entry point only |
 
 ## License
 
