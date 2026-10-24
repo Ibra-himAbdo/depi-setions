@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/TranslatorPoroject/">
+    <Project Path="DutchTranslation/DutchTranslation.csproj" Id="bfe0fa3d-cf73-491a-9809-ca7de292ae0d" />
+    <Project Path="EnglishTranslation/EnglishTranslation.csproj" Id="b807449e-eea1-451e-ab8c-ea9321e04ea5" />
+    <Project Path="FrenchTranslation/FrenchTranslation.csproj" Id="622f7977-b5e4-4d30-a359-72eb11b9f339" />
+    <Project Path="MainApplication/MainApplication.csproj" Id="883a8792-c94f-4027-95bf-7f6d004e4c21" />
+    <Project Path="SpanishTranslation/SpanishTranslation.csproj" Id="311d0567-7ff1-4759-a24d-f974117d7651" />
+    <Project Path="Translation.Abstractions/Translation.Abstractions.csproj" Id="9e793ed3-6a75-4619-aa50-3fdf3fae7abd" />
+  </Folder>
+  <Project Path="MISC_CSharp_2/MISC_CSharp_2.csproj" Id="b27a6da3-1ada-4c62-8691-c15c62f07bec" />
+  <Project Path="MISC_CSharp_2_P2/MISC_CSharp_2_P2.csproj" Id="51a232ba-a4ad-4c70-85e2-756cd6530b6e" />
+  <Project Path="ReflictionDemo1/ReflictionDemo1.csproj" Id="71dc614a-16b6-43b3-b1ef-16818240f228" />
+  <Project Path="ReflictionDemo2/ReflictionDemo2.csproj" Id="9771d24b-92e9-484e-b496-1afba125a78c" />
+</Solution>
