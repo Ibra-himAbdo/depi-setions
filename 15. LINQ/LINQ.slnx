@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="LINQ/LINQ.csproj" Id="c0c12d1c-5f6b-4abe-957e-586ead3e9a40" />
+  <Project Path="LINQ_P2/LINQ_P2.csproj" Id="640bd926-83e3-4fea-a85c-58a9d0adb1c9" />
+  <Project Path="SampleData/SampleData.csproj" />
+</Solution>
