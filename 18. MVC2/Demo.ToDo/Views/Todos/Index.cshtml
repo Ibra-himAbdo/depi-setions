@@ -1,0 +1,70 @@
+﻿@model List<TodoItem>
+
+<a asp-controller="Todos" asp-action="Create" class="btn btn-primary">Create</a>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Done</th>
+            <th scope="col">Content</th>
+            <th scope="col">Details</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ((int index, TodoItem item) in Model.OrderBy(i => i.CreatedAt).Index())
+        {
+            <tr>
+                <th>@(index + 1)</th>
+                <td>
+                    <a asp-controller="Todos"
+                       asp-action="ToggleState"
+                       asp-route-id="@item.Id">
+                        @if (item.IsDone)
+                        {
+                            <i class="fa-regular fa-square-check"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-regular fa-square"></i>
+                        }
+                    </a>
+                    
+                </td>
+                <td>@item.Content</td>
+                <td>
+                    <a asp-controller="Todos"
+                       asp-action="Details"
+                       asp-route-id="@item.Id"
+                       class="btn btn-info">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Details
+                    </a>
+                </td>
+                <td>
+                    <a asp-controller="Todos"
+                       asp-action="Edit"
+                       asp-route-id="@item.Id"
+                       class="btn btn-warning">
+                        <i class="fa-solid fa-square-pen"></i>
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a asp-controller="Todos"
+                       asp-action="Delete"
+                       asp-route-id="@item.Id"
+                       class="btn btn-danger">
+                        <i class="fa-solid fa-trash"></i>
+                        Delete
+                    </a>
+                </td>
+
+            </tr>
+        }
+
+        
+    </tbody>
+</table>

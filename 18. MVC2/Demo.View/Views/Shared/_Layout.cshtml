@@ -1,0 +1,46 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    @*nav*@
+    <nav>
+        <center class="mt-5">
+            @* 1. html tag *@
+            @* <a href="/Home/Index" class="btn btn-primary">Home</a> *@
+
+            @* 2. html helpers *@
+            @* @Html.ActionLink("Home", "Index", "Home", new { id = 5 }, new { @class = "btn btn-primary" }) *@
+
+            @* 3. tag helpers *@
+            <a asp-Controller="Home" asp-Action="Index" class="btn btn-primary">Home</a>
+            <a asp-Controller="Home" asp-Action="Privacy" class="btn btn-secondary">Privacy</a>
+            <a asp-Controller="Home" asp-Action="AboutUs" class="btn btn-success">About Us</a>
+            <a asp-Controller="Home" asp-Action="ContuctUs" class="btn btn-warning">Contuct Us</a>
+            <a asp-Controller="Accounts" asp-Action="Login" class="btn btn-primary">Login</a>
+            <a asp-Controller="Accounts" asp-Action="Register" class="btn btn-primary">Register</a>
+        </center>
+    </nav>
+
+    <div>
+        @RenderBody()
+    </div>
+
+    @*Footer*@
+    <section>
+        <center>
+            <div class="p-5 bg-dark">
+                <p class="text-primary">copyrights &copy; for S1</p>
+            </div>
+        </center>
+    </section>
+
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+﻿@model TodoItem
+
+<form asp-action="Create" method="post">
+    <div class="mb-2">
+        <label class="form-label" asp-for="Content"></label>
+        <input asp-for="Content" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Save
+    </button>
+    <a asp-controller="Todos"
+       asp-action="Index"
+       class="btn btn-secondary">
+        <i class="fa-solid fa-left-long"></i>
+        Back To List
+    </a>
+</form>

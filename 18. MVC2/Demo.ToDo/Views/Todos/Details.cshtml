@@ -1,0 +1,20 @@
+﻿@model TodoItem
+<div class="mb-2">
+    <label class="form-label" asp-for="Content"></label>
+    <input asp-for="Content" class="form-control" disabled/>
+</div>
+<div class="mb-2">
+    <label class="form-label" asp-for="CreatedAt"></label>
+    <input asp-for="CreatedAt" class="form-control" disabled />
+</div>
+<div class="mb-2">
+    <label class="form-label" asp-for="IsDone"></label>
+    <input asp-for="IsDone" class="form-control" disabled />
+</div>
+
+<a asp-controller="Todos"
+   asp-action="Index"
+   class="btn btn-secondary">
+    <i class="fa-solid fa-left-long"></i>
+    Back To List
+</a>
