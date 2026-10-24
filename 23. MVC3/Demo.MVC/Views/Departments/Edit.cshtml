@@ -1,0 +1,26 @@
+﻿@model Department
+
+
+<form asp-action="Edit">
+    <div>
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Code" class="form-label"></label>
+        <input asp-for="Code" class="form-control" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="DateOfCreation" class="form-label"></label>
+        <input asp-for="DateOfCreation" class="form-control" />
+        <span asp-validation-for="DateOfCreation" class="text-danger"></span>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>
