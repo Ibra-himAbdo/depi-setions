@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>my page</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body class="ms-5 p-5 border border-success border-2">
+    <div class="header">
+      <div class="logo">
+        <img src="images/logo.png" />
+      </div>
+      <div>
+        <a class="tag" href="index.html">Home</a>
+        <a class="tag" href="#">About</a>
+        <a class="tag" href="#">Portfolio</a>
+        <a class="tag" href="#">Testimonials</a>
+        <a class="tag" href="contact.html">Contact</a>
+        <button class="btn btn-primary" type="button">Get Started</button>
+      </div>
+    </div>
+    <div class="card" style="width: 18rem">
+      <img src="images/categories-01.jpg" class="card-img-top" alt="..." />
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">
+          Some quick example text to build on the card title and make up the
+          bulk of the card's content.
+        </p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div>
+    </div>
+    <div class="progress my-2">
+      <div
+        class="progress-bar"
+        role="progressbar"
+        aria-label="Basic example"
+        style="width: 10%"
+        aria-valuenow="90"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
+    </div>
+    <script>
+      var progress = document.querySelector(".progress-bar");
+
+      function delay(milliseconds) {
+        return new Promise((resolve) => setTimeout(resolve, milliseconds));
+      }
+
+      async function updateProgress() {
+        // Forward: 0% -> 100%
+        for (let index = 0; index <= 100; index++) {
+          progress.style.width = `${index}%`;
+          await delay(20);
+        }
+
+        // Reverse: 100% -> 0%
+        for (let index = 100; index >= 0; index--) {
+          progress.style.width = `${index}%`;
+          await delay(20);
+        }
+      }
+
+      updateProgress();
+
+      updateProgress();
+    </script>
+  </body>
+</html>
