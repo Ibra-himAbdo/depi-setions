@@ -1,67 +1,118 @@
-# depi-setions
+# DEPI Sections — Student Map
 
-DEPI training sessions — ASP.NET Core demos, section by section.
+Training material for the DEPI .NET track, split into branches so each group
+gets exactly the sessions they need.
 
-> **📦 The code is not on this branch.**
->
-> All source code, demos, archives and full commit history live on the
-> **`Depi-SHR4-SWD5`** branch. This `main` branch intentionally contains only
-> this README, `LICENSE` and `.gitignore`.
+> **This `main` branch is only the map.** The code lives on the branches below.
 
-## Where did the content go?
+## Which branch do I need?
 
-Everything moved to the **`Depi-SHR4-SWD5`** branch, which is a full clone of the
-former `main` (same commits, same history — nothing was rewritten or lost).
+| Branch | Who it's for | Contents |
+| ------ | ------------ | -------- |
+| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 19 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC3 |
+| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 24 sessions: same track extended with `ApiCall` and MVC4 (FluentValidation + full CRUD) |
+| [`Depi-SHR4-SWD5`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR4-SWD5) | **ASP.NET Core track (archive)** | 10 advanced stages: base API, Serilog, JWT, Hangfire, AJAX auth, localization, AI integration, Repository/UoW, Projection, Specifications |
+| `main` | everyone | this map only |
 
-## How to get it
+**Start here if you are in Section 1 → `Depi-SHR5-SWD5-S1`.**
+**Section 2 → `Depi-SHR5-SWD5-S2`.**
+The `Depi-SHR4-SWD5` branch is the earlier, more advanced ASP.NET Core track —
+useful after you finish the MVC sessions.
 
-Already have the repo cloned? Just switch branches:
+## Get the code
+
+Pick your branch:
 
 ```bash
-git fetch origin
-git switch Depi-SHR4-SWD5
-```
+# Section 1
+git clone -b Depi-SHR5-SWD5-S1 https://github.com/Ibra-himAbdo/depi-setions.git
 
-Fresh clone of the code branch:
+# Section 2
+git clone -b Depi-SHR5-SWD5-S2 https://github.com/Ibra-himAbdo/depi-setions.git
 
-```bash
+# ASP.NET Core archive
 git clone -b Depi-SHR4-SWD5 https://github.com/Ibra-himAbdo/depi-setions.git
 ```
 
-## What is on `Depi-SHR4-SWD5`
+Already have the repo? Switch instead of cloning again:
 
-Progressive ASP.NET Core / Clean Architecture training projects, each one building
-on the previous session:
+```bash
+git fetch origin
+git switch Depi-SHR5-SWD5-S1    # or S2, or Depi-SHR4-SWD5
+```
 
-| Path | Topic |
-| --- | --- |
-| `1.Demo.Base` | Base Web API project |
-| `2.Demo.Serilog` | Structured logging with Serilog |
-| `3.Demo.JWT` | JWT authentication |
-| `4.Demo.Background_Jobs` | Hangfire background jobs (also shipped as `.7z`) |
-| `5.1.Demo.Ajax - without AuthLayout` | AJAX auth, basic layout |
-| `5.2.Demo.Ajax - With AuthLayout` | AJAX auth with auth layout |
-| `5.3.Demo.Ajax - extra ex` | Extra AJAX examples |
-| `6.Demo.Localization&Globalization` | Localization & globalization |
-| `7.1.Demo.AiIntegration - http` | AI integration over HTTP |
-| `7.2.Demo.AiIntegration - advanced` | Advanced AI integration |
-| `8.Demo.(IGenericRepository - IUnitOfWork - CustomRepository)` | Repository / Unit of Work pattern |
-| `8.Demo.(…)- Section 6-5-2026` | Snapshot of the above, 6 May 2026 (also `.7z`) |
-| `8.Demo.(…)- Section 8-5-2026` | Snapshot, 8 May 2026 |
-| `8.Demo.(…)-AI UI - Section 8-5-2026` | Snapshot with AI UI, 8 May 2026 |
-| `9.Demo.Projection` | DTO projection |
-| `9.Demo.Specifications - section 13-5-2026` | Specification pattern, 13 May 2026 |
-| `9.Demo.Specifications - section 15-5-2026 -- final` | Final specification-pattern version, 15 May 2026 |
-| `10.Demo.Specifications` | Latest specification-pattern project |
-| `callApiByC#` | C# console client consuming the API |
-| `*.rar` / `*.7z` | Archived snapshots of older sections |
+## How the material is organised
 
-## History
+Every lesson is one numbered folder, added in its own commit, so you can follow
+the history like a timeline:
 
-The `Depi-SHR4-SWD5` branch starts from the same root commit and keeps every
-commit that was ever on `main` (from `Initial commit` through
-`spec + projection and final changes`). Nothing was squashed, and the files are
-still reachable from `main`'s history as well if you ever need to look back.
+```bash
+git log --oneline            # one commit per session
+git show <commit> --stat     # what changed in that session
+```
+
+Example folder:
+
+```
+Depi-SHR5-SWD5-S2/
+├── 01. ConsoleApp1/         ← session 1
+├── 02. CSharp2/             ← session 2
+├── ...
+└── 24. MVC4/                ← session 24
+```
+
+## Running a lesson
+
+```bash
+# console lessons
+dotnet run --project "01. ConsoleApp1/ConsoleApp1"
+
+# MVC lessons
+dotnet run --project "21. MVC1/Demo.MVC"
+```
+
+Requirements: [.NET SDK](https://dotnet.microsoft.com/download) (the MVC
+projects target .NET 10; install the matching SDK) and a code editor
+(Visual Studio 2022+, VS Code, or Rider). SQL Server / LocalDB is needed for the
+EF Core lessons.
+
+## Learning paths at a glance
+
+**Section 1 — `Depi-SHR5-SWD5-S1`**
+
+```
+C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC
+   01–05      06–07      08–12         13–14         15–16       17–19
+```
+
+**Section 2 — `Depi-SHR5-SWD5-S2`**
+
+```
+C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC
+   01–05      05–10      10–15         16–17      18,20     19     21–24
+```
+
+**ASP.NET Core archive — `Depi-SHR4-SWD5`**
+
+```
+API ─► Serilog ─► JWT ─► Hangfire ─► AJAX UI ─► Localization
+ 1        2        3        4          5            6
+                          │
+        AI ───────────────┘
+       7.1–7.2
+                          ▼
+   Repository/UoW ─► Projection ─► Specifications ─► latest
+         8              9              9 (final)        10
+```
+
+## Tips for students
+
+- Work through the sessions **in order** — each one reuses the previous concepts.
+- Folders named `- Copy` / `- Copy - Copy` are **revision variants**, not new topics.
+- Dated folders in the archive (`Section 6-5-2026`, `13-5-2026`, `15-5-2026 -- final`…)
+  are **snapshots** of the same lesson at different points; use the latest one.
+- Each session folder is self-contained: open it, run it, break it, fix it.
+- Commit your own experiments in your fork — the branch history is your syllabus.
 
 ## License
 
