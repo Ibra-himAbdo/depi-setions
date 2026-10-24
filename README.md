@@ -3,14 +3,11 @@
 > **Branch:** `Depi-SHR4-SWD5`
 >
 > This branch holds the work of a group that has **already graduated**.
-> It is kept for the record only and is **not part of the current course**.
+> It is kept for the record only.
 
 ## Current students
 
-Do **not** study from this branch — it is from an earlier group and will only
-confuse you.
-
-Use the branch for your section instead:
+Use the branch for your section:
 
 - **Section 1** → `Depi-SHR5-SWD5-S1`
 - **Section 2** → `Depi-SHR5-SWD5-S2`
