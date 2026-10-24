@@ -108,8 +108,11 @@ Other branches in this repository:
 | ------ | -------- |
 | `Depi-SHR5-SWD5-S1` | sister section — sessions 01–19 |
 | `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–24 |
-| `Depi-SHR4-SWD5` | previous ASP.NET Core track (sections 1–10: JWT, Serilog, Hangfire, AI, Specifications…) |
+| `Depi-SHR4-SWD5` | graduated group — archived, **not part of your course** |
 | `main` | repo map / entry point only |
+
+> ⚠️ `Depi-SHR4-SWD5` belongs to a group that has already graduated. It is kept
+> for the record only — new students do not need it and should not study from it.
 
 ## License
 
