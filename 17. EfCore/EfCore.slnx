@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EfCore/EfCore.csproj" Id="0d6f13bc-da5b-4090-b905-b37f1dd1ea97" />
+  <Project Path="EfCoreScaffolding/EfCoreScaffolding.csproj" Id="7c477fd4-6d50-459f-a63b-fb17bf1dba6f" />
+</Solution>
