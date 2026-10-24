@@ -1,67 +1,115 @@
-# depi-setions
+# DEPI — Section 2 (SWD5-S2) — Student Map
 
-DEPI training sessions — ASP.NET Core demos, section by section.
+A guided tour of the **24 sessions** in this section: C# fundamentals all the way
+to a layered ASP.NET Core MVC application with validation and full CRUD.
 
-> **📦 The code is not on this branch.**
->
-> All source code, demos, archives and full commit history live on the
-> **`Depi-SHR4-SWD5`** branch. This `main` branch intentionally contains only
-> this README, `LICENSE` and `.gitignore`.
+> **Branch:** `Depi-SHR5-SWD5-S2`
+> Everything for this section lives here — one folder per session.
 
-## Where did the content go?
+## Quick start
 
-Everything moved to the **`Depi-SHR4-SWD5`** branch, which is a full clone of the
-former `main` (same commits, same history — nothing was rewritten or lost).
+```bash
+git clone -b Depi-SHR5-SWD5-S2 https://github.com/Ibra-himAbdo/depi-setions.git
+cd depi-setions
+```
 
-## How to get it
-
-Already have the repo cloned? Just switch branches:
+Already cloned? Just switch:
 
 ```bash
 git fetch origin
-git switch Depi-SHR4-SWD5
+git switch Depi-SHR5-SWD5-S2
 ```
 
-Fresh clone of the code branch:
+Open the folder you need in Visual Studio / VS Code / Rider, then:
 
 ```bash
-git clone -b Depi-SHR4-SWD5 https://github.com/Ibra-himAbdo/depi-setions.git
+# console sessions
+dotnet run --project "01. ConsoleApp1/ConsoleApp1"
+
+# web sessions
+dotnet run --project "21. MVC1/Demo.MVC"
 ```
 
-## What is on `Depi-SHR4-SWD5`
+## The map
 
-Progressive ASP.NET Core / Clean Architecture training projects, each one building
-on the previous session:
+### Part A — C# language (sessions 01–09)
 
-| Path | Topic |
-| --- | --- |
-| `1.Demo.Base` | Base Web API project |
-| `2.Demo.Serilog` | Structured logging with Serilog |
-| `3.Demo.JWT` | JWT authentication |
-| `4.Demo.Background_Jobs` | Hangfire background jobs (also shipped as `.7z`) |
-| `5.1.Demo.Ajax - without AuthLayout` | AJAX auth, basic layout |
-| `5.2.Demo.Ajax - With AuthLayout` | AJAX auth with auth layout |
-| `5.3.Demo.Ajax - extra ex` | Extra AJAX examples |
-| `6.Demo.Localization&Globalization` | Localization & globalization |
-| `7.1.Demo.AiIntegration - http` | AI integration over HTTP |
-| `7.2.Demo.AiIntegration - advanced` | Advanced AI integration |
-| `8.Demo.(IGenericRepository - IUnitOfWork - CustomRepository)` | Repository / Unit of Work pattern |
-| `8.Demo.(…)- Section 6-5-2026` | Snapshot of the above, 6 May 2026 (also `.7z`) |
-| `8.Demo.(…)- Section 8-5-2026` | Snapshot, 8 May 2026 |
-| `8.Demo.(…)-AI UI - Section 8-5-2026` | Snapshot with AI UI, 8 May 2026 |
-| `9.Demo.Projection` | DTO projection |
-| `9.Demo.Specifications - section 13-5-2026` | Specification pattern, 13 May 2026 |
-| `9.Demo.Specifications - section 15-5-2026 -- final` | Final specification-pattern version, 15 May 2026 |
-| `10.Demo.Specifications` | Latest specification-pattern project |
-| `callApiByC#` | C# console client consuming the API |
-| `*.rar` / `*.7z` | Archived snapshots of older sections |
+| # | Folder | What you learn |
+| - | ------ | -------------- |
+| 01 | `01. ConsoleApp1` | C# console app basics: variables, types, input/output |
+| 02 | `02. CSharp2` | Conditions, loops, arrays, strings |
+| 03 | `03. ConsoleProblems1` | Problem solving with the basics you just learned |
+| 04 | `04. Csharp3` | C# fundamentals part 3: methods and structures |
+| 05 | `05. CsharpOOP1` | OOP part 1: classes, objects, constructors, properties |
+| 06 | `06. ConsoleApp1 - Copy` | Console practice variant — revision of session 01 |
+| 07 | `07. CsharpOOP1 - Copy` | OOP practice variant (extra projects) |
+| 08 | `08. ConsoleApp1 - Copy - Copy` | Another console variant — more exercises |
+| 09 | `09. CsharpOOP1 - Copy - Copy` | Another OOP variant — more exercises |
 
-## History
+### Part B — Advanced C# (sessions 10–17)
 
-The `Depi-SHR4-SWD5` branch starts from the same root commit and keeps every
-commit that was ever on `main` (from `Initial commit` through
-`spec + projection and final changes`). Nothing was squashed, and the files are
-still reachable from `main`'s history as well if you ever need to look back.
+| # | Folder | What you learn |
+| - | ------ | -------------- |
+| 10 | `10. OOP2` | Inheritance, polymorphism, abstraction, interfaces |
+| 11 | `11. MISC_CSharp_1` | Miscellaneous language features |
+| 12 | `12. MISC_CSharp_2` | Reflection + a multi-language translation demo (`MainApplication`, `*Translation`, `Translation.Abstractions`, `ReflictionDemo1/2`) |
+| 13 | `13. Generics` | Generic types & methods, plus `Collections` |
+| 14 | `14. Delegates` | Delegates, events and `HelpersMethods` |
+| 15 | `15. LINQ` | Query & method syntax with `LINQ`, `LINQ_P2`, `SampleData` |
+| 16 | `16. FromAdoToDapper` | Data access: raw ADO.NET → Dapper (`Ado_Net`) |
+| 17 | `17. EfCore` | Entity Framework Core + database-first scaffolding |
+
+### Part C — Web (sessions 18–24)
+
+| # | Folder | What you learn |
+| - | ------ | -------------- |
+| 18 | `18. HTML&CSS` | HTML structure, CSS styling, assets in `images/` |
+| 19 | `19. ApiCall` | Calling HTTP APIs from a C# client |
+| 20 | `20. Js` | JavaScript basics: DOM, events, functions |
+| 21 | `21. MVC1` | ASP.NET Core MVC: controllers, views, routing (`Demo.MVC`) |
+| 22 | `22. MVC2` | Views & layouts, tag helpers, ToDo sample (`Demo.MVC.Views`, `Demo.Todo`) |
+| 23 | `23. MVC3` | Layered MVC: `Demo.DAL` → `Demo.BLL` → `Demo.MVC` with EF Core |
+| 24 | `24. MVC4` | Full CRUD, FluentValidation, DbContext, validation scripts |
+
+## Suggested study order
+
+```
+C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC
+   01–05      05–10      10–15         16–17      18,20     19     21–24
+```
+
+Sessions 06–09 repeat sessions 01–05 with variations. Use them as **revision**
+and extra practice, not as new topics.
+
+## What to look for in the MVC sessions
+
+| Session | Key idea |
+| ------- | -------- |
+| 21 | Controller → View, `_Layout`, Razor, routing |
+| 22 | Layouts, partials, tag helpers, passing models to views |
+| 23 | Layering: DAL (EF Core) → BLL → MVC (separation of concerns) |
+| 24 | Validation (FluentValidation + unobtrusive client-side), full Create/Read/Update/Delete |
+
+## Repo layout
+
+```
+Depi-SHR5-SWD5-S2/          ← you are here (sessions 01–24)
+├── 01. ConsoleApp1/
+├── ...
+├── 24. MVC4/
+├── .gitignore
+├── LICENSE
+└── README.md               ← this map
+```
+
+Other branches in this repository:
+
+| Branch | Contents |
+| ------ | -------- |
+| `Depi-SHR5-SWD5-S1` | sister section — sessions 01–19 |
+| `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–24 |
+| `Depi-SHR4-SWD5` | previous ASP.NET Core track (sections 1–10: JWT, Serilog, Hangfire, AI, Specifications…) |
+| `main` | repo map / entry point only |
 
 ## License
 
