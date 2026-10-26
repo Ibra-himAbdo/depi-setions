@@ -10,7 +10,7 @@ gets exactly the sessions they need.
 | Branch | Who it's for | Contents |
 | ------ | ------------ | -------- |
 | [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 19 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC3 |
-| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 24 sessions: same track extended with `ApiCall` and MVC4 (FluentValidation + full CRUD) |
+| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 25 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD) and MVC5 (toast notifications + form partials) |
 | `Depi-SHR4-SWD5` | graduated group | archived work, kept for the record |
 | `main` | everyone | this map only |
 
@@ -53,7 +53,7 @@ Depi-SHR5-SWD5-S2/
 ├── 01. ConsoleApp1/         ← session 1
 ├── 02. CSharp2/             ← session 2
 ├── ...
-└── 24. MVC4/                ← session 24
+└── 25. MVC5/                ← session 25
 ```
 
 ## Running a lesson
@@ -84,7 +84,7 @@ C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS �
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC
-   01–05      05–10      10–15         16–17      18,20     19     21–24
+   01–05      05–10      10–15         16–17      18,20     19     21–25
 ```
 
 ## Tips for students
