@@ -22,6 +22,7 @@ namespace Demo.MVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Department department)
         {
             if(ModelState.IsValid)
