@@ -30,7 +30,9 @@ else
                     <td>@department.Name</td>
                     <td>@department.Code</td>
                     <td>@department.DateOfCreation</td>
-                    <td></td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@department.Id" class="btn btn-warning mb-2">Edit</a>
+                    </td>
                 </tr>
             }
 

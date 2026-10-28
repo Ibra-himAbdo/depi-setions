@@ -1,3 +1,5 @@
+using Demo.BLL.Interfaces;
+using Demo.BLL.Repositories;
 using Demo.MVC.Controllers;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,8 @@ string connectionString = builder.Configuration
 
 builder.Services.AddDbContext<AppDbContext>
     (option => option.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 var app = builder.Build();
 
