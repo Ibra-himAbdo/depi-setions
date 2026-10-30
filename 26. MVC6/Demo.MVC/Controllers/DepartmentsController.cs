@@ -1,10 +1,7 @@
 ﻿using Demo.BLL.Interfaces;
-using Demo.BLL.Repositories;
-using Demo.DAL.Data;
 using Demo.DAL.Models;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.Json;
 
 namespace Demo.MVC.Controllers
@@ -19,9 +16,11 @@ namespace Demo.MVC.Controllers
             _departmentRepository = departmentRepository;
             _validator = validator;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_departmentRepository.GetAll());
+            List<Department> data = await _departmentRepository.GetAllAsync();
+
+            return View(data);
         }
 
         public IActionResult Create()
@@ -31,15 +30,15 @@ namespace Demo.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Department department)
+        public async Task<IActionResult> Create(Department department)
         {
-            ValidationResult valdaiton = _validator.Validate(department);
+            ValidationResult valdaiton = await _validator.ValidateAsync(department);
 
             if (valdaiton.IsValid)
             {
                 try
                 {
-                    _departmentRepository.Add(department);
+                    await _departmentRepository.AddAsync(department);
 
                     TempData[AppConsts.TosterMessageKey] = JsonSerializer.Serialize(
                         new TosterViewModel()
@@ -65,9 +64,9 @@ namespace Demo.MVC.Controllers
             return View(department);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var department = _departmentRepository.GetById(id);
+            Department? department = await _departmentRepository.GetByIdAsync(id);
             if (department is null)
                 return NotFound();
 
@@ -76,18 +75,18 @@ namespace Demo.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department department)
+        public async Task<IActionResult> Edit([FromRoute] int id, Department department)
         {
             if (id != department.Id)
                 return BadRequest();
 
-            ValidationResult valdaiton = _validator.Validate(department);
+            ValidationResult valdaiton = await _validator.ValidateAsync(department);
 
             if (valdaiton.IsValid)
             {
                 try
                 {
-                    _departmentRepository.Edit(department);
+                    await _departmentRepository.EditAsync(department);
 
                     return RedirectToAction(nameof(Index));
                 }

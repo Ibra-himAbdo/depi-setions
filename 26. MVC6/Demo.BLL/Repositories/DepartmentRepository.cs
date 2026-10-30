@@ -1,5 +1,4 @@
-﻿using Demo.BLL.Interfaces;
-using Demo.DAL.Data;
+﻿using Demo.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.BLL.Repositories
@@ -14,37 +13,37 @@ namespace Demo.BLL.Repositories
         }
 
 
-        public List<Department> GetAll()
+        public async Task<List<Department>> GetAllAsync()
         {
-            return _context.Departments.AsNoTracking().ToList();
+            return await _context.Departments.AsNoTracking().ToListAsync();
         }
 
-        public Department? GetById(int id)
+        public async Task<Department?> GetByIdAsync(int id)
         {
-           return _context.Departments.Find(id);
+            return await _context.Departments.FindAsync(id);
         }
 
-        public int Add(Department department)
+        public async Task<int> AddAsync(Department department)
         {
-            _context.Departments.Add(department);
-            return _context.SaveChanges();
+            await _context.Departments.AddAsync(department);
+            return await _context.SaveChangesAsync();
         }
 
-        public int Edit(Department department)
+        public async Task<int> EditAsync(Department department)
         {
             _context.Departments.Update(department);
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
 
-        public int Delete(Department department)
+        public async Task<int> DeleteAsync(Department department)
         {
             _context.Departments.Remove(department);
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
 
-        //public int Delete(int id)
-        //{
-        //    _context.Departments.Where(d => d.Id == id).ExecuteDelete();
-        //}
+        public async Task<int> DeleteAsync(int id)
+        {
+            return await _context.Departments.Where(d => d.Id == id).ExecuteDeleteAsync();
+        }
     }
 }

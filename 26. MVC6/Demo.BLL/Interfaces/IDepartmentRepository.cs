@@ -1,16 +1,12 @@
-﻿namespace Demo.BLL.Interfaces;
-
-public interface IDepartmentRepository
+﻿namespace Demo.BLL.Interfaces
 {
-    List<Department> GetAll();
-
-    Department? GetById(int id);
-
-    int Add(Department department);
-
-    int Edit(Department department);
-
-    int Delete(Department department);
-
-    //int Delete(int id);
+    public interface IDepartmentRepository
+    {
+        Task<int> AddAsync(Department department);
+        Task<int> DeleteAsync(Department department);
+        Task<int> DeleteAsync(int id);
+        Task<int> EditAsync(Department department);
+        Task<List<Department>> GetAllAsync();
+        Task<Department?> GetByIdAsync(int id);
+    }
 }
