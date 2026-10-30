@@ -5,23 +5,37 @@ namespace Demo.DAL.Models
     public class Department
     {
         public int Id { get; set; }
-
-        [Required(ErrorMessage = "Name is Required!!!")]
-        [NoFutureDate]
         public string? Name { get; set; }
-
-        [Required(ErrorMessage = "Code is Required!!!")]
         public string? Code { get; set; }
 
         [Display(Name = "Date Of Creation")]
-        [NoFutureDate(ErrorMessage = "Date Of Creation cannot be in the future.")]
         public DateTime DateOfCreation { get; set; }
 
-        [NotMapped]
-        public DateTime? StartDate { get; set; }
+        [NotMapped] public DateTime? StartDate { get; set; }
 
-        [NotMapped]
-        [DateAfter(nameof(StartDate))]
-        public DateTime? EndDate { get; set; }
+        [NotMapped] public DateTime? EndDate { get; set; }
     }
+
+    //public class Department
+    //{
+    //    public int Id { get; set; }
+
+    //    [Required(ErrorMessage = "Name is Required!!!")]
+    //    [NoFutureDate]
+    //    public string? Name { get; set; }
+
+    //    [Required(ErrorMessage = "Code is Required!!!")]
+    //    public string? Code { get; set; }
+
+    //    [Display(Name = "Date Of Creation")]
+    //    [NoFutureDate(ErrorMessage = "Date Of Creation cannot be in the future.")]
+    //    public DateTime DateOfCreation { get; set; }
+
+    //    [NotMapped]
+    //    public DateTime? StartDate { get; set; }
+
+    //    [NotMapped]
+    //    [DateAfter(nameof(StartDate))]
+    //    public DateTime? EndDate { get; set; }
+    //}
 }

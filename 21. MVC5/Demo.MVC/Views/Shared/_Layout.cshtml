@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Demo.MVC</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/hcg/hcg-toast.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Demo.MVC.styles.css" asp-append-version="true" />
 </head>
@@ -47,6 +48,8 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/hcg/hcg-toast.js"></script>
+    <partial name="_TosterPartial" />
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

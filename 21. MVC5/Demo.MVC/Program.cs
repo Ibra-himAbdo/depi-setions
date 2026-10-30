@@ -1,21 +1,13 @@
-using Demo.BLL.Interfaces;
-using Demo.BLL.Repositories;
-using Demo.MVC.Controllers;
-using Microsoft.EntityFrameworkCore;
+using Demo.BLL;
+using Demo.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-string connectionString = builder.Configuration
-    .GetConnectionString("Default") 
-    ?? throw new ArgumentNullException("missing Connection String");
-
-builder.Services.AddDbContext<AppDbContext>
-    (option => option.UseSqlServer(connectionString));
-
-builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddDAL(builder.Configuration);
+builder.Services.AddBLL();
 
 var app = builder.Build();
 

@@ -7,8 +7,8 @@
         {
             builder.Property(d => d.Id).UseIdentityColumn(10, 10);
 
-            builder.Property(d => d.Name).HasMaxLength(maxLength);
-            builder.Property(d => d.Code).HasMaxLength(maxLength);
+            builder.Property(d => d.Name).IsRequired().HasMaxLength(maxLength);
+            builder.Property(d => d.Code).IsRequired().HasMaxLength(maxLength);
 
         }
     }
