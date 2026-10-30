@@ -24,7 +24,16 @@ builder.Services.AddBLL();
 
 var app = builder.Build();
 
-
+try
+{
+    using IServiceScope scope = app.Services.CreateScope();
+    AppDbContext context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+}
+catch (Exception ex)
+{
+    Console.Error.WriteLine(ex);
+}
 
 
 // Configure the HTTP request pipeline.

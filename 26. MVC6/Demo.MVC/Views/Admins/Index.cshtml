@@ -1,0 +1,37 @@
+﻿@model IReadOnlyList<AppUser>
+
+<a asp-action="Create" class="btn btn-primary mb-2">Create new User</a>
+
+
+@if (Model is null || Model.Count == 0)
+{
+    <div class="alert alert-primary" role="alert">
+        NO Users
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (( int index, AppUser user) in Model.Index())
+            {
+                <tr>
+                    <td>@(index + 1)</td>
+                    <td>@user.FullName</td>
+                    <td>@user.Email</td>
+                    <td><a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-secondary">Edit</a></td>
+                </tr>
+            }
+            
+            
+        </tbody>
+    </table>
+}
