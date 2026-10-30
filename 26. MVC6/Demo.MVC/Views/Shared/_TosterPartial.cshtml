@@ -1,0 +1,37 @@
+﻿@using System.Text.Json
+@{
+    string? toastMessage = TempData[AppConsts.TosterMessageKey] as string;
+
+    TosterViewModel? tosterView = string.IsNullOrWhiteSpace(toastMessage)
+        ? null
+        : JsonSerializer.Deserialize<TosterViewModel>(toastMessage);
+}
+
+@if (tosterView is not null)
+{
+    if (tosterView.Type == TosterType.Error)
+    {
+        <script>
+            toast.error(@Json.Serialize(tosterView.Content));
+        </script>
+    }
+    else if (tosterView.Type == TosterType.Info)
+    {
+        <script>
+            toast.info(@Json.Serialize(tosterView.Content));
+        </script>
+    }
+    else if (tosterView.Type == TosterType.Warning)
+    {
+        <script>
+            toast.warning(@Json.Serialize(tosterView.Content));
+        </script>
+    }
+    else
+    {
+        <script>
+            toast.success(@Json.Serialize(tosterView.Content));
+        </script>
+    }
+
+}
