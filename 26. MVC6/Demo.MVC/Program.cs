@@ -2,7 +2,9 @@ using Demo.BLL;
 using Demo.BLL.Interfaces;
 using Demo.BLL.Repositories;
 using Demo.DAL.Data;
+using Demo.DAL.Models;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +15,17 @@ string connectionString = builder.Configuration.GetConnectionString("DefualtConn
 
 builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlServer(connectionString));
 
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddBLL();
 
 
 var app = builder.Build();
+
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
