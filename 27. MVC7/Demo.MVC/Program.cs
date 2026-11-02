@@ -1,0 +1,60 @@
+using Demo.BLL;
+using Demo.BLL.Interfaces;
+using Demo.BLL.Repositories;
+using Demo.DAL.Data;
+using Demo.DAL.Models;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+string connectionString = builder.Configuration.GetConnectionString("DefualtConnection") ?? throw new ArgumentNullException("GetConnectionString return null");
+
+builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlServer(connectionString));
+
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddBLL();
+
+
+var app = builder.Build();
+
+try
+{
+    using IServiceScope scope = app.Services.CreateScope();
+    AppDbContext context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+}
+catch (Exception ex)
+{
+    Console.Error.WriteLine(ex);
+}
+
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapStaticAssets();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
+
+app.Run();
