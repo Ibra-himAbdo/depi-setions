@@ -9,8 +9,8 @@ gets exactly the sessions they need.
 
 | Branch | Who it's for | Contents |
 | ------ | ------------ | -------- |
-| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 19 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC3 |
-| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 25 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD) and MVC5 (toast notifications + form partials) |
+| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 21 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC5 |
+| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 27 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD), MVC5 (toasts + form partials), MVC6–MVC7 (ASP.NET Core Identity) |
 | `Depi-SHR4-SWD5` | graduated group | archived work, kept for the record |
 | `main` | everyone | this map only |
 
@@ -53,7 +53,7 @@ Depi-SHR5-SWD5-S2/
 ├── 01. ConsoleApp1/         ← session 1
 ├── 02. CSharp2/             ← session 2
 ├── ...
-└── 25. MVC5/                ← session 25
+└── 27. MVC7/                ← session 27
 ```
 
 ## Running a lesson
@@ -77,14 +77,14 @@ EF Core lessons.
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC
-   01–05      06–07      08–12         13–14         15–16       17–19
+   01–05      06–07      08–12         13–14         15–16       17–21
 ```
 
 **Section 2 — `Depi-SHR5-SWD5-S2`**
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC
-   01–05      05–10      10–15         16–17      18,20     19     21–25
+   01–05      05–10      10–15         16–17      18,20     19     21–27
 ```
 
 ## Tips for students
