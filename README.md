@@ -1,7 +1,7 @@
 # DEPI — Section 1 (SWD5-S1) — Student Map
 
-A guided tour of the **19 sessions** in this section: from C# basics to a layered
-ASP.NET Core MVC application.
+A guided tour of the **20 sessions** in this section: from C# basics to a layered
+ASP.NET Core MVC application with validation and full CRUD.
 
 > **Branch:** `Depi-SHR5-SWD5-S1`
 > Everything for this section lives here — one folder per session.
@@ -56,7 +56,7 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 13 | `13. FromAdoToDapper` | Data access from raw ADO.NET to Dapper |
 | 14 | `14. EfCore` | Entity Framework Core + database-first scaffolding (`EfCore_Scaffolding`) |
 
-### Part C — Web (sessions 15–19)
+### Part C — Web (sessions 15–20)
 
 | # | Folder | What you learn |
 | - | ------ | -------------- |
@@ -65,12 +65,13 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 17 | `17. MVC1` | ASP.NET Core MVC: controllers, views, routing (`Demo.MVC`) |
 | 18 | `18. MVC2` | Views & layouts, tag helpers, ToDo sample (`Demo.View`, `Demo.ToDo`) |
 | 19 | `19. MVC3` | Layered MVC: `Demo.DAL` → `Demo.BLL` → `Demo.MVC` with EF Core |
+| 20 | `20. MVC4` | Full CRUD for `Departments`, repository in BLL, FluentValidation + date validators, `Edit` view, anti-forgery tokens |
 
 ## Suggested study order
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC
-   01–05      06–07      08–12         13–14         15–16       17–19
+   01–05      06–07      08–12         13–14         15–16       17–20
 ```
 
 Do the sessions in order — every web session reuses concepts from the C# ones.
@@ -80,10 +81,10 @@ lesson; use them for revision, not as a separate topic.
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–19)
+Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–20)
 ├── 01. Csharp1/
 ├── ...
-├── 19. MVC3/
+├── 20. MVC4/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -93,8 +94,8 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–19 |
-| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–24 (includes `ApiCall` and `MVC4`) |
+| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–20 |
+| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–25 (includes `ApiCall`, `MVC4` and `MVC5`) |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map / entry point only |
 
