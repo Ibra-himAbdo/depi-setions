@@ -21,6 +21,14 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 
 builder.Services.AddBLL();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromHours(1);
+    options.Cookie.Name = "MyAppCookie";
+    options.SlidingExpiration = true;
+    options.LoginPath = "/Accounts/Login";
+    options.AccessDeniedPath = "/Accounts/AccessDenied";
+});
 
 var app = builder.Build();
 
@@ -47,6 +55,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

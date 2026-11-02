@@ -1,6 +1,18 @@
-﻿@model IReadOnlyList<AppUser>
+﻿@using Microsoft.AspNetCore.Identity
+@model IReadOnlyList<AppUser>
 
 <a asp-action="Create" class="btn btn-primary mb-2">Create new User</a>
+
+
+@if (ViewBag.Errors is IEnumerable<IdentityError> errors && errors.Count() > 0)
+{
+    <ul>
+        @foreach (var error in errors)
+        {
+            <li>@error.Description</li>
+        }
+    </ul>
+}
 
 
 @if (Model is null || Model.Count == 0)
@@ -30,6 +42,9 @@ else
                     <td>
                         <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-secondary">Edit</a>
                         <a asp-action="ChangePassword" asp-route-id="@user.Id" class="btn btn-warning">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
                     </td>
                 </tr>
             }

@@ -33,6 +33,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Admins" asp-action="Index">Users</a>
                         </li>
+                        @if (User.Identity?.IsAuthenticated is true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Logout" class="btn btn-danger">Logout</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

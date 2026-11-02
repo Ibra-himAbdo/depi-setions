@@ -17,5 +17,8 @@ namespace Demo.MVC.Models
         public string? Password { get; set; }
 
         public bool ChangePassword { get; set; }
+
+        [Required]
+        public int Department { get; set; }
     }
 }
