@@ -1,8 +1,8 @@
 # DEPI — Section 2 (SWD5-S2) — Student Map
 
-A guided tour of the **25 sessions** in this section: C# fundamentals all the way
-to a layered ASP.NET Core MVC application with validation, full CRUD and toast
-notifications.
+A guided tour of the **27 sessions** in this section: C# fundamentals all the way
+to a layered ASP.NET Core MVC application with validation, full CRUD, toast
+notifications and ASP.NET Core Identity (users, roles, login).
 
 > **Branch:** `Depi-SHR5-SWD5-S2`
 > Everything for this section lives here — one folder per session.
@@ -72,12 +72,14 @@ dotnet run --project "21. MVC1/Demo.MVC"
 | 23 | `23. MVC3` | Layered MVC: `Demo.DAL` → `Demo.BLL` → `Demo.MVC` with EF Core |
 | 24 | `24. MVC4` | Full CRUD, FluentValidation, DbContext, validation scripts |
 | 25 | `25. MVC5` | Reusable form partials + toast notifications (`hcg-toast`), `TempData`-driven messages |
+| 26 | `26. MVC6` | ASP.NET Core Identity persistence: `AppUser`, `AddIdentityTables` migration, admin user management (`AdminsController` + Create/Edit/Index) |
+| 27 | `27. MVC7` | Identity login flow (`AccountsController`, `LoginViewModel`), user ↔ department relation, admin change-password |
 
 ## Suggested study order
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC
-   01–05      05–10      10–15         16–17      18,20     19     21–25
+   01–05      05–10      10–15         16–17      18,20     19     21–27
 ```
 
 Sessions 06–09 repeat sessions 01–05 with variations. Use them as **revision**
@@ -92,14 +94,16 @@ and extra practice, not as new topics.
 | 23 | Layering: DAL (EF Core) → BLL → MVC (separation of concerns) |
 | 24 | Validation (FluentValidation + unobtrusive client-side), full Create/Read/Update/Delete |
 | 25 | Reusing UI: `DepartmentFormFiledPartial` for Create/Edit + toast messages via `TempData` and `hcg-toast` |
+| 26 | Authentication data: Identity tables in EF Core, `AppUser`, admin CRUD for users |
+| 27 | Full auth flow: login/logout, password change, assigning a user to a department |
 
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S2/          ← you are here (sessions 01–25)
+Depi-SHR5-SWD5-S2/          ← you are here (sessions 01–27)
 ├── 01. ConsoleApp1/
 ├── ...
-├── 25. MVC5/
+├── 27. MVC7/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -109,8 +113,8 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | sister section — sessions 01–19 |
-| `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–25 |
+| `Depi-SHR5-SWD5-S1` | sister section — sessions 01–21 |
+| `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–27 |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map / entry point only |
 
