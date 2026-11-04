@@ -17,9 +17,10 @@ namespace Demo.MVC.Controllers
             _validator = validator;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_departmentRepository.GetAll());
+            List<Department> data = await _departmentRepository.GetAllAsync();
+            return View(data);
         }
 
         public IActionResult Create()
@@ -29,7 +30,7 @@ namespace Demo.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Department department)
+        public async Task<IActionResult> Create(Department department)
         {
             ValidationResult result = _validator.Validate(department);
 
@@ -37,7 +38,7 @@ namespace Demo.MVC.Controllers
             {
                 try
                 {
-                    _departmentRepository.Add(department);
+                    _ = await _departmentRepository.AddAsync(department);
 
                     TempData[AppConsts.TossterMessageKey] =
                         JsonSerializer.Serialize(new TosterViewModel
@@ -69,9 +70,9 @@ namespace Demo.MVC.Controllers
             return View(department);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            Department? department = _departmentRepository.GetById(id);
+            Department? department = await _departmentRepository.GetByIdAsync(id);
             if (department is null) return NotFound();
 
             return View(department);
@@ -79,7 +80,7 @@ namespace Demo.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department department)
+        public async Task<IActionResult> Edit([FromRoute] int id, Department department)
         {
             if (id != department.Id)
                 return BadRequest();
@@ -90,7 +91,7 @@ namespace Demo.MVC.Controllers
             {
                 try
                 {
-                    _departmentRepository.Update(department);
+                    _ = await _departmentRepository.UpdateAsync(department);
 
                     TempData[AppConsts.TossterMessageKey] =
                         JsonSerializer.Serialize(new TosterViewModel

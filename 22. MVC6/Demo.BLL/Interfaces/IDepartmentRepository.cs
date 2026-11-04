@@ -2,10 +2,10 @@
 {
     public interface IDepartmentRepository
     {
-        List<Department> GetAll();
-        Department? GetById(int id);
-        int Add(Department department);
-        int Update(Department department);
-        int Delete(Department department);
+        Task<int> AddAsync(Department department);
+        Task<int> DeleteAsync(Department department);
+        Task<List<Department>> GetAllAsync();
+        Task<Department?> GetByIdAsync(int id);
+        Task<int> UpdateAsync(Department department);
     }
 }
