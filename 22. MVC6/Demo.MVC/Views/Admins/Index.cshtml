@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model List<AppUser>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Create</a>
+@if(ViewBag.Errors is IEnumerable<IdentityError> errors)
+{
+    <ul class="text-danger">
+        @foreach (var error in errors)
+        {
+            <li class="text-danger">@error.Description</li>
+        }
+    </ul>
+}
+
+@if (Model is null || Model.Count == 0)
+{
+    <div class="alert alert-primary" role="alert">
+        There is no Users!!
+    </div>
+}
+else
+{
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (AppUser user in Model)
+            {
+                <tr>
+                    <td>@user.FullName</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <a asp-action="Edit"
+                           asp-route-id="@user.Id"
+                           class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
+                        <a asp-action="ChangePassword"
+                           asp-route-id="@user.Id"
+                           class="btn btn-warning btn-sm">
+                            Change Password
+                        </a>
+                        <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

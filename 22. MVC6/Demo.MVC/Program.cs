@@ -11,7 +11,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDAL(builder.Configuration);
 builder.Services.AddBLL();
 
-builder.Services.AddIdentity<AppUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
+{
+    opts.Password.RequiredLength = 8;
+})
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
