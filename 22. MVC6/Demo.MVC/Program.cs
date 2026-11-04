@@ -1,5 +1,7 @@
 using Demo.BLL;
 using Demo.DAL;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,24 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDAL(builder.Configuration);
 builder.Services.AddBLL();
 
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
 var app = builder.Build();
+
+using IServiceScope scope = app.Services.CreateScope();
+
+AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+try
+{
+    await dbContext.Database.MigrateAsync();
+}
+catch (Exception ex)
+{
+    Console.Error.WriteLine(ex);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

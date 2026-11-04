@@ -12,6 +12,7 @@ namespace Demo.DAL
 
             services.AddDbContext<AppDbContext>
                 (option => option.UseSqlServer(connectionString));
+
             return services;
         }
     }
