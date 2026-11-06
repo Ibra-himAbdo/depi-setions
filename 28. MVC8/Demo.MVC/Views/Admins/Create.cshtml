@@ -1,4 +1,4 @@
-@using Demo.BLL.Interfaces
+﻿@using Demo.BLL.Interfaces
 @model UserViewModel
 @inject IDepartmentRepository departmentRepository
 
@@ -26,7 +26,7 @@
     // }
 }
 
-<form asp-action="Create">
+<form asp-action="Create" enctype="multipart/form-data">
     <div asp-validation-summary="All"></div>
     <div class="row">
         <div class="col-6 mb-2">
@@ -56,6 +56,14 @@
             </select>
         </div>
 
+        <div class="col-6 mb-2">
+            <label asp-for="Image" class="form-label"></label>
+            <input type="file" accept="image/*" asp-for="Image" />
+        </div>
+
+        <div class="col-6 mb-2">
+            <img id="preview" width="250" style="display:none; margin-top:15px;" />
+        </div>
         <div>
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
@@ -72,5 +80,19 @@
             placeholderValue: 'Select Roles',
             searchPlaceholderValue: 'Search roles...'
         })
+
+
+        document.getElementById('Image').onchange = function () {
+
+            let file = this.files[0];
+
+            if (file) { 
+                let preview = document.getElementById('preview');
+
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+            }
+
+        };
     </script>
 }

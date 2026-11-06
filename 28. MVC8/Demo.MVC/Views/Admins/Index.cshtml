@@ -1,4 +1,4 @@
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @model IReadOnlyList<AppUser>
 
 <a asp-action="Create" class="btn btn-primary mb-2">Create new User</a>
@@ -30,6 +30,7 @@ else
                 <th scope="col">Full Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Roles</th>
+                <th scope="col">Image</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -41,6 +42,12 @@ else
                     <td>@user.FullName</td>
                     <td>@user.Email</td>
                     <td i-user="@user.Id"></td>
+                    <td>
+                        @if(!string.IsNullOrWhiteSpace(user.ImagePath))
+                        {
+                            <img src="@user.ImagePath" width="40" />
+                        }
+                    </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-secondary">Edit</a>
                         <a asp-action="ChangePassword" asp-route-id="@user.Id" class="btn btn-warning">Edit</a>

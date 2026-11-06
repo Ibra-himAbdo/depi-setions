@@ -1,4 +1,4 @@
-using Demo.BLL.Interfaces;
+﻿using Demo.BLL.Interfaces;
 using Demo.DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,11 +11,14 @@ public class AdminsController : Controller
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IDepartmentRepository _departmentRepository;
+    private readonly IWebHostEnvironment _environment;
 
-    public AdminsController(UserManager<AppUser> userManager, IDepartmentRepository departmentRepository)
+    public AdminsController(UserManager<AppUser> userManager, IDepartmentRepository departmentRepository,
+        IWebHostEnvironment environment)
     {
         _userManager = userManager;
         _departmentRepository = departmentRepository;
+        _environment = environment;
     }
 
     public async Task<IActionResult> Index()
@@ -39,12 +42,44 @@ public class AdminsController : Controller
             return View(model);
         }
 
+        // upload image
+
+        if (model.Image is null || model.Image.Length == 0)
+        {
+            ModelState.AddModelError("Image", "Please Select and image");
+            return View(nameof(Create), model);
+        }
+
+        var extension = Path.GetExtension(model.Image.FileName).ToLower();
+
+        IEnumerable<string> allowedExtensions = [".png", ".jpg", ".webp", ".jpeg"];
+
+        if (!allowedExtensions.Contains(extension))
+        {
+            ModelState.AddModelError("Image", "Invaled image fromat.");
+            return View(nameof(Create), model);
+        }
+
+        string folderPath = Path.Combine(_environment.WebRootPath, "images");
+
+        Directory.CreateDirectory(folderPath);
+
+        string fileName = Guid.NewGuid().ToString("N") + extension;
+
+        string filePath = Path.Combine(folderPath, fileName);
+
+        using FileStream stream = new FileStream(filePath, FileMode.Create);
+
+        await model.Image.CopyToAsync(stream);
+        //
+
         var appUser = new AppUser()
         {
             FullName = model.FullName,
             Email = model.Email,
             UserName = model.Email,
             DepartmentId = model.Department,
+            ImagePath = "/images/" + fileName,
         };
 
         IdentityResult result = await _userManager.CreateAsync(appUser, model.Password!);
@@ -167,4 +202,8 @@ public class AdminsController : Controller
         }
         return RedirectToAction(nameof(Index));
     }
+
+
+
+
 }

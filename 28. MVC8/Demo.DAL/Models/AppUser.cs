@@ -1,4 +1,4 @@
-namespace Demo.DAL.Models
+﻿namespace Demo.DAL.Models
 {
     public class AppUser : IdentityUser
     {
@@ -6,5 +6,7 @@ namespace Demo.DAL.Models
 
         public int? DepartmentId { get; set; }
         public Department? Department { get; set; }
+
+        public string? ImagePath { get; set; }
     }
 }
