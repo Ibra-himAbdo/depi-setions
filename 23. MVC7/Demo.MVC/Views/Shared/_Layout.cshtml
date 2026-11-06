@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -36,7 +36,20 @@
                         </li>
                     </ul>
                 </div>
-
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    @if (User.Identity?.IsAuthenticated is true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Accounts" asp-action="Logout">Logout</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Accounts" asp-action="Login">Login</a>
+                        </li>
+                    }
+                </ul>
             </div>
         </nav>
     </header>

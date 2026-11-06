@@ -19,6 +19,18 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "MyAppCookie";
+    options.ExpireTimeSpan = TimeSpan.FromHours(1);
+    options.SlidingExpiration = true;
+
+    options.LoginPath = "/Accounts/Login";
+    options.AccessDeniedPath = "/Accounts/AccessDenied";
+});
+
+
+
 WebApplication app = builder.Build();
 
 await app.MigrateDatebase();
