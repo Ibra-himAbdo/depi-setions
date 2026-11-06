@@ -3,6 +3,7 @@ using Demo.BLL.Interfaces;
 using Demo.BLL.Repositories;
 using Demo.DAL.Data;
 using Demo.DAL.Models;
+using Demo.MVC.Extenstions;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -30,18 +31,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Accounts/AccessDenied";
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-try
-{
-    using IServiceScope scope = app.Services.CreateScope();
-    AppDbContext context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await context.Database.MigrateAsync();
-}
-catch (Exception ex)
-{
-    Console.Error.WriteLine(ex);
-}
+await app.MigrateDatabase();
 
 
 // Configure the HTTP request pipeline.
