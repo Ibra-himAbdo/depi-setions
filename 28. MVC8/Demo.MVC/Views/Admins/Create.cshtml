@@ -1,4 +1,4 @@
-﻿@using Demo.BLL.Interfaces
+@using Demo.BLL.Interfaces
 @model UserViewModel
 @inject IDepartmentRepository departmentRepository
 
@@ -8,7 +8,14 @@
     {
         Value = d.Id.ToString(),
         Text = d.Name,
-    }); 
+    });
+
+    IEnumerable<SelectListItem> roles = AppRoles.Roles.Select(r => new SelectListItem
+    {
+        Value = r,
+        Text = r,
+    });
+
     // if (ViewBag.Deprts is List<Department> departments)
     // {
     //     listItems = departments.Select(d => new SelectListItem
@@ -43,6 +50,12 @@
                 <option value="0">--choose Department--</option>
             </select>
         </div>
+        <div class="col-6 mb-2">
+            <label asp-for="SelectedRoles" class="form-label"></label>
+            <select asp-for="SelectedRoles" asp-items="@roles" multiple class="form-select">
+            </select>
+        </div>
+
         <div>
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
@@ -51,4 +64,13 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        new Choices('#SelectedRoles', {
+            removeItemButton: true,
+            searchEnabled: true,
+            placeholder: true,
+            placeholderValue: 'Select Roles',
+            searchPlaceholderValue: 'Search roles...'
+        })
+    </script>
 }

@@ -27,6 +27,7 @@ namespace Demo.MVC.Controllers
             return View(data);
         }
 
+        [Authorize(Roles = AppRoles.Admin)]
         public IActionResult Create()
         {
             return View();
@@ -68,6 +69,7 @@ namespace Demo.MVC.Controllers
             return View(department);
         }
 
+        [Authorize(Roles = AppRoles.Manger)]
         public async Task<IActionResult> Edit(int id)
         {
             Department? department = await _departmentRepository.GetByIdAsync(id);
