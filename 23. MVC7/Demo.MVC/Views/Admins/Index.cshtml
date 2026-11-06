@@ -26,6 +26,7 @@ else
             <tr>
                 <th>Full Name</th>
                 <th>Email</th>
+                <th>Roles</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -36,6 +37,7 @@ else
                 <tr>
                     <td>@user.FullName</td>
                     <td>@user.Email</td>
+                    <td i-user="@user.Id"></td>
                     <td>
                         <a asp-action="Edit"
                            asp-route-id="@user.Id"

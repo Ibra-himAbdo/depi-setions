@@ -1,10 +1,12 @@
-using Demo.BLL.Interfaces;
+﻿using Demo.BLL.Interfaces;
 using Demo.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.MVC.Controllers
 {
+    [Authorize(Roles = AppRoles.Admin)]
     public class AdminsController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -24,6 +26,7 @@ namespace Demo.MVC.Controllers
 
         public async Task<IActionResult> Create()
         {
+            //ViewBag.Departments = await _departmentRepository.GetAllAsync();
             return View();
         }
 
@@ -45,6 +48,11 @@ namespace Demo.MVC.Controllers
 
                 if (result.Succeeded)
                 {
+                    if(model.SelectedRoles is not null && model.SelectedRoles.Count > 0)
+                    {
+                        await _userManager.AddToRolesAsync(user, model.SelectedRoles);
+                    }
+
                     return RedirectToAction(nameof(Index));
                 }
 

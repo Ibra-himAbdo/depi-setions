@@ -1,5 +1,6 @@
 using Demo.BLL;
 using Demo.DAL;
+using Demo.MVC.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,20 +19,9 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opts =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-using IServiceScope scope = app.Services.CreateScope();
-
-AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-try
-{
-    await dbContext.Database.MigrateAsync();
-}
-catch (Exception ex)
-{
-    Console.Error.WriteLine(ex);
-}
+await app.MigrateDatebase();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -44,6 +34,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

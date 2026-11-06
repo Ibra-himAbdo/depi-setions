@@ -1,48 +1,102 @@
-@using Demo.BLL.Interfaces
+﻿@using Demo.BLL.Interfaces
 @model UserViewModel
 @inject IDepartmentRepository departmentRepository
 
 @{
+    // IEnumerable<SelectListItem> departmentSelectListItems = ((List<Department>)ViewBag.Departments).Select(d => new SelectListItem
+    // {
+    //     Value = d.Id.ToString(),
+    //     Text = d.Name
+    // });
+
     IEnumerable<SelectListItem> departmentSelectListItems = (await departmentRepository.GetAllAsync()).Select(d => new SelectListItem
     {
         Value = d.Id.ToString(),
         Text = d.Name
     });
+
+    IEnumerable<SelectListItem> roleSelectListItems = AppRoles.Roles.Select(role => new SelectListItem
+    {
+        Value = role,
+        Text = role
+    });
 }
 
-<form asp-action="Create" method="post">
-    <div asp-validation-summary="All"></div>
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label asp-for="FullName" class="form-label"></label>
-            <input asp-for="FullName" class="form-control" />
-            <span asp-validation-for="FullName" class="text-danger"></span>
-        </div>
+<div class="container mt-5">
 
-        <div class="col-md-6 mb-3">
-            <label asp-for="Email" class="form-label"></label>
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
 
-        <div class="col-md-6 mb-3">
-            <label asp-for="Password" class="form-label"></label>
-            <input asp-for="Password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+            <div class="card shadow">
 
-        <div class="col-md-6 mb-3">
-            <label asp-for="Department" class="form-label"></label>
-            <select asp-for="Department" asp-items="departmentSelectListItems" class="form-select">
-                <option value="@null">-- Select Department --</option>
-            </select>
-            <span asp-validation-for="Department" class="text-danger"></span>
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create User Form</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="All"></div>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label asp-for="FullName" class="form-label"></label>
+                                <input asp-for="FullName" class="form-control" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Password" class="form-label"></label>
+                                <input asp-for="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Department" class="form-label"></label>
+                                <select asp-for="Department" asp-items="departmentSelectListItems" class="form-select">
+                                    <option value="@null">-- Select Department --</option>
+                                </select>
+                                <span asp-validation-for="Department" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="SelectedRoles" class="form-label"></label>
+                                <select asp-for="SelectedRoles" asp-items="roleSelectListItems" multiple class="form-select">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
+
+</div>
+
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        new Choices('#SelectedRoles', {
+            removeItemButton: true,
+            searchEnabled: true,
+            placeholder: true,
+            placeholderValue: 'Select Roles',
+            searchPlaceholderValue: 'Search roles...'
+        });
+    </script>
 }

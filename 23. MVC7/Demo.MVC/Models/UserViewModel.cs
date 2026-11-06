@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Demo.MVC.Models
 {
@@ -17,5 +17,7 @@ namespace Demo.MVC.Models
         public string? Password { get; set; }
 
         public int Department { get; set; }
+
+        public List<string>? SelectedRoles { get; set; }
     }
 }

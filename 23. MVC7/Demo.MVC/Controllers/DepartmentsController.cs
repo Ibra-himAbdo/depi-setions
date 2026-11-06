@@ -2,10 +2,12 @@
 using Demo.MVC.Models;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 
 namespace Demo.MVC.Controllers
 {
+    [Authorize]
     public class DepartmentsController : Controller
     {
         private readonly IDepartmentRepository _departmentRepository;
@@ -17,12 +19,14 @@ namespace Demo.MVC.Controllers
             _validator = validator;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             List<Department> data = await _departmentRepository.GetAllAsync();
             return View(data);
         }
 
+        [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Manager}")]
         public IActionResult Create()
         {
             return View();
