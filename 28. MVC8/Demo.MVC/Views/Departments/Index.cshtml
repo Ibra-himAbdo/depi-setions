@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Department>
+
+
+<a asp-action="Create" class="btn btn-primary">Create new Department</a>
+
+
+@if (Model.Count() == 0)
+{
+    <div class="alert alert-primary mt-2" role="alert">
+        There is no departments
+    </div>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Code</th>
+                <th scope="col">Date Of Creation</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var department in Model)
+            {
+                <tr>
+                    <th>@department.Id</th>
+                    <td>@department.Name</td>
+                    <td>@department.Code</td>
+                    <td>@department.DateOfCreation</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@department.Id" class="btn btn-secondary">Edit</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
