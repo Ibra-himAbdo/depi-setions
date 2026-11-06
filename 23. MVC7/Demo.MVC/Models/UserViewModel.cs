@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Demo.MVC.Models
 {
@@ -15,5 +15,7 @@ namespace Demo.MVC.Models
         [Required]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
+
+        public int Department { get; set; }
     }
 }

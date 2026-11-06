@@ -1,4 +1,5 @@
-﻿using Demo.MVC.Models;
+using Demo.BLL.Interfaces;
+using Demo.MVC.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,10 +8,12 @@ namespace Demo.MVC.Controllers
     public class AdminsController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IDepartmentRepository _departmentRepository;
 
-        public AdminsController(UserManager<AppUser> userManager)
+        public AdminsController(UserManager<AppUser> userManager, IDepartmentRepository departmentRepository)
         {
             _userManager = userManager;
+            _departmentRepository = departmentRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -19,7 +22,7 @@ namespace Demo.MVC.Controllers
             return View(user);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View();
         }
@@ -35,6 +38,7 @@ namespace Demo.MVC.Controllers
                     FullName = model.FullName,
                     Email = model.Email,
                     UserName = model.Email,
+                    DepartmentId = model.Department
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(user, model.Password!);

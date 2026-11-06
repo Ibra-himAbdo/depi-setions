@@ -5,6 +5,10 @@
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.Property(user => user.FullName).HasMaxLength(256);
+
+            builder.HasOne(user => user.Department)
+                .WithMany()
+                .HasForeignKey(user => user.DepartmentId);
         }
     }
 }
