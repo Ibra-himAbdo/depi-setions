@@ -1,0 +1,1626 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EF Core Playground — Change Tracking بالممارسة</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t="undefined"!=typeof globalThis?globalThis:t||self).Motion={})}(this,(function(t){"use strict";const e=t=>t;let n=e;function s(t){let e;return()=>(void 0===e&&(e=t()),e)}const i=(t,e,n)=>{const s=e-t;return 0===s?1:(n-t)/s},r=t=>1e3*t,o=t=>t/1e3,a=s(()=>void 0!==window.ScrollTimeline);class l extends class{constructor(t){this.stop=()=>this.runAll("stop"),this.animations=t.filter(Boolean)}get finished(){return Promise.all(this.animations.map(t=>"finished"in t?t.finished:t))}getAll(t){return this.animations[0][t]}setAll(t,e){for(let n=0;n<this.animations.length;n++)this.animations[n][t]=e}attachTimeline(t,e){const n=this.animations.map(n=>a()&&n.attachTimeline?n.attachTimeline(t):"function"==typeof e?e(n):void 0);return()=>{n.forEach((t,e)=>{t&&t(),this.animations[e].stop()})}}get time(){return this.getAll("time")}set time(t){this.setAll("time",t)}get speed(){return this.getAll("speed")}set speed(t){this.setAll("speed",t)}get startTime(){return this.getAll("startTime")}get duration(){let t=0;for(let e=0;e<this.animations.length;e++)t=Math.max(t,this.animations[e].duration);return t}runAll(t){this.animations.forEach(e=>e[t]())}flatten(){this.runAll("flatten")}play(){this.runAll("play")}pause(){this.runAll("pause")}cancel(){this.runAll("cancel")}complete(){this.runAll("complete")}}{then(t,e){return Promise.all(this.animations).then(t).catch(e)}}function u(t,e){return t?t[e]||t.default||t:void 0}function c(t){let e=0;let n=t.next(e);for(;!n.done&&e<2e4;)e+=50,n=t.next(e);return e>=2e4?1/0:e}function h(t,e=100,n){const s=n({...t,keyframes:[0,e]}),i=Math.min(c(s),2e4);return{type:"keyframes",ease:t=>s.next(i*t).value/e,duration:o(i)}}function d(t){return"function"==typeof t}function p(t,e){t.timeline=e,t.onfinish=null}const f=t=>Array.isArray(t)&&"number"==typeof t[0],m={linearEasing:void 0};function g(t,e){const n=s(t);return()=>{var t;return null!==(t=m[e])&&void 0!==t?t:n()}}const y=g(()=>{try{document.createElement("div").animate({opacity:0},{easing:"linear(0, 1)"})}catch(t){return!1}return!0},"linearEasing"),v=(t,e,n=10)=>{let s="";const r=Math.max(Math.round(e/n),2);for(let e=0;e<r;e++)s+=t(i(0,r-1,e))+", ";return`linear(${s.substring(0,s.length-2)})`};function w(t){return Boolean("function"==typeof t&&y()||!t||"string"==typeof t&&(t in x||y())||f(t)||Array.isArray(t)&&t.every(w))}const b=([t,e,n,s])=>`cubic-bezier(${t}, ${e}, ${n}, ${s})`,x={linear:"linear",ease:"ease",easeIn:"ease-in",easeOut:"ease-out",easeInOut:"ease-in-out",circIn:b([0,.65,.55,1]),circOut:b([.55,0,1,.45]),backIn:b([.31,.01,.66,-.59]),backOut:b([.33,1.53,.69,.99])};const T=!1;function S(t,e,n){var s;if(t instanceof Element)return[t];if("string"==typeof t){let i=document;e&&(i=e.current);const r=null!==(s=null==n?void 0:n[t])&&void 0!==s?s:i.querySelectorAll(t);return r?Array.from(r):[]}return Array.from(t)}const V=(t,e,n)=>n>e?e:n<t?t:n;function A(t,e){return e?t*(1e3/e):0}function M(t,e,n){const s=Math.max(e-5,0);return A(n-t(s),e-s)}const P=100,k=10,F=1,C=0,E=800,O=.3,I=.3,R={granular:.01,default:2},B={granular:.005,default:.5},D=.01,L=10,W=.05,N=1;function K({duration:t=E,bounce:e=O,velocity:n=C,mass:s=F}){let i,a,l=1-e;l=V(W,N,l),t=V(D,L,o(t)),l<1?(i=e=>{const s=e*l,i=s*t;return.001-(s-n)/j(e,l)*Math.exp(-i)},a=e=>{const s=e*l*t,r=s*n+n,o=Math.pow(l,2)*Math.pow(e,2)*t,a=Math.exp(-s),u=j(Math.pow(e,2),l);return(.001-i(e)>0?-1:1)*((r-o)*a)/u}):(i=e=>Math.exp(-e*t)*((e-n)*t+1)-.001,a=e=>Math.exp(-e*t)*(t*t*(n-e)));const u=function(t,e,n){let s=n;for(let n=1;n<12;n++)s-=t(s)/e(s);return s}(i,a,5/t);if(t=r(t),isNaN(u))return{stiffness:P,damping:k,duration:t};{const e=Math.pow(u,2)*s;return{stiffness:e,damping:2*l*Math.sqrt(s*e),duration:t}}}function j(t,e){return t*Math.sqrt(1-e*e)}const z=["duration","bounce"],$=["stiffness","damping","mass"];function U(t,e){return e.some(e=>void 0!==t[e])}function H(t=I,e=O){const n="object"!=typeof t?{visualDuration:t,keyframes:[0,1],bounce:e}:t;let{restSpeed:s,restDelta:i}=n;const a=n.keyframes[0],l=n.keyframes[n.keyframes.length-1],u={done:!1,value:a},{stiffness:h,damping:d,mass:p,duration:f,velocity:m,isResolvedFromDuration:g}=function(t){let e={velocity:C,stiffness:P,damping:k,mass:F,isResolvedFromDuration:!1,...t};if(!U(t,$)&&U(t,z))if(t.visualDuration){const n=t.visualDuration,s=2*Math.PI/(1.2*n),i=s*s,r=2*V(.05,1,1-(t.bounce||0))*Math.sqrt(i);e={...e,mass:F,stiffness:i,damping:r}}else{const n=K(t);e={...e,...n,mass:F},e.isResolvedFromDuration=!0}return e}({...n,velocity:-o(n.velocity||0)}),y=m||0,w=d/(2*Math.sqrt(h*p)),b=l-a,x=o(Math.sqrt(h/p)),T=Math.abs(b)<5;let S;if(s||(s=T?R.granular:R.default),i||(i=T?B.granular:B.default),w<1){const t=j(x,w);S=e=>{const n=Math.exp(-w*x*e);return l-n*((y+w*x*b)/t*Math.sin(t*e)+b*Math.cos(t*e))}}else if(1===w)S=t=>l-Math.exp(-x*t)*(b+(y+x*b)*t);else{const t=x*Math.sqrt(w*w-1);S=e=>{const n=Math.exp(-w*x*e),s=Math.min(t*e,300);return l-n*((y+w*x*b)*Math.sinh(s)+t*b*Math.cosh(s))/t}}const A={calculatedDuration:g&&f||null,next:t=>{const e=S(t);if(g)u.done=t>=f;else{let n=0;w<1&&(n=0===t?r(y):M(S,t,e));const o=Math.abs(n)<=s,a=Math.abs(l-e)<=i;u.done=o&&a}return u.value=u.done?l:e,u},toString:()=>{const t=Math.min(c(A),2e4),e=v(e=>A.next(t*e).value,t,30);return t+"ms "+e}};return A}const Y=(t,e,n)=>{const s=e-t;return((n-t)%s+s)%s+t},q=t=>Array.isArray(t)&&"number"!=typeof t[0];function X(t,e){return q(t)?t[Y(0,t.length,e)]:t}const G=(t,e,n)=>t+(e-t)*n;function Z(t,e){const n=t[t.length-1];for(let s=1;s<=e;s++){const r=i(0,e,s);t.push(G(n,1,r))}}function _(t){const e=[0];return Z(e,t.length-1),e}const J=t=>Boolean(t&&t.getVelocity);function Q(t){return"object"==typeof t&&!Array.isArray(t)}function tt(t,e,n,s){return"string"==typeof t&&Q(e)?S(t,n,s):t instanceof NodeList?Array.from(t):Array.isArray(t)?t:[t]}function et(t,e,n){return t*(e+1)}function nt(t,e,n,s){var i;return"number"==typeof e?e:e.startsWith("-")||e.startsWith("+")?Math.max(0,t+parseFloat(e)):"<"===e?n:null!==(i=s.get(e))&&void 0!==i?i:t}function st(t,e){const n=t.indexOf(e);n>-1&&t.splice(n,1)}function it(t,e,n,s,i,r){!function(t,e,n){for(let s=0;s<t.length;s++){const i=t[s];i.at>e&&i.at<n&&(st(t,i),s--)}}(t,i,r);for(let o=0;o<e.length;o++)t.push({value:e[o],at:G(i,r,s[o]),easing:X(n,o)})}function rt(t,e){for(let n=0;n<t.length;n++)t[n]=t[n]/(e+1)}function ot(t,e){return t.at===e.at?null===t.value?1:null===e.value?-1:0:t.at-e.at}function at(t,e){return!e.has(t)&&e.set(t,{}),e.get(t)}function lt(t,e){return e[t]||(e[t]=[]),e[t]}function ut(t){return Array.isArray(t)?t:[t]}function ct(t,e){return t&&t[e]?{...t,...t[e]}:{...t}}const ht=t=>"number"==typeof t,dt=t=>t.every(ht),pt=new WeakMap,ft=["transformPerspective","x","y","z","translateX","translateY","translateZ","scale","scaleX","scaleY","rotate","rotateX","rotateY","rotateZ","skew","skewX","skewY"],mt=new Set(ft),gt=new Set(["width","height","top","left","right","bottom",...ft]),yt=t=>(t=>Array.isArray(t))(t)?t[t.length-1]||0:t,vt=!1;const wt=["read","resolveKeyframes","update","preRender","render","postRender"];const{schedule:bt,cancel:xt,state:Tt,steps:St}=function(t,e){let n=!1,s=!0;const i={delta:0,timestamp:0,isProcessing:!1},r=()=>n=!0,o=wt.reduce((t,e)=>(t[e]=function(t){let e=new Set,n=new Set,s=!1,i=!1;const r=new WeakSet;let o={delta:0,timestamp:0,isProcessing:!1};function a(e){r.has(e)&&(l.schedule(e),t()),e(o)}const l={schedule:(t,i=!1,o=!1)=>{const a=o&&s?e:n;return i&&r.add(t),a.has(t)||a.add(t),t},cancel:t=>{n.delete(t),r.delete(t)},process:t=>{o=t,s?i=!0:(s=!0,[e,n]=[n,e],e.forEach(a),e.clear(),s=!1,i&&(i=!1,l.process(t)))}};return l}(r),t),{}),{read:a,resolveKeyframes:l,update:u,preRender:c,render:h,postRender:d}=o,p=()=>{const r=performance.now();n=!1,i.delta=s?1e3/60:Math.max(Math.min(r-i.timestamp,40),1),i.timestamp=r,i.isProcessing=!0,a.process(i),l.process(i),u.process(i),c.process(i),h.process(i),d.process(i),i.isProcessing=!1,n&&e&&(s=!1,t(p))};return{schedule:wt.reduce((e,r)=>{const a=o[r];return e[r]=(e,r=!1,o=!1)=>(n||(n=!0,s=!0,i.isProcessing||t(p)),a.schedule(e,r,o)),e},{}),cancel:t=>{for(let e=0;e<wt.length;e++)o[wt[e]].cancel(t)},state:i,steps:o}}("undefined"!=typeof requestAnimationFrame?requestAnimationFrame:e,!0);let Vt;function At(){Vt=void 0}const Mt={now:()=>(void 0===Vt&&Mt.set(Tt.isProcessing||vt?Tt.timestamp:performance.now()),Vt),set:t=>{Vt=t,queueMicrotask(At)}};class Pt{constructor(){this.subscriptions=[]}add(t){var e,n;return e=this.subscriptions,n=t,-1===e.indexOf(n)&&e.push(n),()=>st(this.subscriptions,t)}notify(t,e,n){const s=this.subscriptions.length;if(s)if(1===s)this.subscriptions[0](t,e,n);else for(let i=0;i<s;i++){const s=this.subscriptions[i];s&&s(t,e,n)}}getSize(){return this.subscriptions.length}clear(){this.subscriptions.length=0}}class kt{constructor(t,e={}){this.version="11.18.2",this.canTrackVelocity=null,this.events={},this.updateAndNotify=(t,e=!0)=>{const n=Mt.now();this.updatedAt!==n&&this.setPrevFrameValue(),this.prev=this.current,this.setCurrent(t),this.current!==this.prev&&this.events.change&&this.events.change.notify(this.current),e&&this.events.renderRequest&&this.events.renderRequest.notify(this.current)},this.hasAnimated=!1,this.setCurrent(t),this.owner=e.owner}setCurrent(t){var e;this.current=t,this.updatedAt=Mt.now(),null===this.canTrackVelocity&&void 0!==t&&(this.canTrackVelocity=(e=this.current,!isNaN(parseFloat(e))))}setPrevFrameValue(t=this.current){this.prevFrameValue=t,this.prevUpdatedAt=this.updatedAt}onChange(t){return this.on("change",t)}on(t,e){this.events[t]||(this.events[t]=new Pt);const n=this.events[t].add(e);return"change"===t?()=>{n(),bt.read(()=>{this.events.change.getSize()||this.stop()})}:n}clearListeners(){for(const t in this.events)this.events[t].clear()}attach(t,e){this.passiveEffect=t,this.stopPassiveEffect=e}set(t,e=!0){e&&this.passiveEffect?this.passiveEffect(t,this.updateAndNotify):this.updateAndNotify(t,e)}setWithVelocity(t,e,n){this.set(e),this.prev=void 0,this.prevFrameValue=t,this.prevUpdatedAt=this.updatedAt-n}jump(t,e=!0){this.updateAndNotify(t),this.prev=t,this.prevUpdatedAt=this.prevFrameValue=void 0,e&&this.stop(),this.stopPassiveEffect&&this.stopPassiveEffect()}get(){return this.current}getPrevious(){return this.prev}getVelocity(){const t=Mt.now();if(!this.canTrackVelocity||void 0===this.prevFrameValue||t-this.updatedAt>30)return 0;const e=Math.min(this.updatedAt-this.prevUpdatedAt,30);return A(parseFloat(this.current)-parseFloat(this.prevFrameValue),e)}start(t){return this.stop(),new Promise(e=>{this.hasAnimated=!0,this.animation=t(e),this.events.animationStart&&this.events.animationStart.notify()}).then(()=>{this.events.animationComplete&&this.events.animationComplete.notify(),this.clearAnimation()})}stop(){this.animation&&(this.animation.stop(),this.events.animationCancel&&this.events.animationCancel.notify()),this.clearAnimation()}isAnimating(){return!!this.animation}clearAnimation(){delete this.animation}destroy(){this.clearListeners(),this.stop(),this.stopPassiveEffect&&this.stopPassiveEffect()}}function Ft(t,e){return new kt(t,e)}function Ct(t){const e=[{},{}];return null==t||t.values.forEach((t,n)=>{e[0][n]=t.get(),e[1][n]=t.getVelocity()}),e}function Et(t,e,n,s){if("function"==typeof e){const[i,r]=Ct(s);e=e(void 0!==n?n:t.custom,i,r)}if("string"==typeof e&&(e=t.variants&&t.variants[e]),"function"==typeof e){const[i,r]=Ct(s);e=e(void 0!==n?n:t.custom,i,r)}return e}function Ot(t,e,n){t.hasValue(e)?t.getValue(e).set(n):t.addValue(e,Ft(n))}function It(t,e){const n=function(t,e,n){const s=t.getProps();return Et(s,e,void 0!==n?n:s.custom,t)}(t,e);let{transitionEnd:s={},transition:i={},...r}=n||{};r={...r,...s};for(const e in r){Ot(t,e,yt(r[e]))}}function Rt(t,e){const n=t.getValue("willChange");if(s=n,Boolean(J(s)&&s.add))return n.add(e);var s}const Bt=t=>t.replace(/([a-z])([A-Z])/gu,"$1-$2").toLowerCase(),Dt="data-"+Bt("framerAppearId");function Lt(t){return t.props[Dt]}const Wt=(t,e,n)=>(((1-3*n+3*e)*t+(3*n-6*e))*t+3*e)*t;function Nt(t,n,s,i){if(t===n&&s===i)return e;const r=e=>function(t,e,n,s,i){let r,o,a=0;do{o=e+(n-e)/2,r=Wt(o,s,i)-t,r>0?n=o:e=o}while(Math.abs(r)>1e-7&&++a<12);return o}(e,0,1,t,s);return t=>0===t||1===t?t:Wt(r(t),n,i)}const Kt=t=>e=>e<=.5?t(2*e)/2:(2-t(2*(1-e)))/2,jt=t=>e=>1-t(1-e),zt=Nt(.33,1.53,.69,.99),$t=jt(zt),Ut=Kt($t),Ht=t=>(t*=2)<1?.5*$t(t):.5*(2-Math.pow(2,-10*(t-1))),Yt=t=>1-Math.sin(Math.acos(t)),qt=jt(Yt),Xt=Kt(Yt),Gt=t=>/^0[^.\s]+$/u.test(t);const Zt={test:t=>"number"==typeof t,parse:parseFloat,transform:t=>t},_t={...Zt,transform:t=>V(0,1,t)},Jt={...Zt,default:1},Qt=t=>Math.round(1e5*t)/1e5,te=/-?(?:\d+(?:\.\d+)?|\.\d+)/gu;const ee=/^(?:#[\da-f]{3,8}|(?:rgb|hsl)a?\((?:-?[\d.]+%?[,\s]+){2}-?[\d.]+%?\s*(?:[,/]\s*)?(?:\b\d+(?:\.\d+)?|\.\d+)?%?\))$/iu,ne=(t,e)=>n=>Boolean("string"==typeof n&&ee.test(n)&&n.startsWith(t)||e&&!function(t){return null==t}(n)&&Object.prototype.hasOwnProperty.call(n,e)),se=(t,e,n)=>s=>{if("string"!=typeof s)return s;const[i,r,o,a]=s.match(te);return{[t]:parseFloat(i),[e]:parseFloat(r),[n]:parseFloat(o),alpha:void 0!==a?parseFloat(a):1}},ie={...Zt,transform:t=>Math.round((t=>V(0,255,t))(t))},re={test:ne("rgb","red"),parse:se("red","green","blue"),transform:({red:t,green:e,blue:n,alpha:s=1})=>"rgba("+ie.transform(t)+", "+ie.transform(e)+", "+ie.transform(n)+", "+Qt(_t.transform(s))+")"};const oe={test:ne("#"),parse:function(t){let e="",n="",s="",i="";return t.length>5?(e=t.substring(1,3),n=t.substring(3,5),s=t.substring(5,7),i=t.substring(7,9)):(e=t.substring(1,2),n=t.substring(2,3),s=t.substring(3,4),i=t.substring(4,5),e+=e,n+=n,s+=s,i+=i),{red:parseInt(e,16),green:parseInt(n,16),blue:parseInt(s,16),alpha:i?parseInt(i,16)/255:1}},transform:re.transform},ae=t=>({test:e=>"string"==typeof e&&e.endsWith(t)&&1===e.split(" ").length,parse:parseFloat,transform:e=>`${e}${t}`}),le=ae("deg"),ue=ae("%"),ce=ae("px"),he=ae("vh"),de=ae("vw"),pe={...ue,parse:t=>ue.parse(t)/100,transform:t=>ue.transform(100*t)},fe={test:ne("hsl","hue"),parse:se("hue","saturation","lightness"),transform:({hue:t,saturation:e,lightness:n,alpha:s=1})=>"hsla("+Math.round(t)+", "+ue.transform(Qt(e))+", "+ue.transform(Qt(n))+", "+Qt(_t.transform(s))+")"},me={test:t=>re.test(t)||oe.test(t)||fe.test(t),parse:t=>re.test(t)?re.parse(t):fe.test(t)?fe.parse(t):oe.parse(t),transform:t=>"string"==typeof t?t:t.hasOwnProperty("red")?re.transform(t):fe.transform(t)},ge=/(?:#[\da-f]{3,8}|(?:rgb|hsl)a?\((?:-?[\d.]+%?[,\s]+){2}-?[\d.]+%?\s*(?:[,/]\s*)?(?:\b\d+(?:\.\d+)?|\.\d+)?%?\))/giu;const ye=/var\s*\(\s*--(?:[\w-]+\s*|[\w-]+\s*,(?:\s*[^)(\s]|\s*\((?:[^)(]|\([^)(]*\))*\))+\s*)\)|#[\da-f]{3,8}|(?:rgb|hsl)a?\((?:-?[\d.]+%?[,\s]+){2}-?[\d.]+%?\s*(?:[,/]\s*)?(?:\b\d+(?:\.\d+)?|\.\d+)?%?\)|-?(?:\d+(?:\.\d+)?|\.\d+)/giu;function ve(t){const e=t.toString(),n=[],s={color:[],number:[],var:[]},i=[];let r=0;const o=e.replace(ye,t=>(me.test(t)?(s.color.push(r),i.push("color"),n.push(me.parse(t))):t.startsWith("var(")?(s.var.push(r),i.push("var"),n.push(t)):(s.number.push(r),i.push("number"),n.push(parseFloat(t))),++r,"${}")).split("${}");return{values:n,split:o,indexes:s,types:i}}function we(t){return ve(t).values}function be(t){const{split:e,types:n}=ve(t),s=e.length;return t=>{let i="";for(let r=0;r<s;r++)if(i+=e[r],void 0!==t[r]){const e=n[r];i+="number"===e?Qt(t[r]):"color"===e?me.transform(t[r]):t[r]}return i}}const xe=t=>"number"==typeof t?0:t;const Te={test:function(t){var e,n;return isNaN(t)&&"string"==typeof t&&((null===(e=t.match(te))||void 0===e?void 0:e.length)||0)+((null===(n=t.match(ge))||void 0===n?void 0:n.length)||0)>0},parse:we,createTransformer:be,getAnimatableNone:function(t){const e=we(t);return be(t)(e.map(xe))}},Se=new Set(["brightness","contrast","saturate","opacity"]);function Ve(t){const[e,n]=t.slice(0,-1).split("(");if("drop-shadow"===e)return t;const[s]=n.match(te)||[];if(!s)return t;const i=n.replace(s,"");let r=Se.has(e)?1:0;return s!==n&&(r*=100),e+"("+r+i+")"}const Ae=/\b([a-z-]*)\(.*?\)/gu,Me={...Te,getAnimatableNone:t=>{const e=t.match(Ae);return e?e.map(Ve).join(" "):t}},Pe={borderWidth:ce,borderTopWidth:ce,borderRightWidth:ce,borderBottomWidth:ce,borderLeftWidth:ce,borderRadius:ce,radius:ce,borderTopLeftRadius:ce,borderTopRightRadius:ce,borderBottomRightRadius:ce,borderBottomLeftRadius:ce,width:ce,maxWidth:ce,height:ce,maxHeight:ce,top:ce,right:ce,bottom:ce,left:ce,padding:ce,paddingTop:ce,paddingRight:ce,paddingBottom:ce,paddingLeft:ce,margin:ce,marginTop:ce,marginRight:ce,marginBottom:ce,marginLeft:ce,backgroundPositionX:ce,backgroundPositionY:ce},ke={rotate:le,rotateX:le,rotateY:le,rotateZ:le,scale:Jt,scaleX:Jt,scaleY:Jt,scaleZ:Jt,skew:le,skewX:le,skewY:le,distance:ce,translateX:ce,translateY:ce,translateZ:ce,x:ce,y:ce,z:ce,perspective:ce,transformPerspective:ce,opacity:_t,originX:pe,originY:pe,originZ:ce},Fe={...Zt,transform:Math.round},Ce={...Pe,...ke,zIndex:Fe,size:ce,fillOpacity:_t,strokeOpacity:_t,numOctaves:Fe},Ee={...Ce,color:me,backgroundColor:me,outlineColor:me,fill:me,stroke:me,borderColor:me,borderTopColor:me,borderRightColor:me,borderBottomColor:me,borderLeftColor:me,filter:Me,WebkitFilter:Me},Oe=t=>Ee[t];function Ie(t,e){let n=Oe(t);return n!==Me&&(n=Te),n.getAnimatableNone?n.getAnimatableNone(e):void 0}const Re=new Set(["auto","none","0"]);const Be=t=>t===Zt||t===ce,De=(t,e)=>parseFloat(t.split(", ")[e]),Le=(t,e)=>(n,{transform:s})=>{if("none"===s||!s)return 0;const i=s.match(/^matrix3d\((.+)\)$/u);if(i)return De(i[1],e);{const e=s.match(/^matrix\((.+)\)$/u);return e?De(e[1],t):0}},We=new Set(["x","y","z"]),Ne=ft.filter(t=>!We.has(t));const Ke={width:({x:t},{paddingLeft:e="0",paddingRight:n="0"})=>t.max-t.min-parseFloat(e)-parseFloat(n),height:({y:t},{paddingTop:e="0",paddingBottom:n="0"})=>t.max-t.min-parseFloat(e)-parseFloat(n),top:(t,{top:e})=>parseFloat(e),left:(t,{left:e})=>parseFloat(e),bottom:({y:t},{top:e})=>parseFloat(e)+(t.max-t.min),right:({x:t},{left:e})=>parseFloat(e)+(t.max-t.min),x:Le(4,13),y:Le(5,14)};Ke.translateX=Ke.x,Ke.translateY=Ke.y;const je=new Set;let ze=!1,$e=!1;function Ue(){if($e){const t=Array.from(je).filter(t=>t.needsMeasurement),e=new Set(t.map(t=>t.element)),n=new Map;e.forEach(t=>{const e=function(t){const e=[];return Ne.forEach(n=>{const s=t.getValue(n);void 0!==s&&(e.push([n,s.get()]),s.set(n.startsWith("scale")?1:0))}),e}(t);e.length&&(n.set(t,e),t.render())}),t.forEach(t=>t.measureInitialState()),e.forEach(t=>{t.render();const e=n.get(t);e&&e.forEach(([e,n])=>{var s;null===(s=t.getValue(e))||void 0===s||s.set(n)})}),t.forEach(t=>t.measureEndState()),t.forEach(t=>{void 0!==t.suspendedScrollY&&window.scrollTo(0,t.suspendedScrollY)})}$e=!1,ze=!1,je.forEach(t=>t.complete()),je.clear()}function He(){je.forEach(t=>{t.readKeyframes(),t.needsMeasurement&&($e=!0)})}class Ye{constructor(t,e,n,s,i,r=!1){this.isComplete=!1,this.isAsync=!1,this.needsMeasurement=!1,this.isScheduled=!1,this.unresolvedKeyframes=[...t],this.onComplete=e,this.name=n,this.motionValue=s,this.element=i,this.isAsync=r}scheduleResolve(){this.isScheduled=!0,this.isAsync?(je.add(this),ze||(ze=!0,bt.read(He),bt.resolveKeyframes(Ue))):(this.readKeyframes(),this.complete())}readKeyframes(){const{unresolvedKeyframes:t,name:e,element:n,motionValue:s}=this;for(let i=0;i<t.length;i++)if(null===t[i])if(0===i){const i=null==s?void 0:s.get(),r=t[t.length-1];if(void 0!==i)t[0]=i;else if(n&&e){const s=n.readValue(e,r);null!=s&&(t[0]=s)}void 0===t[0]&&(t[0]=r),s&&void 0===i&&s.set(t[0])}else t[i]=t[i-1]}setFinalKeyframe(){}measureInitialState(){}renderEndStyles(){}measureEndState(){}complete(){this.isComplete=!0,this.onComplete(this.unresolvedKeyframes,this.finalKeyframe),je.delete(this)}cancel(){this.isComplete||(this.isScheduled=!1,je.delete(this))}resume(){this.isComplete||this.scheduleResolve()}}const qe=t=>/^-?(?:\d+(?:\.\d+)?|\.\d+)$/u.test(t),Xe=t=>e=>"string"==typeof e&&e.startsWith(t),Ge=Xe("--"),Ze=Xe("var(--"),_e=t=>!!Ze(t)&&Je.test(t.split("/*")[0].trim()),Je=/var\(--(?:[\w-]+\s*|[\w-]+\s*,(?:\s*[^)(\s]|\s*\((?:[^)(]|\([^)(]*\))*\))+\s*)\)$/iu,Qe=/^var\(--(?:([\w-]+)|([\w-]+), ?([a-zA-Z\d ()%#.,-]+))\)/u;function tn(t,e,n=1){const[s,i]=function(t){const e=Qe.exec(t);if(!e)return[,];const[,n,s,i]=e;return["--"+(null!=n?n:s),i]}(t);if(!s)return;const r=window.getComputedStyle(e).getPropertyValue(s);if(r){const t=r.trim();return qe(t)?parseFloat(t):t}return _e(i)?tn(i,e,n+1):i}const en=t=>e=>e.test(t),nn=[Zt,ce,ue,le,de,he,{test:t=>"auto"===t,parse:t=>t}],sn=t=>nn.find(en(t));class rn extends Ye{constructor(t,e,n,s,i){super(t,e,n,s,i,!0)}readKeyframes(){const{unresolvedKeyframes:t,element:e,name:n}=this;if(!e||!e.current)return;super.readKeyframes();for(let n=0;n<t.length;n++){let s=t[n];if("string"==typeof s&&(s=s.trim(),_e(s))){const i=tn(s,e.current);void 0!==i&&(t[n]=i),n===t.length-1&&(this.finalKeyframe=s)}}if(this.resolveNoneKeyframes(),!gt.has(n)||2!==t.length)return;const[s,i]=t,r=sn(s),o=sn(i);if(r!==o)if(Be(r)&&Be(o))for(let e=0;e<t.length;e++){const n=t[e];"string"==typeof n&&(t[e]=parseFloat(n))}else this.needsMeasurement=!0}resolveNoneKeyframes(){const{unresolvedKeyframes:t,name:e}=this,n=[];for(let e=0;e<t.length;e++)("number"==typeof(s=t[e])?0===s:null===s||"none"===s||"0"===s||Gt(s))&&n.push(e);var s;n.length&&function(t,e,n){let s=0,i=void 0;for(;s<t.length&&!i;){const e=t[s];"string"==typeof e&&!Re.has(e)&&ve(e).values.length&&(i=t[s]),s++}if(i&&n)for(const s of e)t[s]=Ie(n,i)}(t,n,e)}measureInitialState(){const{element:t,unresolvedKeyframes:e,name:n}=this;if(!t||!t.current)return;"height"===n&&(this.suspendedScrollY=window.pageYOffset),this.measuredOrigin=Ke[n](t.measureViewportBox(),window.getComputedStyle(t.current)),e[0]=this.measuredOrigin;const s=e[e.length-1];void 0!==s&&t.getValue(n,s).jump(s,!1)}measureEndState(){var t;const{element:e,name:n,unresolvedKeyframes:s}=this;if(!e||!e.current)return;const i=e.getValue(n);i&&i.jump(this.measuredOrigin,!1);const r=s.length-1,o=s[r];s[r]=Ke[n](e.measureViewportBox(),window.getComputedStyle(e.current)),null!==o&&void 0===this.finalKeyframe&&(this.finalKeyframe=o),(null===(t=this.removedTransforms)||void 0===t?void 0:t.length)&&this.removedTransforms.forEach(([t,n])=>{e.getValue(t).set(n)}),this.resolveNoneKeyframes()}}const on=(t,e)=>"zIndex"!==e&&(!("number"!=typeof t&&!Array.isArray(t))||!("string"!=typeof t||!Te.test(t)&&"0"!==t||t.startsWith("url(")));function an(t,e,n,s){const i=t[0];if(null===i)return!1;if("display"===e||"visibility"===e)return!0;const r=t[t.length-1],o=on(i,e),a=on(r,e);return!(!o||!a)&&(function(t){const e=t[0];if(1===t.length)return!0;for(let n=0;n<t.length;n++)if(t[n]!==e)return!0}(t)||("spring"===n||d(n))&&s)}const ln=t=>null!==t;function un(t,{repeat:e,repeatType:n="loop"},s){const i=t.filter(ln),r=e&&"loop"!==n&&e%2==1?0:i.length-1;return r&&void 0!==s?s:i[r]}class cn{constructor({autoplay:t=!0,delay:e=0,type:n="keyframes",repeat:s=0,repeatDelay:i=0,repeatType:r="loop",...o}){this.isStopped=!1,this.hasAttemptedResolve=!1,this.createdAt=Mt.now(),this.options={autoplay:t,delay:e,type:n,repeat:s,repeatDelay:i,repeatType:r,...o},this.updateFinishedPromise()}calcStartTime(){return this.resolvedAt&&this.resolvedAt-this.createdAt>40?this.resolvedAt:this.createdAt}get resolved(){return this._resolved||this.hasAttemptedResolve||(He(),Ue()),this._resolved}onKeyframesResolved(t,e){this.resolvedAt=Mt.now(),this.hasAttemptedResolve=!0;const{name:n,type:s,velocity:i,delay:r,onComplete:o,onUpdate:a,isGenerator:l}=this.options;if(!l&&!an(t,n,s,i)){if(!r)return a&&a(un(t,this.options,e)),o&&o(),void this.resolveFinishedPromise();this.options.duration=0}const u=this.initPlayback(t,e);!1!==u&&(this._resolved={keyframes:t,finalKeyframe:e,...u},this.onPostResolved())}onPostResolved(){}then(t,e){return this.currentFinishedPromise.then(t,e)}flatten(){this.options.type="keyframes",this.options.ease="linear"}updateFinishedPromise(){this.currentFinishedPromise=new Promise(t=>{this.resolveFinishedPromise=t})}}function hn(t,e,n){return n<0&&(n+=1),n>1&&(n-=1),n<1/6?t+6*(e-t)*n:n<.5?e:n<2/3?t+(e-t)*(2/3-n)*6:t}function dn(t,e){return n=>n>0?e:t}const pn=(t,e,n)=>{const s=t*t,i=n*(e*e-s)+s;return i<0?0:Math.sqrt(i)},fn=[oe,re,fe];function mn(t){const e=(n=t,fn.find(t=>t.test(n)));var n;if(!Boolean(e))return!1;let s=e.parse(t);return e===fe&&(s=function({hue:t,saturation:e,lightness:n,alpha:s}){t/=360,n/=100;let i=0,r=0,o=0;if(e/=100){const s=n<.5?n*(1+e):n+e-n*e,a=2*n-s;i=hn(a,s,t+1/3),r=hn(a,s,t),o=hn(a,s,t-1/3)}else i=r=o=n;return{red:Math.round(255*i),green:Math.round(255*r),blue:Math.round(255*o),alpha:s}}(s)),s}const gn=(t,e)=>{const n=mn(t),s=mn(e);if(!n||!s)return dn(t,e);const i={...n};return t=>(i.red=pn(n.red,s.red,t),i.green=pn(n.green,s.green,t),i.blue=pn(n.blue,s.blue,t),i.alpha=G(n.alpha,s.alpha,t),re.transform(i))},yn=(t,e)=>n=>e(t(n)),vn=(...t)=>t.reduce(yn),wn=new Set(["none","hidden"]);function bn(t,e){return n=>G(t,e,n)}function xn(t){return"number"==typeof t?bn:"string"==typeof t?_e(t)?dn:me.test(t)?gn:Vn:Array.isArray(t)?Tn:"object"==typeof t?me.test(t)?gn:Sn:dn}function Tn(t,e){const n=[...t],s=n.length,i=t.map((t,n)=>xn(t)(t,e[n]));return t=>{for(let e=0;e<s;e++)n[e]=i[e](t);return n}}function Sn(t,e){const n={...t,...e},s={};for(const i in n)void 0!==t[i]&&void 0!==e[i]&&(s[i]=xn(t[i])(t[i],e[i]));return t=>{for(const e in s)n[e]=s[e](t);return n}}const Vn=(t,e)=>{const n=Te.createTransformer(e),s=ve(t),i=ve(e);return s.indexes.var.length===i.indexes.var.length&&s.indexes.color.length===i.indexes.color.length&&s.indexes.number.length>=i.indexes.number.length?wn.has(t)&&!i.values.length||wn.has(e)&&!s.values.length?function(t,e){return wn.has(t)?n=>n<=0?t:e:n=>n>=1?e:t}(t,e):vn(Tn(function(t,e){var n;const s=[],i={color:0,var:0,number:0};for(let r=0;r<e.values.length;r++){const o=e.types[r],a=t.indexes[o][i[o]],l=null!==(n=t.values[a])&&void 0!==n?n:0;s[r]=l,i[o]++}return s}(s,i),i.values),n):dn(t,e)};function An(t,e,n){if("number"==typeof t&&"number"==typeof e&&"number"==typeof n)return G(t,e,n);return xn(t)(t,e)}function Mn({keyframes:t,velocity:e=0,power:n=.8,timeConstant:s=325,bounceDamping:i=10,bounceStiffness:r=500,modifyTarget:o,min:a,max:l,restDelta:u=.5,restSpeed:c}){const h=t[0],d={done:!1,value:h},p=t=>void 0===a?l:void 0===l||Math.abs(a-t)<Math.abs(l-t)?a:l;let f=n*e;const m=h+f,g=void 0===o?m:o(m);g!==m&&(f=g-h);const y=t=>-f*Math.exp(-t/s),v=t=>g+y(t),w=t=>{const e=y(t),n=v(t);d.done=Math.abs(e)<=u,d.value=d.done?g:n};let b,x;const T=t=>{var e;(e=d.value,void 0!==a&&e<a||void 0!==l&&e>l)&&(b=t,x=H({keyframes:[d.value,p(d.value)],velocity:M(v,t,d.value),damping:i,stiffness:r,restDelta:u,restSpeed:c}))};return T(0),{calculatedDuration:null,next:t=>{let e=!1;return x||void 0!==b||(e=!0,w(t),T(t)),void 0!==b&&t>=b?x.next(t-b):(!e&&w(t),d)}}}const Pn=Nt(.42,0,1,1),kn=Nt(0,0,.58,1),Fn=Nt(.42,0,.58,1),Cn={linear:e,easeIn:Pn,easeInOut:Fn,easeOut:kn,circIn:Yt,circInOut:Xt,circOut:qt,backIn:$t,backInOut:Ut,backOut:zt,anticipate:Ht},En=t=>{if(f(t)){n(4===t.length);const[e,s,i,r]=t;return Nt(e,s,i,r)}return"string"==typeof t?Cn[t]:t};function On(t,s,{clamp:r=!0,ease:o,mixer:a}={}){const l=t.length;if(n(l===s.length),1===l)return()=>s[0];if(2===l&&s[0]===s[1])return()=>s[1];const u=t[0]===t[1];t[0]>t[l-1]&&(t=[...t].reverse(),s=[...s].reverse());const c=function(t,n,s){const i=[],r=s||An,o=t.length-1;for(let s=0;s<o;s++){let o=r(t[s],t[s+1]);if(n){const t=Array.isArray(n)?n[s]||e:n;o=vn(t,o)}i.push(o)}return i}(s,o,a),h=c.length,d=e=>{if(u&&e<t[0])return s[0];let n=0;if(h>1)for(;n<t.length-2&&!(e<t[n+1]);n++);const r=i(t[n],t[n+1],e);return c[n](r)};return r?e=>d(V(t[0],t[l-1],e)):d}function In({duration:t=300,keyframes:e,times:n,ease:s="easeInOut"}){const i=q(s)?s.map(En):En(s),r={done:!1,value:e[0]},o=On(function(t,e){return t.map(t=>t*e)}(n&&n.length===e.length?n:_(e),t),e,{ease:Array.isArray(i)?i:(a=e,l=i,a.map(()=>l||Fn).splice(0,a.length-1))});var a,l;return{calculatedDuration:t,next:e=>(r.value=o(e),r.done=e>=t,r)}}const Rn=t=>{const e=({timestamp:e})=>t(e);return{start:()=>bt.update(e,!0),stop:()=>xt(e),now:()=>Tt.isProcessing?Tt.timestamp:Mt.now()}},Bn={decay:Mn,inertia:Mn,tween:In,keyframes:In,spring:H},Dn=t=>t/100;class Ln extends cn{constructor(t){super(t),this.holdTime=null,this.cancelTime=null,this.currentTime=0,this.playbackSpeed=1,this.pendingPlayState="running",this.startTime=null,this.state="idle",this.stop=()=>{if(this.resolver.cancel(),this.isStopped=!0,"idle"===this.state)return;this.teardown();const{onStop:t}=this.options;t&&t()};const{name:e,motionValue:n,element:s,keyframes:i}=this.options,r=(null==s?void 0:s.KeyframeResolver)||Ye;this.resolver=new r(i,(t,e)=>this.onKeyframesResolved(t,e),e,n,s),this.resolver.scheduleResolve()}flatten(){super.flatten(),this._resolved&&Object.assign(this._resolved,this.initPlayback(this._resolved.keyframes))}initPlayback(t){const{type:e="keyframes",repeat:n=0,repeatDelay:s=0,repeatType:i,velocity:r=0}=this.options,o=d(e)?e:Bn[e]||In;let a,l;o!==In&&"number"!=typeof t[0]&&(a=vn(Dn,An(t[0],t[1])),t=[0,100]);const u=o({...this.options,keyframes:t});"mirror"===i&&(l=o({...this.options,keyframes:[...t].reverse(),velocity:-r})),null===u.calculatedDuration&&(u.calculatedDuration=c(u));const{calculatedDuration:h}=u,p=h+s;return{generator:u,mirroredGenerator:l,mapPercentToKeyframes:a,calculatedDuration:h,resolvedDuration:p,totalDuration:p*(n+1)-s}}onPostResolved(){const{autoplay:t=!0}=this.options;this.play(),"paused"!==this.pendingPlayState&&t?this.state=this.pendingPlayState:this.pause()}tick(t,e=!1){const{resolved:n}=this;if(!n){const{keyframes:t}=this.options;return{done:!0,value:t[t.length-1]}}const{finalKeyframe:s,generator:i,mirroredGenerator:r,mapPercentToKeyframes:o,keyframes:a,calculatedDuration:l,totalDuration:u,resolvedDuration:c}=n;if(null===this.startTime)return i.next(0);const{delay:h,repeat:d,repeatType:p,repeatDelay:f,onUpdate:m}=this.options;this.speed>0?this.startTime=Math.min(this.startTime,t):this.speed<0&&(this.startTime=Math.min(t-u/this.speed,this.startTime)),e?this.currentTime=t:null!==this.holdTime?this.currentTime=this.holdTime:this.currentTime=Math.round(t-this.startTime)*this.speed;const g=this.currentTime-h*(this.speed>=0?1:-1),y=this.speed>=0?g<0:g>u;this.currentTime=Math.max(g,0),"finished"===this.state&&null===this.holdTime&&(this.currentTime=u);let v=this.currentTime,w=i;if(d){const t=Math.min(this.currentTime,u)/c;let e=Math.floor(t),n=t%1;!n&&t>=1&&(n=1),1===n&&e--,e=Math.min(e,d+1);Boolean(e%2)&&("reverse"===p?(n=1-n,f&&(n-=f/c)):"mirror"===p&&(w=r)),v=V(0,1,n)*c}const b=y?{done:!1,value:a[0]}:w.next(v);o&&(b.value=o(b.value));let{done:x}=b;y||null===l||(x=this.speed>=0?this.currentTime>=u:this.currentTime<=0);const T=null===this.holdTime&&("finished"===this.state||"running"===this.state&&x);return T&&void 0!==s&&(b.value=un(a,this.options,s)),m&&m(b.value),T&&this.finish(),b}get duration(){const{resolved:t}=this;return t?o(t.calculatedDuration):0}get time(){return o(this.currentTime)}set time(t){t=r(t),this.currentTime=t,null!==this.holdTime||0===this.speed?this.holdTime=t:this.driver&&(this.startTime=this.driver.now()-t/this.speed)}get speed(){return this.playbackSpeed}set speed(t){const e=this.playbackSpeed!==t;this.playbackSpeed=t,e&&(this.time=o(this.currentTime))}play(){if(this.resolver.isScheduled||this.resolver.resume(),!this._resolved)return void(this.pendingPlayState="running");if(this.isStopped)return;const{driver:t=Rn,onPlay:e,startTime:n}=this.options;this.driver||(this.driver=t(t=>this.tick(t))),e&&e();const s=this.driver.now();null!==this.holdTime?this.startTime=s-this.holdTime:this.startTime?"finished"===this.state&&(this.startTime=s):this.startTime=null!=n?n:this.calcStartTime(),"finished"===this.state&&this.updateFinishedPromise(),this.cancelTime=this.startTime,this.holdTime=null,this.state="running",this.driver.start()}pause(){var t;this._resolved?(this.state="paused",this.holdTime=null!==(t=this.currentTime)&&void 0!==t?t:0):this.pendingPlayState="paused"}complete(){"running"!==this.state&&this.play(),this.pendingPlayState=this.state="finished",this.holdTime=null}finish(){this.teardown(),this.state="finished";const{onComplete:t}=this.options;t&&t()}cancel(){null!==this.cancelTime&&this.tick(this.cancelTime),this.teardown(),this.updateFinishedPromise()}teardown(){this.state="idle",this.stopDriver(),this.resolveFinishedPromise(),this.updateFinishedPromise(),this.startTime=this.cancelTime=null,this.resolver.cancel()}stopDriver(){this.driver&&(this.driver.stop(),this.driver=void 0)}sample(t){return this.startTime=0,this.tick(t,!0)}}const Wn=new Set(["opacity","clipPath","filter","transform"]);function Nn(t,e,n,{delay:s=0,duration:i=300,repeat:r=0,repeatType:o="loop",ease:a="easeInOut",times:l}={}){const u={[e]:n};l&&(u.offset=l);const c=function t(e,n){return e?"function"==typeof e&&y()?v(e,n):f(e)?b(e):Array.isArray(e)?e.map(e=>t(e,n)||x.easeOut):x[e]:void 0}(a,i);return Array.isArray(c)&&(u.easing=c),t.animate(u,{delay:s,duration:i,easing:Array.isArray(c)?"linear":c,fill:"both",iterations:r+1,direction:"reverse"===o?"alternate":"normal"})}const Kn=s(()=>Object.hasOwnProperty.call(Element.prototype,"animate"));const jn={anticipate:Ht,backInOut:Ut,circInOut:Xt};class zn extends cn{constructor(t){super(t);const{name:e,motionValue:n,element:s,keyframes:i}=this.options;this.resolver=new rn(i,(t,e)=>this.onKeyframesResolved(t,e),e,n,s),this.resolver.scheduleResolve()}initPlayback(t,e){let{duration:n=300,times:s,ease:i,type:r,motionValue:o,name:a,startTime:l}=this.options;if(!o.owner||!o.owner.current)return!1;var u;if("string"==typeof i&&y()&&i in jn&&(i=jn[i]),d((u=this.options).type)||"spring"===u.type||!w(u.ease)){const{onComplete:e,onUpdate:o,motionValue:a,element:l,...u}=this.options,c=function(t,e){const n=new Ln({...e,keyframes:t,repeat:0,delay:0,isGenerator:!0});let s={done:!1,value:t[0]};const i=[];let r=0;for(;!s.done&&r<2e4;)s=n.sample(r),i.push(s.value),r+=10;return{times:void 0,keyframes:i,duration:r-10,ease:"linear"}}(t,u);1===(t=c.keyframes).length&&(t[1]=t[0]),n=c.duration,s=c.times,i=c.ease,r="keyframes"}const c=Nn(o.owner.current,a,t,{...this.options,duration:n,times:s,ease:i});return c.startTime=null!=l?l:this.calcStartTime(),this.pendingTimeline?(p(c,this.pendingTimeline),this.pendingTimeline=void 0):c.onfinish=()=>{const{onComplete:n}=this.options;o.set(un(t,this.options,e)),n&&n(),this.cancel(),this.resolveFinishedPromise()},{animation:c,duration:n,times:s,type:r,ease:i,keyframes:t}}get duration(){const{resolved:t}=this;if(!t)return 0;const{duration:e}=t;return o(e)}get time(){const{resolved:t}=this;if(!t)return 0;const{animation:e}=t;return o(e.currentTime||0)}set time(t){const{resolved:e}=this;if(!e)return;const{animation:n}=e;n.currentTime=r(t)}get speed(){const{resolved:t}=this;if(!t)return 1;const{animation:e}=t;return e.playbackRate}set speed(t){const{resolved:e}=this;if(!e)return;const{animation:n}=e;n.playbackRate=t}get state(){const{resolved:t}=this;if(!t)return"idle";const{animation:e}=t;return e.playState}get startTime(){const{resolved:t}=this;if(!t)return null;const{animation:e}=t;return e.startTime}attachTimeline(t){if(this._resolved){const{resolved:n}=this;if(!n)return e;const{animation:s}=n;p(s,t)}else this.pendingTimeline=t;return e}play(){if(this.isStopped)return;const{resolved:t}=this;if(!t)return;const{animation:e}=t;"finished"===e.playState&&this.updateFinishedPromise(),e.play()}pause(){const{resolved:t}=this;if(!t)return;const{animation:e}=t;e.pause()}stop(){if(this.resolver.cancel(),this.isStopped=!0,"idle"===this.state)return;this.resolveFinishedPromise(),this.updateFinishedPromise();const{resolved:t}=this;if(!t)return;const{animation:e,keyframes:n,duration:s,type:i,ease:o,times:a}=t;if("idle"===e.playState||"finished"===e.playState)return;if(this.time){const{motionValue:t,onUpdate:e,onComplete:l,element:u,...c}=this.options,h=new Ln({...c,keyframes:n,duration:s,type:i,ease:o,times:a,isGenerator:!0}),d=r(this.time);t.setWithVelocity(h.sample(d-10).value,h.sample(d).value,10)}const{onStop:l}=this.options;l&&l(),this.cancel()}complete(){const{resolved:t}=this;t&&t.animation.finish()}cancel(){const{resolved:t}=this;t&&t.animation.cancel()}static supports(t){const{motionValue:e,name:n,repeatDelay:s,repeatType:i,damping:r,type:o}=t;if(!(e&&e.owner&&e.owner.current instanceof HTMLElement))return!1;const{onUpdate:a,transformTemplate:l}=e.owner.getProps();return Kn()&&n&&Wn.has(n)&&!a&&!l&&!s&&"mirror"!==i&&0!==r&&"inertia"!==o}}const $n={type:"spring",stiffness:500,damping:25,restSpeed:10},Un={type:"keyframes",duration:.8},Hn={type:"keyframes",ease:[.25,.1,.35,1],duration:.3},Yn=(t,{keyframes:e})=>e.length>2?Un:mt.has(t)?t.startsWith("scale")?{type:"spring",stiffness:550,damping:0===e[1]?2*Math.sqrt(550):30,restSpeed:10}:$n:Hn;const qn=(t,e,n,s={},i,o)=>a=>{const c=u(s,t)||{},h=c.delay||s.delay||0;let{elapsed:d=0}=s;d-=r(h);let p={keyframes:Array.isArray(n)?n:[null,n],ease:"easeOut",velocity:e.getVelocity(),...c,delay:-d,onUpdate:t=>{e.set(t),c.onUpdate&&c.onUpdate(t)},onComplete:()=>{a(),c.onComplete&&c.onComplete()},name:t,motionValue:e,element:o?void 0:i};(function({when:t,delay:e,delayChildren:n,staggerChildren:s,staggerDirection:i,repeat:r,repeatType:o,repeatDelay:a,from:l,elapsed:u,...c}){return!!Object.keys(c).length})(c)||(p={...p,...Yn(t,p)}),p.duration&&(p.duration=r(p.duration)),p.repeatDelay&&(p.repeatDelay=r(p.repeatDelay)),void 0!==p.from&&(p.keyframes[0]=p.from);let f=!1;if((!1===p.type||0===p.duration&&!p.repeatDelay)&&(p.duration=0,0===p.delay&&(f=!0)),f&&!o&&void 0!==e.get()){const t=un(p.keyframes,c);if(void 0!==t)return bt.update(()=>{p.onUpdate(t),p.onComplete()}),new l([])}return!o&&zn.supports(p)?new zn(p):new Ln(p)};function Xn({protectedKeys:t,needsAnimating:e},n){const s=t.hasOwnProperty(n)&&!0!==e[n];return e[n]=!1,s}function Gn(t,e,{delay:n=0,transitionOverride:s,type:i}={}){var r;let{transition:o=t.getDefaultTransition(),transitionEnd:a,...l}=e;s&&(o=s);const c=[],h=i&&t.animationState&&t.animationState.getState()[i];for(const e in l){const s=t.getValue(e,null!==(r=t.latestValues[e])&&void 0!==r?r:null),i=l[e];if(void 0===i||h&&Xn(h,e))continue;const a={delay:n,...u(o||{},e)};let d=!1;if(window.MotionHandoffAnimation){const n=Lt(t);if(n){const t=window.MotionHandoffAnimation(n,e,bt);null!==t&&(a.startTime=t,d=!0)}}Rt(t,e),s.start(qn(e,s,i,t.shouldReduceMotion&&gt.has(e)?{type:!1}:a,t,d));const p=s.animation;p&&c.push(p)}return a&&Promise.all(c).then(()=>{bt.update(()=>{a&&It(t,a)})}),c}const Zn=()=>({x:{min:0,max:0},y:{min:0,max:0}}),_n={animation:["animate","variants","whileHover","whileTap","exit","whileInView","whileFocus","whileDrag"],exit:["exit"],drag:["drag","dragControls"],focus:["whileFocus"],hover:["whileHover","onHoverStart","onHoverEnd"],tap:["whileTap","onTap","onTapStart","onTapCancel"],pan:["onPan","onPanStart","onPanSessionStart","onPanEnd"],inView:["whileInView","onViewportEnter","onViewportLeave"],layout:["layout","layoutId"]},Jn={};for(const t in _n)Jn[t]={isEnabled:e=>_n[t].some(t=>!!e[t])};const Qn="undefined"!=typeof window,ts={current:null},es={current:!1};const ns=[...nn,me,Te];const ss=["initial","animate","whileInView","whileFocus","whileHover","whileTap","whileDrag","exit"];function is(t){return null!==(e=t.animate)&&"object"==typeof e&&"function"==typeof e.start||ss.some(e=>function(t){return"string"==typeof t||Array.isArray(t)}(t[e]));var e}const rs=["AnimationStart","AnimationComplete","Update","BeforeLayoutMeasure","LayoutMeasure","LayoutAnimationStart","LayoutAnimationComplete"];class os{scrapeMotionValuesFromProps(t,e,n){return{}}constructor({parent:t,props:e,presenceContext:n,reducedMotionConfig:s,blockInitialAnimation:i,visualState:r},o={}){this.current=null,this.children=new Set,this.isVariantNode=!1,this.isControllingVariants=!1,this.shouldReduceMotion=null,this.values=new Map,this.KeyframeResolver=Ye,this.features={},this.valueSubscriptions=new Map,this.prevMotionValues={},this.events={},this.propEventSubscriptions={},this.notifyUpdate=()=>this.notify("Update",this.latestValues),this.render=()=>{this.current&&(this.triggerBuild(),this.renderInstance(this.current,this.renderState,this.props.style,this.projection))},this.renderScheduledAt=0,this.scheduleRender=()=>{const t=Mt.now();this.renderScheduledAt<t&&(this.renderScheduledAt=t,bt.render(this.render,!1,!0))};const{latestValues:a,renderState:l,onUpdate:u}=r;this.onUpdate=u,this.latestValues=a,this.baseTarget={...a},this.initialValues=e.initial?{...a}:{},this.renderState=l,this.parent=t,this.props=e,this.presenceContext=n,this.depth=t?t.depth+1:0,this.reducedMotionConfig=s,this.options=o,this.blockInitialAnimation=Boolean(i),this.isControllingVariants=is(e),this.isVariantNode=function(t){return Boolean(is(t)||t.variants)}(e),this.isVariantNode&&(this.variantChildren=new Set),this.manuallyAnimateOnMount=Boolean(t&&t.current);const{willChange:c,...h}=this.scrapeMotionValuesFromProps(e,{},this);for(const t in h){const e=h[t];void 0!==a[t]&&J(e)&&e.set(a[t],!1)}}mount(t){this.current=t,pt.set(t,this),this.projection&&!this.projection.instance&&this.projection.mount(t),this.parent&&this.isVariantNode&&!this.isControllingVariants&&(this.removeFromVariantTree=this.parent.addVariantChild(this)),this.values.forEach((t,e)=>this.bindToMotionValue(e,t)),es.current||function(){if(es.current=!0,Qn)if(window.matchMedia){const t=window.matchMedia("(prefers-reduced-motion)"),e=()=>ts.current=t.matches;t.addListener(e),e()}else ts.current=!1}(),this.shouldReduceMotion="never"!==this.reducedMotionConfig&&("always"===this.reducedMotionConfig||ts.current),this.parent&&this.parent.children.add(this),this.update(this.props,this.presenceContext)}unmount(){pt.delete(this.current),this.projection&&this.projection.unmount(),xt(this.notifyUpdate),xt(this.render),this.valueSubscriptions.forEach(t=>t()),this.valueSubscriptions.clear(),this.removeFromVariantTree&&this.removeFromVariantTree(),this.parent&&this.parent.children.delete(this);for(const t in this.events)this.events[t].clear();for(const t in this.features){const e=this.features[t];e&&(e.unmount(),e.isMounted=!1)}this.current=null}bindToMotionValue(t,e){this.valueSubscriptions.has(t)&&this.valueSubscriptions.get(t)();const n=mt.has(t),s=e.on("change",e=>{this.latestValues[t]=e,this.props.onUpdate&&bt.preRender(this.notifyUpdate),n&&this.projection&&(this.projection.isTransformDirty=!0)}),i=e.on("renderRequest",this.scheduleRender);let r;window.MotionCheckAppearSync&&(r=window.MotionCheckAppearSync(this,t,e)),this.valueSubscriptions.set(t,()=>{s(),i(),r&&r(),e.owner&&e.stop()})}sortNodePosition(t){return this.current&&this.sortInstanceNodePosition&&this.type===t.type?this.sortInstanceNodePosition(this.current,t.current):0}updateFeatures(){let t="animation";for(t in Jn){const e=Jn[t];if(!e)continue;const{isEnabled:n,Feature:s}=e;if(!this.features[t]&&s&&n(this.props)&&(this.features[t]=new s(this)),this.features[t]){const e=this.features[t];e.isMounted?e.update():(e.mount(),e.isMounted=!0)}}}triggerBuild(){this.build(this.renderState,this.latestValues,this.props)}measureViewportBox(){return this.current?this.measureInstanceViewportBox(this.current,this.props):{x:{min:0,max:0},y:{min:0,max:0}}}getStaticValue(t){return this.latestValues[t]}setStaticValue(t,e){this.latestValues[t]=e}update(t,e){(t.transformTemplate||this.props.transformTemplate)&&this.scheduleRender(),this.prevProps=this.props,this.props=t,this.prevPresenceContext=this.presenceContext,this.presenceContext=e;for(let e=0;e<rs.length;e++){const n=rs[e];this.propEventSubscriptions[n]&&(this.propEventSubscriptions[n](),delete this.propEventSubscriptions[n]);const s=t["on"+n];s&&(this.propEventSubscriptions[n]=this.on(n,s))}this.prevMotionValues=function(t,e,n){for(const s in e){const i=e[s],r=n[s];if(J(i))t.addValue(s,i);else if(J(r))t.addValue(s,Ft(i,{owner:t}));else if(r!==i)if(t.hasValue(s)){const e=t.getValue(s);!0===e.liveStyle?e.jump(i):e.hasAnimated||e.set(i)}else{const e=t.getStaticValue(s);t.addValue(s,Ft(void 0!==e?e:i,{owner:t}))}}for(const s in n)void 0===e[s]&&t.removeValue(s);return e}(this,this.scrapeMotionValuesFromProps(t,this.prevProps,this),this.prevMotionValues),this.handleChildMotionValue&&this.handleChildMotionValue(),this.onUpdate&&this.onUpdate(this)}getProps(){return this.props}getVariant(t){return this.props.variants?this.props.variants[t]:void 0}getDefaultTransition(){return this.props.transition}getTransformPagePoint(){return this.props.transformPagePoint}getClosestVariantNode(){return this.isVariantNode?this:this.parent?this.parent.getClosestVariantNode():void 0}addVariantChild(t){const e=this.getClosestVariantNode();if(e)return e.variantChildren&&e.variantChildren.add(t),()=>e.variantChildren.delete(t)}addValue(t,e){const n=this.values.get(t);e!==n&&(n&&this.removeValue(t),this.bindToMotionValue(t,e),this.values.set(t,e),this.latestValues[t]=e.get())}removeValue(t){this.values.delete(t);const e=this.valueSubscriptions.get(t);e&&(e(),this.valueSubscriptions.delete(t)),delete this.latestValues[t],this.removeValueFromRenderState(t,this.renderState)}hasValue(t){return this.values.has(t)}getValue(t,e){if(this.props.values&&this.props.values[t])return this.props.values[t];let n=this.values.get(t);return void 0===n&&void 0!==e&&(n=Ft(null===e?void 0:e,{owner:this}),this.addValue(t,n)),n}readValue(t,e){var n;let s=void 0===this.latestValues[t]&&this.current?null!==(n=this.getBaseTargetFromProps(this.props,t))&&void 0!==n?n:this.readValueFromInstance(this.current,t,this.options):this.latestValues[t];var i;return null!=s&&("string"==typeof s&&(qe(s)||Gt(s))?s=parseFloat(s):(i=s,!ns.find(en(i))&&Te.test(e)&&(s=Ie(t,e))),this.setBaseTarget(t,J(s)?s.get():s)),J(s)?s.get():s}setBaseTarget(t,e){this.baseTarget[t]=e}getBaseTarget(t){var e;const{initial:n}=this.props;let s;if("string"==typeof n||"object"==typeof n){const i=Et(this.props,n,null===(e=this.presenceContext)||void 0===e?void 0:e.custom);i&&(s=i[t])}if(n&&void 0!==s)return s;const i=this.getBaseTargetFromProps(this.props,t);return void 0===i||J(i)?void 0!==this.initialValues[t]&&void 0===s?void 0:this.baseTarget[t]:i}on(t,e){return this.events[t]||(this.events[t]=new Pt),this.events[t].add(e)}notify(t,...e){this.events[t]&&this.events[t].notify(...e)}}class as extends os{constructor(){super(...arguments),this.KeyframeResolver=rn}sortInstanceNodePosition(t,e){return 2&t.compareDocumentPosition(e)?1:-1}getBaseTargetFromProps(t,e){return t.style?t.style[e]:void 0}removeValueFromRenderState(t,{vars:e,style:n}){delete e[t],delete n[t]}handleChildMotionValue(){this.childSubscription&&(this.childSubscription(),delete this.childSubscription);const{children:t}=this.props;J(t)&&(this.childSubscription=t.on("change",t=>{this.current&&(this.current.textContent=""+t)}))}}const ls=(t,e)=>e&&"number"==typeof t?e.transform(t):t,us={x:"translateX",y:"translateY",z:"translateZ",transformPerspective:"perspective"},cs=ft.length;function hs(t,e,n){const{style:s,vars:i,transformOrigin:r}=t;let o=!1,a=!1;for(const t in e){const n=e[t];if(mt.has(t))o=!0;else if(Ge(t))i[t]=n;else{const e=ls(n,Ce[t]);t.startsWith("origin")?(a=!0,r[t]=e):s[t]=e}}if(e.transform||(o||n?s.transform=function(t,e,n){let s="",i=!0;for(let r=0;r<cs;r++){const o=ft[r],a=t[o];if(void 0===a)continue;let l=!0;if(l="number"==typeof a?a===(o.startsWith("scale")?1:0):0===parseFloat(a),!l||n){const t=ls(a,Ce[o]);if(!l){i=!1;s+=`${us[o]||o}(${t}) `}n&&(e[o]=t)}}return s=s.trim(),n?s=n(e,i?"":s):i&&(s="none"),s}(e,t.transform,n):s.transform&&(s.transform="none")),a){const{originX:t="50%",originY:e="50%",originZ:n=0}=r;s.transformOrigin=`${t} ${e} ${n}`}}const ds={offset:"stroke-dashoffset",array:"stroke-dasharray"},ps={offset:"strokeDashoffset",array:"strokeDasharray"};function fs(t,e,n){return"string"==typeof t?t:ce.transform(e+n*t)}function ms(t,{attrX:e,attrY:n,attrScale:s,originX:i,originY:r,pathLength:o,pathSpacing:a=1,pathOffset:l=0,...u},c,h){if(hs(t,u,h),c)return void(t.style.viewBox&&(t.attrs.viewBox=t.style.viewBox));t.attrs=t.style,t.style={};const{attrs:d,style:p,dimensions:f}=t;d.transform&&(f&&(p.transform=d.transform),delete d.transform),f&&(void 0!==i||void 0!==r||p.transform)&&(p.transformOrigin=function(t,e,n){return`${fs(e,t.x,t.width)} ${fs(n,t.y,t.height)}`}(f,void 0!==i?i:.5,void 0!==r?r:.5)),void 0!==e&&(d.x=e),void 0!==n&&(d.y=n),void 0!==s&&(d.scale=s),void 0!==o&&function(t,e,n=1,s=0,i=!0){t.pathLength=1;const r=i?ds:ps;t[r.offset]=ce.transform(-s);const o=ce.transform(e),a=ce.transform(n);t[r.array]=`${o} ${a}`}(d,o,a,l,!1)}const gs=new Set(["baseFrequency","diffuseConstant","kernelMatrix","kernelUnitLength","keySplines","keyTimes","limitingConeAngle","markerHeight","markerWidth","numOctaves","targetX","targetY","surfaceScale","specularConstant","specularExponent","stdDeviation","tableValues","viewBox","gradientTransform","pathLength","startOffset","textLength","lengthAdjust"]);function ys(t,{style:e,vars:n},s,i){Object.assign(t.style,e,i&&i.getProjectionStyles(s));for(const e in n)t.style.setProperty(e,n[e])}const vs={};function ws(t,{layout:e,layoutId:n}){return mt.has(t)||t.startsWith("origin")||(e||void 0!==n)&&(!!vs[t]||"opacity"===t)}function bs(t,e,n){var s;const{style:i}=t,r={};for(const o in i)(J(i[o])||e.style&&J(e.style[o])||ws(o,t)||void 0!==(null===(s=null==n?void 0:n.getValue(o))||void 0===s?void 0:s.liveStyle))&&(r[o]=i[o]);return r}class xs extends as{constructor(){super(...arguments),this.type="svg",this.isSVGTag=!1,this.measureInstanceViewportBox=Zn}getBaseTargetFromProps(t,e){return t[e]}readValueFromInstance(t,e){if(mt.has(e)){const t=Oe(e);return t&&t.default||0}return e=gs.has(e)?e:Bt(e),t.getAttribute(e)}scrapeMotionValuesFromProps(t,e,n){return function(t,e,n){const s=bs(t,e,n);for(const n in t)if(J(t[n])||J(e[n])){s[-1!==ft.indexOf(n)?"attr"+n.charAt(0).toUpperCase()+n.substring(1):n]=t[n]}return s}(t,e,n)}build(t,e,n){ms(t,e,this.isSVGTag,n.transformTemplate)}renderInstance(t,e,n,s){!function(t,e,n,s){ys(t,e,void 0,s);for(const n in e.attrs)t.setAttribute(gs.has(n)?n:Bt(n),e.attrs[n])}(t,e,0,s)}mount(t){var e;this.isSVGTag="string"==typeof(e=t.tagName)&&"svg"===e.toLowerCase(),super.mount(t)}}class Ts extends as{constructor(){super(...arguments),this.type="html",this.renderInstance=ys}readValueFromInstance(t,e){if(mt.has(e)){const t=Oe(e);return t&&t.default||0}{const s=(n=t,window.getComputedStyle(n)),i=(Ge(e)?s.getPropertyValue(e):s[e])||0;return"string"==typeof i?i.trim():i}var n}measureInstanceViewportBox(t,{transformPagePoint:e}){return function(t,e){return function({top:t,left:e,right:n,bottom:s}){return{x:{min:e,max:n},y:{min:t,max:s}}}(function(t,e){if(!e)return t;const n=e({x:t.left,y:t.top}),s=e({x:t.right,y:t.bottom});return{top:n.y,left:n.x,bottom:s.y,right:s.x}}(t.getBoundingClientRect(),e))}(t,e)}build(t,e,n){hs(t,e,n.transformTemplate)}scrapeMotionValuesFromProps(t,e,n){return bs(t,e,n)}}class Ss extends os{constructor(){super(...arguments),this.type="object"}readValueFromInstance(t,e){if(function(t,e){return t in e}(e,t)){const n=t[e];if("string"==typeof n||"number"==typeof n)return n}}getBaseTargetFromProps(){}removeValueFromRenderState(t,e){delete e.output[t]}measureInstanceViewportBox(){return{x:{min:0,max:0},y:{min:0,max:0}}}build(t,e){Object.assign(t.output,e)}renderInstance(t,{output:e}){Object.assign(t,e)}sortInstanceNodePosition(){return 0}}function Vs(t){const e={presenceContext:null,props:{},visualState:{renderState:{transform:{},transformOrigin:{},style:{},vars:{},attrs:{}},latestValues:{}}},n=function(t){return t instanceof SVGElement&&"svg"!==t.tagName}(t)?new xs(e):new Ts(e);n.mount(t),pt.set(t,n)}function As(t){const e=new Ss({presenceContext:null,props:{},visualState:{renderState:{output:{}},latestValues:{}}});e.mount(t),pt.set(t,e)}function Ms(t,e,n,s){const i=[];if(function(t,e){return J(t)||"number"==typeof t||"string"==typeof t&&!Q(e)}(t,e))i.push(function(t,e,n){const s=J(t)?t:Ft(t);return s.start(qn("",s,e,n)),s.animation}(t,Q(e)&&e.default||e,n&&n.default||n));else{const r=tt(t,e,s),o=r.length;for(let t=0;t<o;t++){const s=r[t],a=s instanceof Element?Vs:As;pt.has(s)||a(s);const l=pt.get(s),u={...n};"delay"in u&&"function"==typeof u.delay&&(u.delay=u.delay(t,o)),i.push(...Gn(l,{...e,transition:u},{}))}}return i}function Ps(t,e,n){const s=[];return function(t,{defaultTransition:e={},...n}={},s,o){const a=e.duration||.3,l=new Map,u=new Map,c={},p=new Map;let f=0,m=0,g=0;for(let n=0;n<t.length;n++){const i=t[n];if("string"==typeof i){p.set(i,m);continue}if(!Array.isArray(i)){p.set(i.name,nt(m,i.at,f,p));continue}let[l,y,v={}]=i;void 0!==v.at&&(m=nt(m,v.at,f,p));let w=0;const b=(t,n,s,i=0,l=0)=>{const u=ut(t),{delay:c=0,times:p=_(u),type:f="keyframes",repeat:y,repeatType:v,repeatDelay:b=0,...x}=n;let{ease:T=e.ease||"easeOut",duration:S}=n;const V="function"==typeof c?c(i,l):c,A=u.length,M=d(f)?f:null==o?void 0:o[f];if(A<=2&&M){let t=100;if(2===A&&dt(u)){const e=u[1]-u[0];t=Math.abs(e)}const e={...x};void 0!==S&&(e.duration=r(S));const n=h(e,t,M);T=n.ease,S=n.duration}null!=S||(S=a);const P=m+V;1===p.length&&0===p[0]&&(p[1]=1);const k=p.length-u.length;if(k>0&&Z(p,k),1===u.length&&u.unshift(null),y){S=et(S,y);const t=[...u],e=[...p];T=Array.isArray(T)?[...T]:[T];const n=[...T];for(let s=0;s<y;s++){u.push(...t);for(let i=0;i<t.length;i++)p.push(e[i]+(s+1)),T.push(0===i?"linear":X(n,i-1))}rt(p,y)}const F=P+S;it(s,u,T,p,P,F),w=Math.max(V+S,w),g=Math.max(F,g)};if(J(l)){b(y,v,lt("default",at(l,u)))}else{const t=tt(l,y,s,c),e=t.length;for(let n=0;n<e;n++){y=y,v=v;const s=at(t[n],u);for(const t in y)b(y[t],ct(v,t),lt(t,s),n,e)}}f=m,m+=w}return u.forEach((t,s)=>{for(const r in t){const o=t[r];o.sort(ot);const a=[],u=[],c=[];for(let t=0;t<o.length;t++){const{at:e,value:n,easing:s}=o[t];a.push(n),u.push(i(0,g,e)),c.push(s||"easeOut")}0!==u[0]&&(u.unshift(0),a.unshift(a[0]),c.unshift("easeInOut")),1!==u[u.length-1]&&(u.push(1),a.push(null)),l.has(s)||l.set(s,{keyframes:{},transition:{}});const h=l.get(s);h.keyframes[r]=a,h.transition[r]={...e,duration:g,ease:c,times:u,...n}}}),l}(t,e,n,{spring:H}).forEach(({keyframes:t,transition:e},n)=>{s.push(...Ms(n,t,e))}),s}function ks(t){return function(e,n,s){let i=[];var r;r=e,i=Array.isArray(r)&&r.some(Array.isArray)?Ps(e,n,t):Ms(e,n,s,t);const o=new l(i);return t&&t.animations.push(o),o}}const Fs=ks();function Cs(t,e,n){t.style.setProperty("--"+e,n)}function Es(t,e,n){t.style[e]=n}const Os=s(()=>{try{document.createElement("div").animate({opacity:[1]})}catch(t){return!1}return!0}),Is=new WeakMap;function Rs(t){const e=Is.get(t)||new Map;return Is.set(t,e),Is.get(t)}class Bs extends class{constructor(t){this.animation=t}get duration(){var t,e,n;const s=(null===(e=null===(t=this.animation)||void 0===t?void 0:t.effect)||void 0===e?void 0:e.getComputedTiming().duration)||(null===(n=this.options)||void 0===n?void 0:n.duration)||300;return o(Number(s))}get time(){var t;return this.animation?o((null===(t=this.animation)||void 0===t?void 0:t.currentTime)||0):0}set time(t){this.animation&&(this.animation.currentTime=r(t))}get speed(){return this.animation?this.animation.playbackRate:1}set speed(t){this.animation&&(this.animation.playbackRate=t)}get state(){return this.animation?this.animation.playState:"finished"}get startTime(){return this.animation?this.animation.startTime:null}get finished(){return this.animation?this.animation.finished:Promise.resolve()}play(){this.animation&&this.animation.play()}pause(){this.animation&&this.animation.pause()}stop(){this.animation&&"idle"!==this.state&&"finished"!==this.state&&(this.animation.commitStyles&&this.animation.commitStyles(),this.cancel())}flatten(){var t;this.animation&&(null===(t=this.animation.effect)||void 0===t||t.updateTiming({easing:"linear"}))}attachTimeline(t){return this.animation&&p(this.animation,t),e}complete(){this.animation&&this.animation.finish()}cancel(){try{this.animation&&this.animation.cancel()}catch(t){}}}{constructor(t,e,s,i){const o=e.startsWith("--");n("string"!=typeof i.type);const a=Rs(t).get(e);a&&a.stop();if(Array.isArray(s)||(s=[s]),function(t,e,n){for(let s=0;s<e.length;s++)null===e[s]&&(e[s]=0===s?n():e[s-1]),"number"==typeof e[s]&&Pe[t]&&(e[s]=Pe[t].transform(e[s]));!Os()&&e.length<2&&e.unshift(n())}(e,s,()=>e.startsWith("--")?t.style.getPropertyValue(e):window.getComputedStyle(t)[e]),d(i.type)){const t=h(i,100,i.type);i.ease=y()?t.ease:"easeOut",i.duration=r(t.duration),i.type="keyframes"}else i.ease=i.ease||"easeOut";const l=()=>{this.setValue(t,e,un(s,i)),this.cancel(),this.resolveFinishedPromise()},u=()=>{this.setValue=o?Cs:Es,this.options=i,this.updateFinishedPromise(),this.removeAnimation=()=>{const n=Is.get(t);n&&n.delete(e)}};Kn()?(super(Nn(t,e,s,i)),u(),!1===i.autoplay&&this.animation.pause(),this.animation.onfinish=l,Rs(t).set(e,this)):(super(),u(),l())}then(t,e){return this.currentFinishedPromise.then(t,e)}updateFinishedPromise(){this.currentFinishedPromise=new Promise(t=>{this.resolveFinishedPromise=t})}play(){"finished"===this.state&&this.updateFinishedPromise(),super.play()}cancel(){this.removeAnimation(),super.cancel()}}const Ds=(t=>function(e,n,s){return new l(function(t,e,n,s){const i=S(t,s),o=i.length,a=[];for(let t=0;t<o;t++){const s=i[t],l={...n};"function"==typeof l.delay&&(l.delay=l.delay(t,o));for(const t in e){const n=e[t],i={...u(l,t)};i.duration=i.duration?r(i.duration):i.duration,i.delay=r(i.delay||0),a.push(new Bs(s,t,n,i))}}return a}(e,n,s,t))})();function Ls(t,e){let n;const s=()=>{const{currentTime:s}=e,i=(null===s?0:s.value)/100;n!==i&&t(i),n=i};return bt.update(s,!0),()=>xt(s)}const Ws=new WeakMap;let Ns;function Ks({target:t,contentRect:e,borderBoxSize:n}){var s;null===(s=Ws.get(t))||void 0===s||s.forEach(s=>{s({target:t,contentSize:e,get size(){return function(t,e){if(e){const{inlineSize:t,blockSize:n}=e[0];return{width:t,height:n}}return t instanceof SVGElement&&"getBBox"in t?t.getBBox():{width:t.offsetWidth,height:t.offsetHeight}}(t,n)}})})}function js(t){t.forEach(Ks)}function zs(t,e){Ns||"undefined"!=typeof ResizeObserver&&(Ns=new ResizeObserver(js));const n=S(t);return n.forEach(t=>{let n=Ws.get(t);n||(n=new Set,Ws.set(t,n)),n.add(e),null==Ns||Ns.observe(t)}),()=>{n.forEach(t=>{const n=Ws.get(t);null==n||n.delete(e),(null==n?void 0:n.size)||null==Ns||Ns.unobserve(t)})}}const $s=new Set;let Us;function Hs(t){return $s.add(t),Us||(Us=()=>{const t={width:window.innerWidth,height:window.innerHeight},e={target:window,size:t,contentSize:t};$s.forEach(t=>t(e))},window.addEventListener("resize",Us)),()=>{$s.delete(t),!$s.size&&Us&&(Us=void 0)}}const Ys={x:{length:"Width",position:"Left"},y:{length:"Height",position:"Top"}};function qs(t,e,n,s){const r=n[e],{length:o,position:a}=Ys[e],l=r.current,u=n.time;r.current=t["scroll"+a],r.scrollLength=t["scroll"+o]-t["client"+o],r.offset.length=0,r.offset[0]=0,r.offset[1]=r.scrollLength,r.progress=i(0,r.scrollLength,r.current);const c=s-u;r.velocity=c>50?0:A(r.current-l,c)}const Xs={start:0,center:.5,end:1};function Gs(t,e,n=0){let s=0;if(t in Xs&&(t=Xs[t]),"string"==typeof t){const e=parseFloat(t);t.endsWith("px")?s=e:t.endsWith("%")?t=e/100:t.endsWith("vw")?s=e/100*document.documentElement.clientWidth:t.endsWith("vh")?s=e/100*document.documentElement.clientHeight:t=e}return"number"==typeof t&&(s=e*t),n+s}const Zs=[0,0];function _s(t,e,n,s){let i=Array.isArray(t)?t:Zs,r=0,o=0;return"number"==typeof t?i=[t,t]:"string"==typeof t&&(i=(t=t.trim()).includes(" ")?t.split(" "):[t,Xs[t]?t:"0"]),r=Gs(i[0],n,s),o=Gs(i[1],e),r-o}const Js={Enter:[[0,1],[1,1]],Exit:[[0,0],[1,0]],Any:[[1,0],[0,1]],All:[[0,0],[1,1]]},Qs={x:0,y:0};function ti(t,e,n){const{offset:s=Js.All}=n,{target:i=t,axis:r="y"}=n,o="y"===r?"height":"width",a=i!==t?function(t,e){const n={x:0,y:0};let s=t;for(;s&&s!==e;)if(s instanceof HTMLElement)n.x+=s.offsetLeft,n.y+=s.offsetTop,s=s.offsetParent;else if("svg"===s.tagName){const t=s.getBoundingClientRect();s=s.parentElement;const e=s.getBoundingClientRect();n.x+=t.left-e.left,n.y+=t.top-e.top}else{if(!(s instanceof SVGGraphicsElement))break;{const{x:t,y:e}=s.getBBox();n.x+=t,n.y+=e;let i=null,r=s.parentNode;for(;!i;)"svg"===r.tagName&&(i=r),r=s.parentNode;s=i}}return n}(i,t):Qs,l=i===t?{width:t.scrollWidth,height:t.scrollHeight}:function(t){return"getBBox"in t&&"svg"!==t.tagName?t.getBBox():{width:t.clientWidth,height:t.clientHeight}}(i),u={width:t.clientWidth,height:t.clientHeight};e[r].offset.length=0;let c=!e[r].interpolate;const h=s.length;for(let t=0;t<h;t++){const n=_s(s[t],u[o],l[o],a[r]);c||n===e[r].interpolatorOffsets[t]||(c=!0),e[r].offset[t]=n}c&&(e[r].interpolate=On(e[r].offset,_(s),{clamp:!1}),e[r].interpolatorOffsets=[...e[r].offset]),e[r].progress=V(0,1,e[r].interpolate(e[r].current))}function ei(t,e,n,s={}){return{measure:()=>function(t,e=t,n){if(n.x.targetOffset=0,n.y.targetOffset=0,e!==t){let s=e;for(;s&&s!==t;)n.x.targetOffset+=s.offsetLeft,n.y.targetOffset+=s.offsetTop,s=s.offsetParent}n.x.targetLength=e===t?e.scrollWidth:e.clientWidth,n.y.targetLength=e===t?e.scrollHeight:e.clientHeight,n.x.containerLength=t.clientWidth,n.y.containerLength=t.clientHeight}(t,s.target,n),update:e=>{!function(t,e,n){qs(t,"x",e,n),qs(t,"y",e,n),e.time=n}(t,n,e),(s.offset||s.target)&&ti(t,n,s)},notify:()=>e(n)}}const ni=new WeakMap,si=new WeakMap,ii=new WeakMap,ri=t=>t===document.documentElement?window:t;function oi(t,{container:e=document.documentElement,...n}={}){let s=ii.get(e);s||(s=new Set,ii.set(e,s));const i=ei(e,t,{time:0,x:{current:0,offset:[],progress:0,scrollLength:0,targetOffset:0,targetLength:0,containerLength:0,velocity:0},y:{current:0,offset:[],progress:0,scrollLength:0,targetOffset:0,targetLength:0,containerLength:0,velocity:0}},n);if(s.add(i),!ni.has(e)){const t=()=>{for(const t of s)t.measure()},n=()=>{for(const t of s)t.update(Tt.timestamp)},i=()=>{for(const t of s)t.notify()},a=()=>{bt.read(t,!1,!0),bt.read(n,!1,!0),bt.update(i,!1,!0)};ni.set(e,a);const l=ri(e);window.addEventListener("resize",a,{passive:!0}),e!==document.documentElement&&si.set(e,(o=a,"function"==typeof(r=e)?Hs(r):zs(r,o))),l.addEventListener("scroll",a,{passive:!0})}var r,o;const a=ni.get(e);return bt.read(a,!1,!0),()=>{var t;xt(a);const n=ii.get(e);if(!n)return;if(n.delete(i),n.size)return;const s=ni.get(e);ni.delete(e),s&&(ri(e).removeEventListener("scroll",s),null===(t=si.get(e))||void 0===t||t(),window.removeEventListener("resize",s))}}const ai=new Map;function li({source:t,container:e=document.documentElement,axis:n="y"}={}){t&&(e=t),ai.has(e)||ai.set(e,{});const s=ai.get(e);return s[n]||(s[n]=a()?new ScrollTimeline({source:e,axis:n}):function({source:t,container:e,axis:n="y"}){t&&(e=t);const s={value:0},i=oi(t=>{s.value=100*t[n].progress},{container:e,axis:n});return{currentTime:s,cancel:i}}({source:e,axis:n})),s[n]}function ui(t){return t&&(t.target||t.offset)}const ci={some:0,all:1};const hi=(t,e)=>Math.abs(t-e);const di=bt,pi=wt.reduce((t,e)=>(t[e]=t=>xt(t),t),{});t.MotionValue=kt,t.animate=Fs,t.animateMini=Ds,t.anticipate=Ht,t.backIn=$t,t.backInOut=Ut,t.backOut=zt,t.cancelFrame=xt,t.cancelSync=pi,t.circIn=Yt,t.circInOut=Xt,t.circOut=qt,t.clamp=V,t.createScopedAnimate=ks,t.cubicBezier=Nt,t.delay=function(t,e){return function(t,e){const n=Mt.now(),s=({timestamp:i})=>{const r=i-n;r>=e&&(xt(s),t(r-e))};return bt.read(s,!0),()=>xt(s)}(t,r(e))},t.distance=hi,t.distance2D=function(t,e){const n=hi(t.x,e.x),s=hi(t.y,e.y);return Math.sqrt(n**2+s**2)},t.easeIn=Pn,t.easeInOut=Fn,t.easeOut=kn,t.frame=bt,t.frameData=Tt,t.frameSteps=St,t.inView=function(t,e,{root:n,margin:s,amount:i="some"}={}){const r=S(t),o=new WeakMap,a=new IntersectionObserver(t=>{t.forEach(t=>{const n=o.get(t.target);if(t.isIntersecting!==Boolean(n))if(t.isIntersecting){const n=e(t);"function"==typeof n?o.set(t.target,n):a.unobserve(t.target)}else"function"==typeof n&&(n(t),o.delete(t.target))})},{root:n,rootMargin:s,threshold:"number"==typeof i?i:ci[i]});return r.forEach(t=>a.observe(t)),()=>a.disconnect()},t.inertia=Mn,t.interpolate=On,t.invariant=n,t.isDragActive=function(){return T},t.keyframes=In,t.mirrorEasing=Kt,t.mix=An,t.motionValue=Ft,t.noop=e,t.pipe=vn,t.progress=i,t.reverseEasing=jt,t.scroll=function(t,{axis:n="y",...s}={}){const i={axis:n,...s};return"function"==typeof t?function(t,e){return function(t){return 2===t.length}(t)||ui(e)?oi(n=>{t(n[e.axis].progress,n)},e):Ls(t,li(e))}(t,i):function(t,n){if(t.flatten(),ui(n))return t.pause(),oi(e=>{t.time=t.duration*e[n.axis].progress},n);{const s=li(n);return t.attachTimeline?t.attachTimeline(s,t=>(t.pause(),Ls(e=>{t.time=t.duration*e},s))):e}}(t,i)},t.scrollInfo=oi,t.spring=H,t.stagger=function(t=.1,{startDelay:e=0,from:n=0,ease:s}={}){return(i,r)=>{const o="number"==typeof n?n:function(t,e){if("first"===t)return 0;{const n=e-1;return"last"===t?n:n/2}}(n,r),a=Math.abs(o-i);let l=t*a;if(s){const e=r*t;l=En(s)(l/e)*e}return e+l}},t.steps=function(t,e="end"){return n=>{const s=(n="end"===e?Math.min(n,.999):Math.max(n,.001))*t,i="end"===e?Math.floor(s):Math.ceil(s);return V(0,1,i/t)}},t.sync=di,t.time=Mt,t.transform=function(...t){const e=!Array.isArray(t[0]),n=e?0:-1,s=t[0+n],i=t[1+n],r=t[2+n],o=t[3+n],a=On(i,r,{mixer:(l=r[0],(t=>t&&"object"==typeof t&&t.mix)(l)?l.mix:void 0),...o});var l;return e?a(s):a},t.wrap=Y}));
+</script>
+<style>
+/* Layout: one column lesson. Hero, a tracker lab (tracker, wire, DB), where-does-it-run chooser, AddAsync lab, code stepper, rules, quiz. */
+:root{
+  --bg:#EEF3F1; --surface:#FFFFFF; --surface-2:#E3EBE8; --ink:#0F1F1C; --muted:#52675F; --line:#C9D6D1;
+  --pass:#0B7A6B; --pass-soft:#BDE3DB; --on-pass:#FFFFFF;
+  --stop:#C2410C; --stop-soft:#F3D3C3; --on-stop:#FFFFFF;
+  --focus:#1D4ED8;
+  --code-kw:#8FB8FF; --code-ty:#5BE0CB; --code-st:#F4B183;
+  --code-bg:#12211E; --code-ink:#DDEBE6; --code-dim:#7F9A92; --code-hl:rgba(61,214,190,.16); --code-accent:#5BE0CB;
+  --font-display:'Lalezar','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --font-body:'Segoe UI',Tahoma,Arial,system-ui,sans-serif;
+  --font-mono:Consolas,'Courier New',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1513; --surface:#12201D; --surface-2:#1B2D29; --ink:#E6F0EC; --muted:#94ABA4; --line:#27393A;
+    --pass:#37D1B9; --pass-soft:#12433C; --on-pass:#06201B;
+    --stop:#FF9466; --stop-soft:#4B2A1C; --on-stop:#1A0E08;
+    --focus:#8CAEFF;
+    --code-bg:#08100F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1513; --surface:#12201D; --surface-2:#1B2D29; --ink:#E6F0EC; --muted:#94ABA4; --line:#27393A;
+  --pass:#37D1B9; --pass-soft:#12433C; --on-pass:#06201B;
+  --stop:#FF9466; --stop-soft:#4B2A1C; --on-stop:#1A0E08;
+  --focus:#8CAEFF;
+  --code-bg:#08100F;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:16px; line-height:1.75;
+  direction:rtl; margin:0;
+  padding-block:0 56px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap{max-width:960px; margin-inline:auto; display:flex; flex-direction:column; gap:72px}
+h1,h2,h3,p,ol{margin:0}
+h2{font-family:var(--font-display); font-weight:400; font-size:clamp(30px,6vw,42px); line-height:1.25; text-wrap:balance}
+p{max-width:65ch}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.mono{font-family:var(--font-mono); direction:ltr; unicode-bidi:isolate}
+.ic{font-family:var(--font-mono); direction:ltr; unicode-bidi:isolate; background:var(--surface-2); border-radius:4px; padding:1px 6px; font-size:.88em}
+.muted{color:var(--muted)}
+.btn{border:1.5px solid var(--ink); background:transparent; color:var(--ink); border-radius:8px; padding:8px 18px; font-weight:600; min-height:44px; line-height:1.3}
+.btn:hover{background:var(--surface-2)}
+.btn[disabled]{opacity:.45; cursor:not-allowed}
+.btn--fill{background:var(--ink); color:var(--bg)}
+.btn--fill:hover{background:var(--ink); opacity:.88}
+.sec{display:flex; flex-direction:column; gap:20px}
+.sec-head{display:flex; flex-direction:column; gap:8px}
+.controls{display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px}
+
+/* ---------- hero ---------- */
+.hero{padding-top:max(40px,6vw); display:flex; flex-direction:column; gap:22px}
+.kicker{font-size:.85rem; letter-spacing:.08em; color:var(--muted); font-weight:600}
+.word{font-family:var(--font-display); font-size:clamp(52px,14vw,128px); line-height:1.05; direction:ltr; text-align:right; margin:0; font-weight:400}
+.word span{color:var(--pass)}
+.lead{font-size:1.2rem; font-weight:500; max-width:44ch; text-wrap:balance}
+.three{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px}
+.beh{background:var(--surface); border:1.5px solid var(--line); border-radius:10px; padding:16px 18px; display:flex; flex-direction:column; gap:6px}
+.beh b{font-size:1.05rem}
+.beh span{font-size:.93rem; color:var(--muted)}
+
+/* ---------- selectors ---------- */
+.sel{display:flex; flex-direction:column; gap:8px}
+.sel-label{font-size:.82rem; font-weight:700; color:var(--muted)}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{border:1.5px solid var(--line); background:var(--surface); border-radius:12px; padding:6px 14px; min-height:44px; font-weight:600; text-align:start; line-height:1.4}
+.chip small{display:block; font-size:.72rem; font-weight:400; opacity:.78}
+.chip:hover:not([disabled]){background:var(--surface-2)}
+.chip[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.chip[disabled]{cursor:not-allowed; opacity:.6}
+
+.console{background:var(--code-bg); color:var(--code-ink); border-radius:12px; padding:12px 16px; font-family:var(--font-mono); font-size:.8rem; direction:ltr; min-height:13rem; display:flex; flex-direction:column; gap:3px}
+.console .head{color:var(--code-dim); font-size:.72rem; letter-spacing:.08em; margin-bottom:4px}
+.console .out::before{content:"› "; color:var(--code-accent)}
+.console .out.bg{color:var(--code-dim)}
+.console .out.bg::before{color:var(--code-dim)}
+.console .out.bad{color:#FFB089}
+.console .out.good{color:var(--code-accent)}
+.cap{background:var(--ink); color:var(--bg); border-radius:12px; padding:12px 18px; min-height:5.2em; max-width:none; font-weight:500}
+.cap .ic{background:rgba(127,127,127,.28)}
+.note{font-size:.85rem; color:var(--muted)}
+.callout{border:1.5px solid var(--stop); background:var(--stop-soft); border-radius:12px; padding:14px 18px; display:flex; flex-direction:column; gap:4px}
+.callout .ic{background:var(--surface)}
+/* ---------- code stepper ---------- */
+.codebar{display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px}
+.tabs{display:inline-flex; border:1.5px solid var(--ink); border-radius:10px; overflow:hidden; align-self:flex-start; flex-wrap:wrap}
+.tabs button{border:0; background:transparent; padding:8px 18px; min-height:44px; font-weight:700}
+.tabs button[aria-selected="true"]{background:var(--ink); color:var(--bg)}
+.scenario{font-weight:600; max-width:65ch}
+.code-wrap{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:16px; align-items:start}
+.code{position:relative; background:var(--code-bg); color:var(--code-ink); border-radius:12px; padding:14px 0; direction:ltr; font-family:var(--font-mono); font-size:.84rem; overflow-x:auto}
+.code .inner{position:relative; width:max-content; min-width:100%}
+.code .hl{position:absolute; left:0; right:0; top:0; height:2.1rem; background:var(--code-hl); border-left:3px solid var(--code-accent); opacity:0}
+.code .ln{position:relative; height:2.1rem; line-height:2.1rem; padding-inline:16px; white-space:pre; width:max-content; min-width:100%}
+.cm{color:var(--code-dim)}
+.kw{color:var(--code-kw)}
+.ty{color:var(--code-ty)}
+.st{color:var(--code-st)}
+.explain{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; min-height:6.6em; font-size:.98rem}
+#cx-console{min-height:9.4rem}
+.wait{font-family:var(--font-body); direction:rtl; display:inline-block; margin-inline-start:8px; font-size:.75rem; color:#FFB089}
+/* ---------- order list ---------- */
+.order{list-style:none; padding:0; display:flex; flex-direction:column; gap:8px; counter-reset:o}
+.order li{counter-increment:o; display:grid; grid-template-columns:2.2rem minmax(0,1fr); gap:12px; align-items:start; background:var(--surface); border:1.5px solid var(--line); border-radius:10px; padding:10px 14px}
+.order li::before{content:counter(o); font-family:var(--font-display); font-size:1.5rem; line-height:1.3; color:var(--muted); text-align:center}
+.order li.hot{border:2px solid var(--ink)}
+.order li.hot::before{color:var(--pass)}
+.order code{display:block; font-family:var(--font-mono); direction:ltr; text-align:right; font-weight:500; font-size:.9rem}
+.order span{font-size:.93rem; color:var(--muted)}
+/* ---------- quiz ---------- */
+.quiz{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:18px}
+.qtop{display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:.85rem; color:var(--muted)}
+.dots{display:flex; gap:6px; flex-wrap:wrap}
+.dots i{width:10px; height:10px; border-radius:50%; background:var(--surface-2); border:1.5px solid var(--line)}
+.dots i.on{background:var(--ink); border-color:var(--ink)}
+.qtext{font-size:1.15rem; font-weight:600; line-height:1.7; text-wrap:balance; min-height:3.4em}
+.options{display:flex; flex-direction:column; gap:10px}
+.opt{border:2px solid var(--line); background:transparent; border-radius:10px; min-height:52px; padding:10px 16px; text-align:start; font-size:1rem; font-weight:500; line-height:1.6}
+.opt:hover:not([disabled]){background:var(--surface-2)}
+.opt[disabled]{cursor:default}
+.opt.dim{opacity:.45}
+.opt.right{background:var(--pass); color:var(--on-pass); border-color:var(--pass); opacity:1}
+.opt.right .ic{background:rgba(255,255,255,.22); color:inherit}
+.opt.wrong{border-color:var(--stop); background:var(--stop-soft); opacity:1}
+.fb{min-height:4.6em; display:flex; flex-direction:column; gap:4px}
+.qnext{align-self:flex-start}
+.score{font-family:var(--font-display); font-size:3rem; line-height:1; direction:ltr; text-align:right}
+
+/* ---------- summary ---------- */
+.take-away{font-family:var(--font-display); font-size:clamp(24px,5vw,34px); line-height:1.4; text-wrap:balance; max-width:30ch}
+.terms{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:0}
+.terms div{border-top:2px solid var(--ink); padding-top:10px}
+.terms dt{font-family:var(--font-mono); direction:ltr; text-align:right; font-weight:500; font-size:.95rem}
+.terms dd{margin:2px 0 0; color:var(--muted); font-size:.92rem}
+.foot{font-size:.8rem; color:var(--muted); direction:ltr; text-align:center}
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.85rem; color:var(--muted); max-width:none}
+
+/* ---------- extra tokens ---------- */
+:root{ --warn:#8A5A00; --warn-soft:#F6E4B5; --on-warn:#2A1B00; }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --warn:#F2C45A; --warn-soft:#4A3A12; --on-warn:#1F1500; }
+}
+:root[data-theme="dark"]{ --warn:#F2C45A; --warn-soft:#4A3A12; --on-warn:#1F1500; }
+
+.box{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:12px 14px; display:flex; flex-direction:column; gap:8px; min-width:0}
+.box > b{font-size:.98rem}
+.box-sub{font-size:.78rem; color:var(--muted); margin-top:-4px}
+
+/* ---------- entity state chips ---------- */
+.es{display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:1px 10px; font-size:.78rem; font-weight:700; border:1.5px solid transparent; white-space:nowrap; direction:ltr; line-height:1.6}
+.es i{font-style:normal; font-family:var(--font-mono)}
+.es-unch{background:var(--surface-2); color:var(--ink); border-color:var(--line)}
+.es-add{background:var(--pass); color:var(--on-pass)}
+.es-mod{background:var(--warn-soft); color:var(--warn); border:1.5px dashed var(--warn)}
+.es-del{background:var(--stop); color:var(--on-stop)}
+.es-det{background:transparent; color:var(--muted); border:1.5px dashed var(--muted)}
+
+/* ---------- lab: operation buttons ---------- */
+.ops{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:10px}
+.op{display:flex; align-items:center; justify-content:space-between; gap:10px; border:1.5px solid var(--ink); border-radius:10px; padding:8px 12px; min-height:50px; background:transparent; text-align:start}
+.op:hover:not([disabled]){background:var(--surface-2)}
+.op[disabled]{opacity:.45; cursor:not-allowed}
+.op code{font-family:var(--font-mono); direction:ltr; unicode-bidi:isolate; font-size:.8rem; text-align:left; overflow-wrap:anywhere; line-height:1.5}
+.bd{font-style:normal; font-size:.7rem; font-weight:700; padding:1px 9px; border-radius:999px; white-space:nowrap; border:1.5px solid transparent}
+.bd.mem{background:var(--surface-2); color:var(--ink); border-color:var(--line)}
+.bd.io{background:var(--stop); color:var(--on-stop)}
+.bd.mix{background:var(--warn-soft); color:var(--warn); border:1.5px dashed var(--warn)}
+.hint{font-size:.86rem; color:var(--muted)}
+
+/* ---------- lab: tracker | wire | db ---------- */
+.lab-flow{display:grid; grid-template-columns:minmax(0,1.15fr) 120px minmax(0,.85fr); align-items:stretch}
+.tbox{background:var(--surface); border:2px solid var(--ink); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; min-width:0; min-height:15rem}
+.tbox.db{border-color:var(--muted)}
+.tb-head{display:flex; flex-direction:column; gap:0}
+.tb-head b{font-size:1rem}
+.tb-head span{font-size:.76rem; color:var(--muted)}
+.tb-empty{font-size:.88rem; color:var(--muted); border:1.5px dashed var(--line); border-radius:10px; padding:14px; text-align:center}
+.trows,.drows{display:flex; flex-direction:column; gap:8px}
+.trow{display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; border:1.5px solid var(--line); border-radius:10px; padding:6px 10px; background:var(--bg)}
+.trow.s-Added{border-color:var(--pass)}
+.trow.s-Modified{border-color:var(--warn); border-style:dashed}
+.trow.s-Deleted{border-color:var(--stop); background:var(--stop-soft)}
+.trow.s-Deleted .tnm{text-decoration:line-through}
+.tnm{font-weight:700}
+.tid{font-size:.8rem; color:var(--muted); font-family:var(--font-mono); direction:ltr}
+.tpr{margin-inline-start:auto; font-family:var(--font-mono); direction:ltr; font-weight:500}
+.tdet{flex-basis:100%; font-size:.76rem; color:var(--muted); line-height:1.5}
+.drow{display:grid; grid-template-columns:1.6rem minmax(0,1fr) auto; gap:8px; align-items:center; border:1.5px solid var(--line); border-radius:8px; padding:4px 10px; font-size:.9rem; background:var(--bg)}
+.drow .tid{font-size:.8rem}
+.drow.flash{background:var(--pass-soft); border-color:var(--pass)}
+.dbn{font-size:.8rem; color:var(--muted)}
+
+.wire{position:relative; min-height:110px}
+.w-line{position:absolute; left:6px; right:6px; top:50%; border-top:3px dashed var(--line); transition:border-color .25s}
+.w-lbl{position:absolute; left:0; right:0; top:calc(50% + 10px); text-align:center; font-size:.72rem; font-weight:700; color:var(--muted); line-height:1.35; padding-inline:4px}
+.wire.live .w-line{border-top-style:solid; border-color:var(--stop)}
+.wire.live .w-lbl{color:var(--stop)}
+.w-dot{position:absolute; left:50%; top:50%; width:16px; height:16px; margin:-9px 0 0 -8px; border-radius:50%; background:var(--stop); opacity:0; z-index:2}
+
+.lab-low{display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr) minmax(0,1.1fr); gap:14px; align-items:stretch}
+.vrow{display:flex; flex-direction:column; gap:4px; border-top:1px solid var(--line); padding-top:8px}
+.vrow:first-of-type{border-top:0; padding-top:0}
+.vname{font-family:var(--font-mono); direction:ltr; text-align:right; font-weight:500}
+.vval{font-family:var(--font-mono); direction:ltr; text-align:right; font-size:.78rem; color:var(--muted); overflow-wrap:anywhere}
+.trk{font-size:.78rem; font-weight:700}
+.trk.yes{color:var(--pass)}
+.trk.no{color:var(--stop)}
+.meters{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:auto}
+.meter{border-top:2px solid var(--ink); padding-top:6px}
+.meter b{font-family:var(--font-display); font-weight:400; font-size:2.1rem; line-height:1; display:block; direction:ltr; text-align:right}
+.meter span{font-size:.76rem; color:var(--muted); line-height:1.3; display:block}
+.lab-low .console{min-height:12rem; max-height:17rem; overflow:auto}
+.console .out.sql{color:var(--code-accent)}
+
+/* ---------- where does it run ---------- */
+.wh-grid{display:grid; grid-template-columns:minmax(0,1fr) 170px minmax(0,1fr); gap:10px; align-items:center}
+.wh-box{background:var(--surface); border:2px solid var(--line); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:8px; min-width:0; transition:border-color .25s, background .25s}
+.wh-box b{font-family:var(--font-display); font-weight:400; font-size:1.5rem; line-height:1.1}
+.wh-box span{font-size:.82rem; color:var(--muted)}
+.wh-box.hit{border-color:var(--pass); background:var(--pass-soft)}
+.wh-box.hit.io{border-color:var(--stop); background:var(--stop-soft)}
+.wh-box.maybe{border-style:dashed; border-color:var(--warn); background:var(--warn-soft)}
+.wh-time{font-family:var(--font-mono); direction:ltr; text-align:right; font-size:.8rem; font-weight:500; color:var(--ink)}
+.wh-bar{height:10px; background:var(--surface-2); border-radius:6px; overflow:hidden}
+.wh-bar i{display:block; height:100%; width:0; background:var(--pass)}
+.wh-bar.io i{background:var(--stop)}
+.wh-mid{display:flex; justify-content:center; align-items:center; min-height:64px}
+.wh-tok{background:var(--ink); color:var(--bg); border-radius:999px; padding:3px 12px; font-family:var(--font-mono); font-size:.78rem; direction:ltr; white-space:nowrap; max-width:100%}
+.wh-res{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; display:flex; flex-direction:column; gap:8px; min-height:9.5em}
+.wh-res .row{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px}
+.wh-res code{font-family:var(--font-mono); direction:ltr; unicode-bidi:isolate; font-weight:500}
+.rule{font-family:var(--font-display); font-size:clamp(22px,4.4vw,30px); line-height:1.5; text-wrap:balance; max-width:34ch}
+
+/* ---------- AddAsync lab ---------- */
+.ad-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; align-items:start}
+.slots{display:flex; flex-wrap:wrap; gap:8px}
+.slot{min-width:46px; height:46px; padding-inline:6px; border:1.5px dashed var(--muted); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); background:var(--bg); color:var(--muted)}
+.slot.full{border-style:solid; border-color:var(--pass); background:var(--pass-soft); color:var(--ink)}
+.slot.used{opacity:.45; text-decoration:line-through}
+.ad-list{display:flex; flex-direction:column; gap:6px; min-height:4.5rem}
+.ad-item{display:flex; flex-wrap:wrap; gap:2px 10px; align-items:center; border:1.5px solid var(--line); border-radius:8px; padding:4px 10px; font-size:.88rem; background:var(--bg)}
+.ad-item code{font-family:var(--font-mono); direction:ltr; unicode-bidi:isolate; font-size:.8rem}
+.thr-state{display:flex; align-items:center; gap:10px; border-radius:10px; padding:10px 14px; font-weight:700; background:var(--pass-soft); color:var(--ink); min-height:3.2rem}
+.thr-state.blocked{background:var(--stop); color:var(--on-stop)}
+.thr-state.wait{background:var(--warn-soft); color:var(--warn)}
+.sp{width:18px; height:18px; border:3px solid currentColor; border-right-color:transparent; border-radius:50%; animation:sp .8s linear infinite; flex:none}
+.sp[hidden]{display:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ping{align-self:flex-start}
+.stats{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px}
+
+@media (max-width:760px){
+  .wrap{gap:56px}
+  .three,.code-wrap,.ad-grid,.lab-low{grid-template-columns:minmax(0,1fr)}
+  .lab-flow{grid-template-columns:minmax(0,1fr)}
+  .wire{min-height:96px}
+  .w-line{left:50%; right:auto; top:6px; bottom:6px; border-top:0; border-left:3px dashed var(--line)}
+  .wire.live .w-line{border-left-style:solid; border-left-color:var(--stop)}
+  .w-lbl{left:calc(50% + 12px); right:auto; top:50%; transform:translateY(-50%); text-align:start; padding:0}
+  .tbox{min-height:0}
+  .wh-grid{grid-template-columns:minmax(0,1fr)}
+  .wh-mid{min-height:56px}
+  .quiz{padding:16px}
+}
+@media (prefers-reduced-motion: reduce){
+  .wh-box,.w-line{transition:none}
+  .sp{animation-duration:2.4s}
+}
+.lab-low .console .head,#ad-log .head{direction:rtl; letter-spacing:0; text-align:right}
+
+
+/* ================= EF CORE PLAYGROUND — SHARED LESSON PALETTE ================= */
+/* Colors follow the Sync/Async, Middleware and EF Core reference lessons. */
+:root {
+  --bg:#EEF3F1; --surface:#FFFFFF; --surface-2:#E3EBE8; --ink:#0F1F1C; --muted:#52675F; --line:#C9D6D1;
+  --pass:#0B7A6B; --pass-soft:#BDE3DB; --on-pass:#FFFFFF;
+  --stop:#C2410C; --stop-soft:#F3D3C3; --on-stop:#FFFFFF;
+  --focus:#1D4ED8; --warn:#8A5A00; --warn-soft:#F6E4B5; --on-warn:#2A1B00;
+  --accent:var(--pass); --accent-soft:var(--pass-soft);
+  --io:var(--stop); --io-soft:var(--stop-soft);
+  --code-kw:#8FB8FF; --code-ty:#5BE0CB; --code-st:#F4B183;
+  --code-bg:#12211E; --code-ink:#DDEBE6; --code-dim:#7F9A92; --code-hl:rgba(61,214,190,.16); --code-accent:#5BE0CB;
+  --elevate:0 14px 44px rgba(15,31,28,.045); --nav-bg:rgba(255,255,255,.94);
+  --font-display:'Segoe UI',Tahoma,Arial,system-ui,sans-serif;
+}
+:root[data-theme="dark"]{
+  --bg:#0B1513; --surface:#12201D; --surface-2:#1B2D29; --ink:#E6F0EC; --muted:#94ABA4; --line:#27393A;
+  --pass:#37D1B9; --pass-soft:#12433C; --on-pass:#06201B;
+  --stop:#FF9466; --stop-soft:#4B2A1C; --on-stop:#1A0E08;
+  --focus:#8CAEFF; --warn:#F2C45A; --warn-soft:#4A3A12; --on-warn:#1F1500;
+  --code-bg:#08100F; --code-ink:#DDEBE6; --code-dim:#7F9A92; --code-hl:rgba(61,214,190,.16); --code-accent:#5BE0CB;
+  --elevate:0 16px 50px rgba(0,0,0,.16); --nav-bg:rgba(18,32,29,.94);
+}
+html{scroll-behavior:smooth}
+body{padding:0 18px 66px; background:var(--bg); color:var(--ink); font-size:15.5px; line-height:1.8; background-image:radial-gradient(circle at 13% 3%, rgba(96,155,234,.075), transparent 22%),radial-gradient(circle at 93% 40%, rgba(52,176,161,.04), transparent 24%)}
+.wrap{max-width:1180px; gap:30px}
+.sec{background:var(--surface); padding:32px clamp(18px,3.7vw,42px) 36px; border:1px solid var(--line); border-radius:22px; box-shadow:var(--elevate); gap:20px; min-width:0}
+.sec-head{gap:11px}
+.sec-head::before{content:'INTERACTIVE LAB / 01'; font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.11em; color:var(--pass); line-height:1.3; direction:ltr; text-align:right}
+.sec[aria-labelledby="h-where"] .sec-head::before{content:'UNDERSTAND THE CONCEPT / 02'}
+.sec[aria-labelledby="h-add"] .sec-head::before{content:'DEEP DIVE / 03'}
+.sec[aria-labelledby="h-code"] .sec-head::before{content:'CODE WALKTHROUGH / 04'}
+.sec[aria-labelledby="h-rules"] .sec-head::before{content:'BEST PRACTICES / 05'}
+.sec[aria-labelledby="h-quiz"] .sec-head::before{content:'CHECK YOUR KNOWLEDGE / 06'}
+.sec[aria-labelledby="h-sum"] .sec-head::before{content:'TAKEAWAYS / 07'}
+h2{font-family:var(--font-display); font-weight:700; font-size:clamp(23px,3.2vw,34px); letter-spacing:-.035em; line-height:1.5;}
+.sec-head > p{max-width:92ch;font-size:.95rem;line-height:1.9}
+h2 .mono{color:var(--pass);font-weight:600;font-size:.78em;letter-spacing:-.04em}
+#h-lab,#h-where,#h-add,#h-code,#h-quiz,#h-rules,#h-sum{scroll-margin-top:112px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.ic{background:var(--surface-2);border:1px solid var(--line);font-size:.85em;white-space:normal;overflow-wrap:anywhere}
+.btn{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:10px 17px;transition:background .18s,transform .18s,border-color .18s;box-shadow:0 1px 2px rgba(0,0,0,.035)}
+.btn:not([disabled]):hover{background:var(--surface-2);border-color:var(--accent);transform:translateY(-1px)}
+.btn--fill{background:#2563db;border-color:#2563db;color:white}
+.btn--fill:hover:not([disabled]){background:#1d4ed8;color:white}
+.btn-copy{border-style:dashed}
+/* navigation */
+.page-progress{position:fixed;z-index:100;inset:0 0 auto;height:3px;direction:ltr;background:transparent;pointer-events:none}
+.page-progress span{height:100%;display:block;width:0;background:linear-gradient(90deg,#54d9bd,#4083e7);box-shadow:0 0 9px #39c9bf66;transition:width .12s linear}
+.site-nav{position:sticky;z-index:90;top:0;margin:0 -18px 26px;padding:0 18px;background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1180px;margin:auto;min-height:70px;display:flex;gap:20px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex-shrink:0;direction:ltr}
+.brand-mark{height:39px;width:42px;background:#13233d;border-radius:12px;color:#7fe9d3;display:grid;place-items:center;font-family:var(--font-mono);font-weight:700;font-size:1rem;box-shadow:0 4px 11px rgba(31,54,80,.15)}
+.brand-text{font-family:var(--font-mono);font-size:12px;font-weight:600;line-height:1.25;letter-spacing:.05em}
+.brand-text b{color:var(--pass)} .brand-text small{display:block;font-family:var(--font-body);font-size:10px;letter-spacing:0;color:var(--muted);direction:rtl}
+.nav-links{display:flex;gap:4px;align-items:center;overflow:auto;scrollbar-width:none;min-width:0}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{padding:8px 13px;border-radius:9px;text-decoration:none;color:var(--muted);white-space:nowrap;font-size:12.5px;font-weight:700;transition:.2s}
+.nav-links a:hover{background:var(--surface-2);color:var(--ink)}
+.nav-links a.active{background:var(--accent-soft);color:var(--accent)}
+.theme-switch{border:1px solid var(--line);border-radius:10px;background:var(--surface);display:flex;align-items:center;gap:8px;min-height:38px;padding:6px 12px;white-space:nowrap;font-size:12px;font-weight:700;flex-shrink:0}
+#theme-icon{font-size:20px;line-height:1}
+/* hero */
+.hero{padding:0;gap:0;isolation:isolate}
+.hero-main{min-height:365px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);gap:34px;align-items:center;padding:clamp(28px,4.5vw,56px);border-radius:26px;overflow:hidden;position:relative;background:linear-gradient(122deg,#0e223c,#102e44 54%,#0b504c);color:#fff;box-shadow:0 20px 55px rgba(18,50,67,.13)}
+.hero-main::before{content:'';position:absolute;inset:0;opacity:.18;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:33px 33px;mask-image:linear-gradient(to left,black,transparent 80%)}
+.hero-main::after{content:'';position:absolute;left:-100px;top:-120px;width:350px;height:350px;border-radius:50%;background:#26c2b2;filter:blur(130px);opacity:.17;pointer-events:none}
+.hero-copy{position:relative;z-index:1;min-width:0}
+.hero .kicker{display:flex;align-items:center;gap:9px;color:#a5cfcf;font-family:var(--font-mono);direction:ltr;justify-content:flex-end;text-align:right;font-size:11px;letter-spacing:.07em;margin:0 0 15px;font-weight:700}
+.kicker-pip{width:9px;height:9px;display:inline-block;border-radius:50%;background:#53e6c8;box-shadow:0 0 0 5px #53e6c826}
+.hero-kicker-ar{border:1px solid #ffffff25;padding:2px 8px;border-radius:6px;font-family:var(--font-body);font-size:11px;letter-spacing:0}
+.hero .word{font-family:var(--font-display);direction:rtl;text-align:right;font-weight:700;font-size:clamp(35px,3.8vw,53px);line-height:1.55;letter-spacing:-.055em;margin:0 0 14px}
+.hero-english{color:#75e6cd;display:inline-block;direction:ltr;font-family:var(--font-mono);font-size:.75em;letter-spacing:-.065em;unicode-bidi:isolate}
+.word-end{display:block;color:#f8feff;font-size:.65em;letter-spacing:-.02em;line-height:1.5}
+.hero .lead{font-size:15px;color:#d4e6e8;font-weight:400;line-height:2.05;max-width:53ch;margin:0 0 24px; text-wrap:initial}
+.hero .lead .mono{font-size:.92em;color:#91dfdb}
+.hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-bottom:19px}
+.hero-actions a{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:44px;padding:9px 16px;border-radius:11px;font-size:13px;font-weight:700;transition:transform .2s,background .2s}
+.hero-actions a:hover{transform:translateY(-2px)}
+.hero-start{background:#60e0c7;color:#092b35}
+.hero-secondary{border:1px solid #a9cbc755;color:#e6f5f3}
+.hero-meta{display:flex;gap:10px 17px;flex-wrap:wrap;color:#9fc0c2;font-size:11px;font-weight:600}
+.hero-visual{border-radius:16px;background:#081726b8;border:1px solid rgba(140,209,222,.24);overflow:hidden;box-shadow:0 18px 52px rgba(0,0,0,.16);position:relative;z-index:1;direction:ltr;color:#e3f0f6;min-width:0}
+.visual-head{display:flex;align-items:center;gap:10px;padding:12px 15px;border-bottom:1px solid #ffffff16;background:#ffffff08;font-size:10px;font-family:var(--font-mono);color:#95aebb}
+.visual-dots{display:flex;gap:5px}.visual-dots i{height:7px;width:7px;border-radius:50%;background:#6b8091}.visual-dots i:first-child{background:#f99183}.visual-dots i:nth-child(2){background:#f2d074}.visual-dots i:nth-child(3){background:#6dd6b7}
+.visual-file{margin-right:auto}
+.visual-live{color:#82e9c8}.visual-live i{display:inline-block;width:6px;height:6px;background:#67ebce;border-radius:100%;vertical-align:middle;margin-right:4px}
+.visual-body{padding:17px;display:flex;flex-direction:column}
+.visual-step{display:flex;align-items:center;gap:10px;background:#183044;border:1px solid #345268;border-radius:11px;padding:11px 12px;min-width:0}
+.visual-step>div:nth-child(2){display:flex;flex-direction:column;gap:2px;min-width:0}
+.visual-step strong{font-family:var(--font-mono);font-size:12px;font-weight:700}
+.visual-step code{font-family:var(--font-mono);font-size:10px;color:#bbd2e2;overflow-wrap:anywhere;direction:ltr}
+.visual-featured{border-color:#40d9c1;background:#114c4b;box-shadow:0 0 0 3px #48d5bb12}
+.visual-icon{width:31px;height:31px;flex-shrink:0;display:grid;place-items:center;border-radius:8px;font-family:var(--font-mono);font-weight:700;font-size:11px}
+.v-blue{background:#2f628e;color:#cdeaff}.v-teal{background:#12a48e;color:#eafffa}.v-green{background:#294c79;color:#cff2ff}
+.visual-tag{margin-left:auto;font-family:var(--font-mono);font-size:9px;border-radius:6px;white-space:nowrap;padding:3px 6px;font-weight:700}
+.v-io{background:#315375;color:#a8e3ff}.v-ram{background:#20766b;color:#b6f7e6}.v-sql{background:#294d85;color:#c0dbff}
+.visual-connector{height:32px;display:flex;align-items:center;justify-content:center;gap:7px;color:#7997a8;font-size:10px}.visual-connector b{font-size:16px;color:#4bbda8}.visual-connector small{font-family:var(--font-mono);font-size:9px}
+.visual-bottom{padding:12px 14px;border-top:1px solid #ffffff12;background:#0c293a;color:#b6d0d5;font-size:10.5px;text-align:center;direction:rtl}
+.visual-signal{color:#4be3b9}.visual-bottom-arrow{color:#77e2d4;margin-inline:5px}
+.three{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+.beh{padding:20px 22px;border:1px solid var(--line);border-radius:15px;box-shadow:0 5px 18px rgba(11,33,62,.025);gap:5px;min-width:0}
+.beh .beh-number{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--pass);direction:ltr;text-align:right;margin-bottom:2px}
+.beh-number span{color:var(--muted);font-size:10px;letter-spacing:.08em}
+.beh b{font-size:16px;font-weight:700}
+.beh>span:last-child{font-size:13px;line-height:1.85;color:var(--muted)}
+/* lab controls */
+.guided-path{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--line);background:var(--surface-2);border-radius:12px;font-size:12.5px}
+.guided-path>strong{margin-inline-end:4px;color:var(--ink)}
+.guided-step{display:inline-flex;align-items:center;gap:7px;padding:3px 11px 3px 6px;border-radius:99px;color:var(--pass);background:var(--pass-soft);font-family:var(--font-mono);font-weight:700}
+.guided-step b{font-family:var(--font-body);font-size:12px}.guided-arr{font-size:14px;color:var(--muted)}.guided-tip{color:var(--muted);margin-inline-start:auto;font-size:11.5px}
+.controls{gap:8px 10px}
+.chips{gap:8px}
+.chip{border:1px solid var(--line);border-radius:11px;background:var(--surface-2);font-size:13px;transition:background .15s,box-shadow .15s,border-color .15s}
+.chip:hover:not([disabled]){border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.chip small{font-size:10.5px}
+.ops{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.op{border:1px solid var(--line);border-radius:12px;padding:10px 11px;background:var(--surface);align-items:flex-start;gap:10px;box-shadow:0 2px 5px rgba(28,40,55,.025);transition:transform .2s,border-color .2s,background .2s}
+.op:not([disabled]):hover{background:var(--surface-2);border-color:var(--accent);transform:translateY(-2px)}
+.op code{font-size:11px;line-height:1.65;white-space:normal;text-align:left;direction:ltr;unicode-bidi:isolate}
+.bd{border-radius:7px;font-size:10px;line-height:1.9;padding:1px 7px}
+.bd.mem{background:var(--pass-soft);color:var(--pass);border:1px solid color-mix(in srgb,var(--pass) 25%,transparent)}
+.bd.io{background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
+.bd.mix{background:var(--warn-soft);color:var(--warn)}
+.lab-flow{grid-template-columns:minmax(0,1fr) 90px minmax(0,.9fr);gap:0;align-items:center;margin-top:6px}
+.tbox{border:1px solid var(--line);box-shadow:0 5px 15px rgba(13,37,71,.025);border-radius:15px;padding:17px;min-height:240px;background:var(--surface-2)}
+.tbox.db{border-color:var(--line);background:var(--surface)}
+.tb-head{gap:2px;margin-bottom:5px}.tb-head b{font-family:var(--font-mono);direction:ltr;text-align:right;font-size:13px}.tb-head span{font-size:11.5px}
+.trow,.drow{background:var(--surface);border-radius:9px}
+.trow{padding:9px;gap:5px 8px}.drow{padding:8px}
+.tnm{font-size:13px}.tid,.tpr{font-size:11px}.tdet{font-size:11px}
+.w-line{border-color:#aac2da}.wire.live .w-line{border-color:var(--accent)}.wire.live .w-lbl{color:var(--accent)}.w-dot{background:var(--accent)}
+.w-lbl{font-size:10px;color:var(--muted)}
+.lab-low{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+.box{border:1px solid var(--line);border-radius:14px;padding:16px;gap:10px;background:var(--surface)}
+.box>b{font-size:13.5px}
+.box-sub{font-size:11.5px}
+.vrow{padding-top:8px}.vname{font-size:12px}.vval{font-size:11px;line-height:1.7}.meter{border-color:var(--line)}.meter b{font-family:var(--font-mono);font-size:25px;font-weight:700;margin-bottom:4px}.meter span{font-size:11px}
+.console{border-radius:13px;padding:14px;background:var(--code-bg);box-shadow:inset 0 0 0 1px #ffffff09;font-size:11px;line-height:1.85}
+.console .head{font-size:10px;letter-spacing:0}
+.cap{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 14%,transparent);border-right:4px solid var(--accent);color:var(--ink);font-size:13.5px;padding:16px 20px;line-height:2;min-height:0}
+.cap .ic{background:var(--surface);color:var(--ink)}
+.note{font-size:11.5px;color:var(--muted)}
+/* section 2 */
+.wh-grid{grid-template-columns:minmax(0,1fr) 125px minmax(0,1fr);gap:8px}
+.wh-box{background:var(--surface-2);border:1px solid var(--line);border-radius:13px;padding:17px}
+.wh-box b{font-family:var(--font-body);font-size:18px;font-weight:700}.wh-box span{font-size:12px}.wh-time{font-family:var(--font-mono);font-size:11px!important}
+.wh-box.hit{border-color:var(--pass);background:var(--pass-soft)}.wh-box.hit.io{border-color:var(--accent);background:var(--accent-soft)}
+.wh-tok{background:var(--ink);color:var(--bg);font-size:11px;padding:5px 10px}.wh-bar{height:7px}.wh-bar.io i{background:var(--accent)}
+.wh-res{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;min-height:105px;font-size:13px}
+.rule{font-family:var(--font-body);font-size:14px;font-weight:700;line-height:1.9;max-width:none;color:var(--pass);border-right:3px solid var(--pass);padding-right:15px}
+/* section 3 */
+.ad-grid{gap:13px}.ad-grid .box{min-height:100%}.slot{border-color:var(--line);border-radius:9px;background:var(--surface-2)}
+.thr-state{border-radius:10px;font-size:13px}.ping{font-size:11.5px}.stats{gap:10px}
+.sim-notice{max-width:none;background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 27%,transparent);border-radius:11px;padding:10px 15px;font-size:12.5px;line-height:1.85;color:var(--ink)}
+.sim-notice strong{color:var(--warn)}
+/* code panel */
+.codebar{gap:10px 16px}.scenario{font-size:13px;color:var(--muted)}
+.code-wrap{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px}
+.code{border-radius:14px;padding:15px 0;font-size:11.5px;box-shadow:0 8px 22px rgba(9,23,45,.07)}
+.code .ln{padding-inline:17px}.code .hl{border-left-color:#7ce4d4}
+.side{display:flex;flex-direction:column;gap:10px;min-width:0}
+.explain{border:1px solid var(--line);background:var(--surface-2);border-radius:13px;padding:15px 18px;min-height:100px;font-size:13px;line-height:1.9}
+#cx-console{min-height:130px}
+.tabs{border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.tabs button{font-size:12px;padding:8px 14px}
+.tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
+/* best practices */
+.order{gap:8px}.order li{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--surface-2);grid-template-columns:32px minmax(0,1fr)}
+.order li.hot{border-color:color-mix(in srgb,var(--pass) 45%,var(--line));border-width:1px;background:var(--pass-soft)}
+.order li::before{font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--muted)}
+.order li.hot::before{color:var(--pass)}
+.order code{font-size:11px;font-weight:600;overflow-wrap:anywhere}.order span{font-size:12.5px;display:block;margin-top:5px}
+/* quiz */
+.sec[aria-labelledby="h-quiz"]{background:linear-gradient(120deg,var(--surface),var(--surface-2))}
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;gap:19px}
+.qtop{font-size:12px;font-weight:700}.dots i{width:7px;height:7px;background:var(--line);border:0}.dots i.on{background:var(--accent)}
+.qtext{font-size:18px;font-weight:700;line-height:1.9;min-height:65px}
+.opt{border:1px solid var(--line);border-radius:11px;padding:11px 14px;font-size:13.5px;background:var(--surface);transition:border-color .16s,background .16s}
+.opt:hover:not([disabled]){border-color:var(--accent);background:var(--accent-soft)}
+.opt.right{background:var(--pass-soft);color:var(--pass);border-color:var(--pass)}
+.opt.wrong{background:var(--stop-soft);color:var(--stop);border-color:var(--stop)}
+.fb{font-size:13px;min-height:0}.score{font-family:var(--font-mono);font-size:42px;color:var(--pass);font-weight:700}
+/* summary & footer */
+.sec[aria-labelledby="h-sum"]{background:linear-gradient(115deg,#122b47,#0c4348);color:#e9fbff;border:0;box-shadow:0 14px 45px rgba(15,47,70,.13)}
+.sec[aria-labelledby="h-sum"] .sec-head::before{color:#79e4d2}
+.sec[aria-labelledby="h-sum"] h2{color:#fff}
+.take-away{font-family:var(--font-body);font-size:20px;line-height:1.9;max-width:60ch;font-weight:700;color:#efffff}
+.terms{grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:16px;margin-top:10px}
+.terms div{border-top:1px solid #739faa66;padding-top:13px}.terms dt{color:#9ef4db;font-size:12px}.terms dd{color:#c5dce6;font-size:12px;line-height:1.8}
+.foot{padding:3px 0 15px;color:var(--muted);font-size:11px}
+/* explicit hero contrast overrides */
+.hero .word .hero-english{color:#7ff2d6}
+.hero .word .word-end{color:#f9ffff}
+/* adaptive */
+@media(max-width:1020px){
+ .hero-main{gap:18px;grid-template-columns:minmax(0,1fr) minmax(300px,.95fr);padding:32px}
+ .hero .word{font-size:clamp(32px,4.1vw,44px)}
+ .nav-links a{padding:7px 9px}
+ .ops{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lab-low{grid-template-columns:1fr 1fr}
+ .lab-low>.box{grid-column:1/-1}
+ .lab-low .console{max-height:220px}
+}
+@media(max-width:760px){
+ body{padding:0 12px 48px}.site-nav{margin:0 -12px 17px;padding:0 12px}.nav-inner{min-height:58px;gap:8px}
+ .brand-mark{height:33px;width:34px;border-radius:9px;font-size:12px}.brand-text{font-size:10px}.brand-text small{display:none}
+ .theme-switch{min-width:34px;padding:5px 7px}.theme-text{display:none}
+ .nav-links{flex:1;justify-content:flex-start;direction:rtl}.nav-links a{font-size:11px;padding:6px 8px}
+ .wrap{gap:18px}
+ .hero-main{grid-template-columns:minmax(0,1fr);padding:30px 22px 23px;gap:26px;min-height:auto;border-radius:19px}
+ .hero .word{font-size:clamp(29px,8vw,42px)}.word-end{font-size:.72em}.hero .lead{font-size:13px}
+ .hero-visual{max-width:550px;width:100%;margin-inline:auto}.hero-meta{gap:7px 13px}
+ .three{grid-template-columns:minmax(0,1fr);gap:8px;margin-top:10px}
+ .beh{padding:15px 18px;gap:2px}.beh-number{font-size:11px}
+ .sec{padding:22px 17px 25px;border-radius:16px;gap:16px}
+ h2{font-size:clamp(22px,6.3vw,29px);line-height:1.5}.sec-head>p{font-size:12.5px}
+ .guided-path{gap:5px 7px}.guided-tip{flex-basis:100%;margin:0}
+ .ops{grid-template-columns:minmax(0,1fr);gap:8px}.op{min-height:46px}
+ .lab-flow,.wh-grid,.ad-grid,.code-wrap,.lab-low{grid-template-columns:minmax(0,1fr)}
+ .wire{height:72px;min-height:72px}
+ .w-line{left:50%;right:auto;top:4px;bottom:4px;border:0;border-left:3px dashed var(--line)}
+ .wire.live .w-line{border-left:3px solid var(--accent);border-top:0}
+ .w-lbl{left:calc(50% + 10px);top:50%;right:auto;transform:translateY(-50%);text-align:start}
+ .lab-low>.box{grid-column:auto}.tbox{min-height:0}.wh-mid{min-height:62px}
+ .code .ln{font-size:11px}.code-wrap{gap:10px}.quiz{padding:18px}.qtext{font-size:16px}.opt{font-size:12px}
+ .terms{grid-template-columns:repeat(2,minmax(0,1fr))}.take-away{font-size:17px}
+}
+@media(max-width:430px){
+ .hero-actions a{font-size:11px;padding:9px 11px}.hero .word{font-size:32px}
+ .hero-visual .visual-step{gap:7px;padding:9px}.visual-step code{font-size:9px}.visual-tag{font-size:8px}.visual-icon{width:27px;height:27px}
+ .theme-switch{display:grid;place-items:center}.terms{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.chip,.op,.hero-actions a{transition:none}}
+
+
+/* ===== Where does it run? — tidy interactive comparison (v2) ===== */
+.sec[aria-labelledby="h-where"]{overflow:hidden}
+#h-where{line-height:1.6;text-wrap:balance}
+.wh-title-code{display:inline-block;vertical-align:baseline;font:700 .8em/1.3 var(--font-mono);letter-spacing:-.04em;color:var(--pass);direction:ltr;unicode-bidi:isolate;background:transparent;white-space:nowrap}
+.wh-inline-code{font-family:var(--font-mono);direction:ltr;unicode-bidi:isolate}
+.wh-picker{background:var(--surface-2);border:1px solid var(--line);border-radius:17px;padding:17px 18px 19px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.wh-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.wh-picker-head>div{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.wh-picker-head b{font-size:14px;line-height:1.6}
+.wh-picker-kicker{display:inline-flex;align-items:center;gap:6px;color:var(--pass);font-size:11px;font-weight:700;white-space:nowrap}
+.wh-picker-kicker::before{content:"";height:7px;width:7px;border-radius:50%;background:var(--pass)}
+.wh-picker-count{font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--line);padding:3px 10px;border-radius:999px}
+#wh-chips{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;width:100%}
+#wh-chips .wh-choice{position:relative;min-width:0;min-height:54px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:11px;text-align:center;padding:9px 7px;direction:ltr;unicode-bidi:isolate;box-shadow:0 2px 5px rgba(24,49,82,.025);transition:border-color .16s,background .16s,box-shadow .16s,transform .16s}
+#wh-chips .wh-choice .wh-method-name{font:650 11.5px/1.45 var(--font-mono);overflow-wrap:anywhere;word-break:normal;direction:ltr;unicode-bidi:isolate}
+#wh-chips .wh-choice:hover{border-color:var(--accent);box-shadow:0 5px 14px rgba(23,53,90,.08);transform:translateY(-1px)}
+#wh-chips .wh-choice[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent),0 4px 11px rgba(37,86,162,.08)}
+#wh-chips .wh-choice[aria-pressed="true"]::after{content:"";position:absolute;bottom:-1px;left:22%;right:22%;height:3px;border-radius:4px 4px 0 0;background:var(--accent)}
+.wh-demo-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 2px -6px}
+.wh-demo-head b{font-size:14px}
+.wh-demo-head span{font-size:11.5px;color:var(--muted)}
+.wh-grid{display:grid;grid-template-columns:minmax(0,1fr) 174px minmax(0,1fr);gap:15px;align-items:stretch;min-width:0}
+.wh-box{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;min-height:187px;padding:20px;gap:13px;display:flex;flex-direction:column;box-shadow:0 2px 6px rgba(10,30,63,.02)}
+.wh-box-top{display:flex;align-items:center;gap:11px;min-width:0}
+.wh-box-top>div{min-width:0;display:flex;flex-direction:column;gap:3px}
+.wh-box .wh-box-top b{font:750 17px/1.5 var(--font-body)}
+.wh-box .wh-box-top span:not(.wh-symbol){color:var(--muted);font-size:11.5px;direction:ltr;unicode-bidi:isolate;text-align:right}
+.wh-symbol{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:11px;font:700 25px/1 var(--font-mono)}
+.wh-symbol-mem{background:var(--pass-soft);color:var(--pass)}
+.wh-symbol-db{background:var(--accent-soft);color:var(--accent)}
+.wh-box-caption{margin:0;color:var(--muted);font-size:12.5px;line-height:1.7}
+.wh-box .wh-bar{height:8px;background:var(--line);border-radius:15px;margin-top:auto}
+.wh-box .wh-bar i{border-radius:15px;transition:width .4s ease}
+.wh-box .wh-bar.io i{background:var(--accent)}
+.wh-box-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.wh-box .wh-time{direction:ltr;text-align:left;color:var(--muted);font-size:10.5px!important}
+.wh-box-state{color:var(--muted);font-size:11px!important;font-weight:700}
+.wh-box.hit .wh-box-state{color:var(--pass)}
+.wh-box.hit.io .wh-box-state{color:var(--accent)}
+.wh-box.maybe .wh-box-state{color:var(--warn)}
+.wh-mid{position:relative;min-width:0;display:flex;align-items:stretch;justify-content:center;min-height:187px}
+.wh-route-line{position:absolute;top:50%;left:-15px;right:-15px;height:2px;background:repeating-linear-gradient(to left,var(--line) 0 8px,transparent 8px 13px);transform:translateY(-50%)}
+.wh-route-content{z-index:1;position:relative;align-self:center;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center;width:100%;padding:14px 7px;border:1px solid var(--line);border-radius:15px;background:var(--surface);box-shadow:0 5px 18px rgba(8,28,57,.05)}
+.wh-route-mini{font-size:10px;color:var(--muted);line-height:1.3}
+.wh-tok{display:block;position:static!important;transform:none!important;min-width:0;max-width:100%;padding:7px 8px;border-radius:8px;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);font-size:11px;line-height:1.45;white-space:normal;overflow-wrap:anywhere;word-break:break-word;direction:ltr;unicode-bidi:isolate;box-shadow:none}
+.wh-route-arrow{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;font-size:17px;color:var(--muted);background:var(--surface-2);line-height:1}
+.wh-route-status{color:var(--muted);font-size:10.5px;font-weight:650;line-height:1.5}
+.wh-mid.mode-mem .wh-route-arrow{color:var(--pass);background:var(--pass-soft);transform:rotate(180deg)}
+.wh-mid.mode-mem .wh-route-status{color:var(--pass)}
+.wh-mid.mode-io .wh-route-arrow{color:var(--accent);background:var(--accent-soft)}
+.wh-mid.mode-io .wh-route-status{color:var(--accent)}
+.wh-mid.mode-maybe .wh-route-arrow{color:var(--warn);background:var(--warn-soft)}
+.wh-mid.mode-maybe .wh-route-status{color:var(--warn)}
+.wh-res{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;min-height:110px;padding:18px 20px;gap:9px;font-size:13.5px;line-height:1.95}
+.wh-res .row{gap:8px 10px;align-items:center}
+.wh-res .row code{font-weight:700;font-size:12px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:3px 10px;direction:ltr;unicode-bidi:isolate;overflow-wrap:anywhere}
+.wh-res p{margin:0}
+.wh-result-label{font-size:10px;color:var(--muted);font-weight:750;letter-spacing:.02em}
+.wh-placeholder{display:flex;align-items:center;gap:13px;color:var(--muted);font-size:12.5px}
+.wh-placeholder b{display:block;color:var(--ink);font-size:13px}
+.wh-placeholder p{margin:3px 0 0}
+.wh-placeholder-dot{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:12px;background:var(--surface);border:1px dashed var(--line);color:var(--accent);font-size:21px;font-weight:700}
+.sec[aria-labelledby="h-where"] .rule{border-right:3px solid var(--pass);background:var(--pass-soft);padding:12px 17px;border-radius:8px;font-weight:600;font-size:12.5px;line-height:1.9;color:var(--ink)}
+.sec[aria-labelledby="h-where"] .rule code{font:650 11px/1.5 var(--font-mono);unicode-bidi:isolate}
+@media(max-width:1000px){#wh-chips{grid-template-columns:repeat(3,minmax(0,1fr))}.wh-grid{grid-template-columns:minmax(0,1fr) 142px minmax(0,1fr);gap:9px}.wh-box{padding:15px}.wh-route-line{left:-9px;right:-9px}}
+@media(max-width:760px){#wh-chips{grid-template-columns:repeat(2,minmax(0,1fr))}.wh-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.wh-mid{grid-column:1/-1;grid-row:1;min-height:0}.wh-route-content{max-width:300px;padding:11px;gap:5px}.wh-route-line{left:0;right:0}.wh-box{min-height:185px;padding:13px}.wh-box-top{align-items:flex-start;gap:8px}.wh-symbol{width:32px;height:32px;font-size:20px}.wh-box .wh-box-top b{font-size:14px}.wh-box .wh-box-top span:not(.wh-symbol){font-size:10px}.wh-box-caption{font-size:11px}.wh-demo-head{margin:0}.wh-res{padding:15px}}
+@media(max-width:410px){.wh-picker{padding:13px}#wh-chips{gap:7px}#wh-chips .wh-choice .wh-method-name{font-size:10.5px}.wh-box{min-height:194px}.wh-box .wh-box-top span:not(.wh-symbol){font-size:9.5px}}
+@media(prefers-reduced-motion:reduce){.wh-box .wh-bar i,#wh-chips .wh-choice{transition:none}}
+
+
+/* ============ Palette alignment: every interactive state ============ */
+body {
+  background-image: radial-gradient(circle at 13% 3%, rgba(11,122,107,.045), transparent 22%),
+                    radial-gradient(circle at 93% 40%, rgba(194,65,12,.018), transparent 24%);
+}
+.btn--fill {background:var(--pass);border-color:var(--pass);color:var(--on-pass)}
+.btn--fill:hover:not([disabled]) {background:color-mix(in srgb,var(--pass) 84%,var(--ink));border-color:var(--pass);color:var(--on-pass)}
+.page-progress span {background:linear-gradient(90deg,var(--pass),color-mix(in srgb,var(--pass) 70%,var(--stop)));box-shadow:0 0 9px rgba(11,122,107,.24)}
+.brand-mark {background:#18382F;color:#7AE9D0;box-shadow:0 4px 11px rgba(16,49,41,.13)}
+.hero-main {background:linear-gradient(122deg,#10241F,#173C33 55%,#0A5A4A);color:#F7FFFB;box-shadow:0 20px 55px rgba(12,56,45,.13)}
+.hero-main::after{background:#2DD6B6}
+.hero .kicker {color:#B2D9CF}
+.kicker-pip{background:#65E3C2;box-shadow:0 0 0 5px rgba(101,227,194,.16)}
+.hero-english,.hero .word .hero-english {color:#79EDD2}
+.word-end,.hero .word .word-end{color:#F7FFFB}
+.hero .lead{color:#D2EAE3}
+.hero .lead .mono{color:#A7F2D9}
+.hero-start{background:#62DEC0;color:#0C3128}
+.hero-start:hover{background:#8BF2D9}
+.hero-secondary{border-color:rgba(193,229,218,.4);color:#E5FAF2}
+.hero-secondary:hover{background:rgba(255,255,255,.08)}
+.hero-meta{color:#B4D4CB}
+.hero-visual{background:#0B201A;border-color:rgba(140,222,199,.28);color:#E5F6EE;box-shadow:0 18px 52px rgba(0,0,0,.16)}
+.visual-head{color:#A8C7BA}
+.visual-dots i{background:#628A7E}
+.visual-live{color:#80E6C8}.visual-live i{background:#60DABB}
+.visual-step{background:#1B362E;border-color:#345A4E}
+.visual-step code{color:#BADBD0}
+.visual-featured{border-color:#45D9BA;background:#134D40;box-shadow:0 0 0 3px rgba(72,213,187,.08)}
+.v-blue{background:#38584F;color:#C7EDDD}
+.v-teal{background:#137B6B;color:#E2FFF6}
+.v-green{background:#2F6953;color:#DDF7E7}
+.v-io{background:#563526;color:#FFD2B6}
+.v-ram{background:#176B59;color:#D0F8EA}
+.v-sql{background:#624329;color:#FFE1BA}
+.visual-connector{color:#91B9AC}.visual-connector b{color:#63DBC0}
+.visual-bottom{background:#102F27;color:#BEDAD1}
+.visual-signal{color:#5BE0CB}.visual-bottom-arrow{color:#77E2D4}
+/* Accent is teal for selection, while any DB / network operation is orange. */
+.bd.io{background:var(--io-soft);color:var(--io);border-color:color-mix(in srgb,var(--io) 34%,transparent)}
+.wire.live .w-line{border-color:var(--io)}
+.wire.live .w-lbl{color:var(--io)}
+.w-dot{background:var(--io)}
+.wh-box.hit.io{border-color:var(--io);background:var(--io-soft)}
+.wh-symbol-db{background:var(--io-soft);color:var(--io)}
+.wh-box .wh-bar.io i{background:var(--io)}
+.wh-box.hit.io .wh-box-state{color:var(--io)}
+.wh-mid.mode-io .wh-route-arrow{color:var(--io);background:var(--io-soft)}
+.wh-mid.mode-io .wh-route-status{color:var(--io)}
+.wh-box.hit:not(.io){border-color:var(--pass);background:var(--pass-soft)}
+.wh-symbol-mem{background:var(--pass-soft);color:var(--pass)}
+.wh-box.hit:not(.io) .wh-box-state{color:var(--pass)}
+/* Softened shadows and dividers match the flat, instructional reference pages. */
+.tbox{box-shadow:0 5px 15px rgba(15,31,28,.025)}
+.op{box-shadow:0 2px 5px rgba(15,31,28,.025)}
+#wh-chips .wh-choice:hover{box-shadow:0 5px 14px rgba(11,122,107,.08)}
+#wh-chips .wh-choice[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--accent),0 4px 11px rgba(11,122,107,.07)}
+.wh-box{box-shadow:0 2px 6px rgba(15,31,28,.025)}
+.w-line{border-color:var(--line)}
+.code .hl{border-left-color:var(--code-accent)}
+.sec[aria-labelledby="h-sum"]{background:linear-gradient(115deg,#15372D,#0A564B);color:#E8FFF5;box-shadow:0 14px 45px rgba(11,57,46,.13)}
+.sec[aria-labelledby="h-sum"] .sec-head::before{color:#8BEAD0}
+.take-away{color:#EFFFF7}
+.terms div{border-top-color:rgba(158,238,218,.3)}
+.terms dt{color:#A6F4DC}
+.terms dd{color:#C7E3D8}
+@media(prefers-reduced-motion:reduce) {.wh-box .wh-bar i{transition:none}}
+
+</style>
+</head>
+<body>
+<div class="page-progress" aria-hidden="true"><span id="page-progress-bar"></span></div>
+<nav class="site-nav" aria-label="التنقّل بين أجزاء الدرس">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="الرجوع لبداية الدرس"><span class="brand-mark">EF</span><span class="brand-text">CORE <b>PLAYGROUND</b><small>محتوى تعليمي تفاعلي</small></span></a>
+    <div class="nav-links" id="site-links">
+      <a href="#h-lab" class="active">المعمل</a><a href="#h-where">مفهوم Async</a><a href="#h-add">AddAsync</a><a href="#h-code">أمثلة C#</a><a href="#h-quiz">الاختبار</a>
+    </div>
+    <button class="theme-switch" type="button" id="theme-switch" aria-label="تغيير المظهر" aria-pressed="false"><span id="theme-icon">☾</span><span class="theme-text">الوضع الداكن</span></button>
+  </div>
+</nav>
+
+<div class="wrap" dir="rtl" lang="ar">
+
+  <header class="hero" id="top">
+  <div class="hero-main">
+    <div class="hero-copy">
+      <p class="kicker" data-in><span class="kicker-pip"></span> EF CORE · INTERACTIVE GUIDE <span class="hero-kicker-ar">دليل عملي</span></p>
+      <h1 class="word" data-in>افهم <span class="hero-english" dir="ltr">Change Tracking</span><span class="word-end">بالتجربة، مش بالحفظ.</span></h1>
+      <p class="lead" data-in>إزاي <span class="mono">DbContext</span> بيعرف اللي اتغيّر؟ وإمتى بيبعت أوامر للـ Database؟ شغّل الأمثلة بنفسك وشوف الفرق بين الذاكرة والـ SQL خطوة بخطوة.</p>
+      <div class="hero-actions" data-in><a class="hero-start" href="#h-lab">ابدأ المعمل <span aria-hidden="true">↙</span></a><a class="hero-secondary" href="#h-code">استكشف أمثلة C# <span aria-hidden="true">↙</span></a></div>
+      <div class="hero-meta" data-in><span>◉ معامل تفاعلية</span><span>✦ تطبيقات عملية</span><span>◈ 13 سؤال للمراجعة</span></div>
+    </div>
+    <div class="hero-visual" aria-label="رسم توضيحي: قراءة البيانات، تتبع التغييرات داخل الذاكرة، ثم الحفظ في قاعدة البيانات" data-in>
+      <div class="visual-head"><span class="visual-dots"><i></i><i></i><i></i></span><span class="visual-file">How tracking works</span><span class="visual-live"><i></i> LIVE MODEL</span></div>
+      <div class="visual-body">
+        <div class="visual-step"><div class="visual-icon v-blue">01</div><div><strong>Load entity</strong><code>await db.Products.FirstAsync()</code></div><span class="visual-tag v-io">DB read</span></div>
+        <div class="visual-connector"><span></span><b>↓</b><small>tracked by default</small></div>
+        <div class="visual-step visual-featured"><div class="visual-icon v-teal">02</div><div><strong>Change Tracker</strong><code>p.Price += 50</code></div><span class="visual-tag v-ram">in memory</span></div>
+        <div class="visual-connector"><span></span><b>↓</b><small>nothing written yet</small></div>
+        <div class="visual-step"><div class="visual-icon v-green">03</div><div><strong>Save changes</strong><code>await db.SaveChangesAsync()</code></div><span class="visual-tag v-sql">SQL write</span></div>
+      </div>
+      <div class="visual-bottom"><span class="visual-signal">●</span> الحالة تتغيّر في الذاكرة أولًا <span class="visual-bottom-arrow">→</span> ثم تُحفَظ في قاعدة البيانات</div>
+    </div>
+  </div>
+  <div class="three" data-in>
+    <div class="beh"><span class="beh-number">01 <span>READ</span></span><b>تقرأ البيانات</b><span>الاستعلامات العادية بتتتبّع الـ entity افتراضيًا. <span class="ic">AsNoTracking()</span> بتغيّر السلوك ده.</span></div>
+    <div class="beh"><span class="beh-number">02 <span>TRACK</span></span><b>تعدّل في الذاكرة</b><span>الـ <span class="ic">Change Tracker</span> بيتابع حالة الـ entity. التغيير مش معناه إن SQL اتنفّذ.</span></div>
+    <div class="beh"><span class="beh-number">03 <span>SAVE</span></span><b>تحفظ التغييرات</b><span><span class="ic">SaveChangesAsync()</span> بيولّد أوامر الـ SQL اللازمة، وممكن ينفّذ أكتر من أمر.</span></div>
+  </div>
+</header>
+
+  <section class="sec reveal" aria-labelledby="h-lab">
+    <div class="sec-head">
+      <h2 id="h-lab">معمل الـ Change Tracker</h2>
+      <p class="muted">جرّب الأزرار بأي ترتيب، وراقب 3 حاجات: حالة الـ entity في الـ Tracker، والسلك اللي بين الـ Tracker والـ DB، وعدّاد رحلات الـ DB. الأزرار اللي عليها <span class="bd io">DB</span> بس هي اللي بتعمل عمليات قاعدة بيانات في النموذج ده.</p>
+    </div>
+
+    <div class="controls">
+      <button class="chip" id="lb-nt" type="button" aria-pressed="false"><span class="mono">AsNoTracking()</span><small>شغّلها قبل زر القراءة</small></button>
+      <button class="btn" id="lb-reset" type="button">من الأول</button>
+    </div>
+
+    <div class="guided-path" aria-label="ترتيب مقترح للتجربة"><strong>ابدأ من هنا</strong><span class="guided-step">1 <b>اقرأ</b></span><span class="guided-arr">←</span><span class="guided-step">2 <b>عدّل</b></span><span class="guided-arr">←</span><span class="guided-step">3 <b>احفظ</b></span><span class="guided-tip">وبعدين جرّب باقي الأزرار بأي ترتيب.</span></div>
+    <div class="ops" id="lb-ops">
+      <button class="op" id="lb-read" type="button"><code id="lb-read-code">var p = await db.Products.FirstAsync();</code><em class="bd io">DB</em></button>
+      <button class="op" id="lb-edit" type="button"><code>p.Price += 50;</code><em class="bd mem">ذاكرة</em></button>
+      <button class="op" id="lb-add" type="button"><code>db.Products.Add(new Product { ... });</code><em class="bd mem">ذاكرة</em></button>
+      <button class="op" id="lb-remove" type="button"><code>db.Products.Remove(p);</code><em class="bd mem">ذاكرة</em></button>
+      <button class="op" id="lb-update" type="button"><code>db.Products.Update(fromApi);</code><em class="bd mem">ذاكرة</em></button>
+      <button class="op" id="lb-save" type="button"><code>await db.SaveChangesAsync();</code><em class="bd io">DB</em></button>
+    </div>
+
+    <div class="lab-flow">
+      <div class="tbox" aria-label="الـ Change Tracker">
+        <div class="tb-head"><b>Change Tracker</b><span>جوه الذاكرة، جوه الـ DbContext</span></div>
+        <div class="trows" id="lb-trows"></div>
+        <div class="tb-empty" id="lb-tempty">مفيش entity متتبّعة</div>
+      </div>
+      <div class="wire" id="lb-wire" aria-hidden="true"><span class="w-line"></span><span class="w-lbl" id="lb-wl">ساكتة</span><span class="w-dot" id="lb-dot"></span></div>
+      <div class="tbox db" aria-label="قاعدة البيانات">
+        <div class="tb-head"><b>الـ Database</b><span>جدول Products</span></div>
+        <div class="drows" id="lb-drows"></div>
+      </div>
+    </div>
+
+    <div class="lab-low">
+      <div class="box">
+        <b>المتغيرات في الكود</b>
+        <div class="vrow"><span class="vname">p</span><span class="vval" id="lb-vp"></span><span class="trk" id="lb-tp"></span></div>
+        <div class="vrow"><span class="vname">fromApi</span><span class="vval" id="lb-vf"></span><span class="trk" id="lb-tf"></span></div>
+        <div class="meters">
+          <div class="meter"><b id="lb-trips">0</b><span>رحلات للـ DB</span></div>
+          <div class="meter"><b id="lb-tcount">0</b><span>entities متتبّعة</span></div>
+        </div>
+      </div>
+      <div class="console" id="lb-code" aria-label="الكود اللي اتنفّذ"><span class="head">الكود اللي نفّذته</span></div>
+      <div class="console" id="lb-sql" aria-label="الـ SQL اللي اتبعت"><span class="head">SQL اللي اتبعت للـ DB فعلًا</span></div>
+    </div>
+
+    <p class="cap" id="lb-cap" aria-live="polite">ابدأ بزر القراءة. بعدها عدّل، وبعدها SaveChanges، وراقب إمتى بيتبعت SQL.</p>
+    <p class="note">ملحوظة: EF بيكتشف التعديلات فعليًا وقت <span class="mono">SaveChanges</span> (أو لما يحتاجها). هنا بنعرض حالة <span class="mono">Modified</span> فورًا للتوضيح، بينما تتبع الـ Snapshot في EF Core بيعتمد على اكتشاف التغييرات.</p>
+  </section>
+
+  <section class="sec reveal" aria-labelledby="h-where">
+    <div class="sec-head">
+      <h2 id="h-where">ليه <code class="wh-title-code" dir="ltr">Update</code> و <code class="wh-title-code" dir="ltr">Remove</code> ملهومش إصدار <code class="wh-title-code" dir="ltr">Async</code>؟</h2>
+      <p class="muted">مش كل عملية محتاجة <span dir="ltr" class="wh-inline-code">async</span>. اختار أي ميثود، وشوف الفرق بين تنفيذها داخل <strong>الـ Change Tracker</strong> وبين الوصول لقاعدة البيانات.</p>
+    </div>
+    <div class="wh-picker">
+      <div class="wh-picker-head">
+        <div><span class="wh-picker-kicker">جرّب بنفسك</span><b>اختار العملية اللي عايز تختبرها</b></div>
+        <span class="wh-picker-count">10 عمليات</span>
+      </div>
+      <div class="chips" id="wh-chips" role="group" aria-label="اختيار ميثود EF Core"></div>
+    </div>
+    <div class="wh-demo-head">
+      <b>فين العملية بتتنفّذ؟</b>
+      <span>النتيجة بتتغير مباشرة حسب اختيارك</span>
+    </div>
+    <div class="wh-grid">
+      <div class="wh-box" id="wh-mem">
+        <div class="wh-box-top"><span class="wh-symbol wh-symbol-mem" aria-hidden="true">◈</span><div><b>الذاكرة</b><span>Change Tracker داخل DbContext</span></div></div>
+        <p class="wh-box-caption">تغيير حالة الـ Entity من غير طلب للشبكة</p>
+        <div class="wh-bar" aria-hidden="true"><i id="wh-bm"></i></div>
+        <div class="wh-box-foot"><span class="wh-time" id="wh-tm">No I/O</span><span class="wh-box-state" id="wh-mem-state">في الانتظار</span></div>
+      </div>
+      <div class="wh-mid" id="wh-route">
+        <div class="wh-route-line" aria-hidden="true"></div>
+        <div class="wh-route-content">
+          <span class="wh-route-mini">العملية المختارة</span>
+          <span class="wh-tok" id="wh-tok" dir="ltr">اختر ميثود</span>
+          <span class="wh-route-arrow" aria-hidden="true">←</span>
+          <span class="wh-route-status" id="wh-route-status">جاهز للتجربة</span>
+        </div>
+      </div>
+      <div class="wh-box" id="wh-db">
+        <div class="wh-box-top"><span class="wh-symbol wh-symbol-db" aria-hidden="true">▤</span><div><b>قاعدة البيانات</b><span>Database + Network I/O</span></div></div>
+        <p class="wh-box-caption">تنفيذ استعلام أو حفظ التغييرات فعليًا</p>
+        <div class="wh-bar io" aria-hidden="true"><i id="wh-bd"></i></div>
+        <div class="wh-box-foot"><span class="wh-time" id="wh-td">I/O</span><span class="wh-box-state" id="wh-db-state">في الانتظار</span></div>
+      </div>
+    </div>
+    <div class="wh-res" id="wh-res" aria-live="polite"><div class="wh-placeholder"><span class="wh-placeholder-dot">?</span><div><b>الشرح هيظهر هنا</b><p>اختار ميثود من فوق عشان تعرف بتشتغل فين، وليه ليها إصدار Async أو لا.</p></div></div></div>
+    <p class="rule">القاعدة: تغيير الحالة داخل الـ Tracker مش محتاج <code dir="ltr">Async</code>؛ لكن الاستعلامات والحفظ فيها <code dir="ltr">I/O</code>، وعلشان كده لها إصدارات غير متزامنة.</p>
+  </section>
+
+  <section class="sec reveal" aria-labelledby="h-add">
+    <div class="sec-head">
+      <h2 id="h-add">طب إيه فايدة <span class="mono">AddAsync</span>؟</h2>
+      <p class="muted">الفرق المهم بيظهر مع Value Generator محتاج عملية غير متزامنة وقت الإضافة، زي HiLo اللي بيجيب قيم من الـ DB. اختار طريقة توليد المفتاح وقارن.</p>
+    </div>
+    <div class="sel">
+      <span class="sel-label">إزاي الـ Id بيتحدد؟</span>
+      <div class="chips" id="ad-chips" role="group" aria-label="طريقة توليد الـ Id">
+        <button class="chip" type="button" data-k="identity" aria-pressed="true">Identity<small>الـ DB تحدده وقت الـ INSERT (الافتراضي)</small></button>
+        <button class="chip" type="button" data-k="guid" aria-pressed="false">Guid<small>الكود يولّده في الذاكرة</small></button>
+        <button class="chip" type="button" data-k="hilo" aria-pressed="false">HiLo<small>بيجيب block أرقام من الـ DB</small></button>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="op" id="ad-add" type="button"><code>db.Products.Add(p);</code><em class="bd mem">sync</em></button>
+      <button class="op" id="ad-addasync" type="button"><code>await db.Products.AddAsync(p);</code><em class="bd mix">async</em></button>
+      <button class="btn" id="ad-reset" type="button">من الأول</button>
+    </div>
+    <div class="ad-grid">
+      <div class="box">
+        <b>الـ Key generator</b>
+        <p class="box-sub" id="ad-sub"></p>
+        <div class="slots" id="ad-slots" aria-label="block الأرقام اللي في الذاكرة"></div>
+        <b>الـ entities اللي ضفتها</b>
+        <div class="ad-list" id="ad-list"><span class="hint">لسه مفيش.</span></div>
+      </div>
+      <div class="box">
+        <b>الـ Thread (الواجهة)</b>
+        <div class="thr-state" id="ad-thr"><span class="sp" id="ad-sp" hidden></span><span id="ad-thr-t">متاح ✓ (داخل المحاكاة)</span></div>
+        <button class="btn ping" id="ad-ping" type="button">اضغط عليّا أثناء الانتظار: <span id="ad-pn" class="mono">0</span></button>
+        <div class="stats">
+          <div class="meter"><b id="ad-trips">0</b><span>رحلات للـ DB</span></div>
+          <div class="meter"><b id="ad-lost">0</b><span>ضغطات متجاهَلة (محاكاة)</span></div>
+        </div>
+        <div class="console" id="ad-log" aria-label="نداءات الـ DB" style="min-height:6rem"><span class="head">DB LOG</span></div>
+      </div>
+    </div>
+    <p class="sim-notice"><span aria-hidden="true">ⓘ</span> <strong>تنويه:</strong> دي محاكاة تعليمية لفكرة انتظار الـ I/O وتأثير الـ Sync/Async في .NET، مش قياس حقيقي للـ Thread أو اختبار أداء.</p>
+    <p class="cap" id="ad-cap" aria-live="polite">جرّب Add و AddAsync بالـ Identity الأول، وبعدها غيّر لـ HiLo.</p>
+    <p class="note">وفي الحالتين الـ entity بتبقى <span class="mono">Added</span> في الـ Tracker بس. الصف مش في الـ DB لحد ما تنادي <span class="mono">SaveChangesAsync</span>. الـ block في المحاكاة 3 أرقام للعرض فقط؛ الحجم الحقيقي حسب إعدادات المولّد.</p>
+  </section>
+
+  <section class="sec reveal" aria-labelledby="h-code">
+    <div class="sec-head">
+      <h2 id="h-code">الكود خطوة بخطوة بـ <span class="mono">C#</span></h2>
+      <p class="muted">اختار مثال، وبعدين بدّل بين الحالات. اضغط "الخطوة اللي بعدها" وراقب السطر المظلّل والـ output.</p>
+    </div>
+    <div class="codebar">
+      <div class="chips" id="cx-chips" role="group" aria-label="المثال"></div>
+      <div class="tabs" id="cx-tabs" role="tablist" aria-label="الحالة"></div>
+    </div>
+    <p class="scenario" id="cx-scenario"></p>
+    <div class="code-wrap">
+      <div class="code" aria-label="الكود"><div class="inner"><div class="hl" id="cx-hl"></div><div id="cx-lines"></div></div></div>
+      <div class="side">
+        <div class="explain" id="cx-explain" aria-live="polite">اضغط "الخطوة اللي بعدها" عشان نبدأ.</div>
+        <div class="console" id="cx-console" aria-label="مخرجات الكود"><span class="head">OUTPUT</span></div>
+        <div class="controls">
+          <button class="btn btn--fill" id="cx-next" type="button">الخطوة اللي بعدها</button>
+          <button class="btn" id="cx-restart" type="button">من الأول</button>
+          <button class="btn btn-copy" id="cx-copy" type="button" title="نسخ المثال">نسخ الكود ↗</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec reveal" aria-labelledby="h-rules">
+    <div class="sec-head">
+      <h2 id="h-rules">قواعد تمشي عليها</h2>
+      <p class="muted">كل واحدة منهم طلعت من حاجة جربتها فوق.</p>
+    </div>
+    <ol class="order">
+      <li><div><code>.AsNoTracking()</code><span>مناسب غالبًا للقراءات فقط (قوائم وتقارير)، وبيقلّل تكلفة التتبّع. الأداء الفعلي يتأثر بنمط الاستعلام.</span></div></li>
+      <li class="hot"><div><code>p.Price = 500; await db.SaveChangesAsync();</code><span>الـ entity متتبّعة؟ عدّل واحفظ. مش محتاج <span class="ic">Update</span>.</span></div></li>
+      <li><div><code>db.Products.Update(fromApi);</code><span>للـ entity غير المتتبّعة بعد تحويل بيانات الـ DTO إلى Entity. غالبًا بيعلّم الخصائص Modified؛ خليك واعي لتحديث الأعمدة غير المقصودة وتعارض النسخ.</span></div></li>
+      <li><div><code>Remove(p)</code> / <code>ExecuteDeleteAsync()</code><span>الأولى بتحدد حالة الـ entity وتتنفّذ عند SaveChanges. التانية بتنفّذ DELETE مباشرة بدون تحميل الـ entities أو تتبّعها.</span></div></li>
+      <li class="hot"><div><code>Add(p)</code><span>دايمًا تقريبًا. <span class="ic">AddAsync</span> بس لو الـ key generator بيكلّم الـ DB (زي HiLo). وده نادر.</span></div></li>
+      <li><div><code>services.AddDbContext&lt;AppDb&gt;()</code><span>في تطبيقات الويب غالبًا بيتسجّل Scoped لكل Request. تجنّب إطالة عمره بلا داعٍ لأن التتبّع بيستهلك ذاكرة.</span></div></li>
+    </ol>
+  </section>
+
+  <section class="sec reveal" aria-labelledby="h-quiz">
+    <div class="sec-head">
+      <h2 id="h-quiz">اختبر نفسك</h2>
+      <p class="muted">13 سؤال قصير. اختار الإجابة الصح.</p>
+    </div>
+    <div class="quiz" id="quiz">
+      <div class="qtop"><span id="qcount"></span><div class="dots" id="dots" aria-hidden="true"></div></div>
+      <p class="qtext" id="qtext"></p>
+      <div class="options" id="options"></div>
+      <div class="fb" id="fb" aria-live="polite"></div>
+      <button class="btn btn--fill qnext" id="qnext" type="button" hidden>اللي بعده</button>
+    </div>
+  </section>
+
+  <section class="sec reveal" aria-labelledby="h-sum">
+    <div class="sec-head"><h2 id="h-sum">الخلاصة</h2></div>
+    <p class="take-away">معظم تغييرات الحالة بتحصل في الذاكرة. الـ SQL بيتنفّذ وقت الحفظ أو الاستعلام، مع استثناءات مهمة زي مولّدات المفاتيح وبعض عمليات ExecuteUpdate/Delete.</p>
+    <dl class="terms">
+      <div><dt>Change Tracker</dt><dd>داخل الـ DbContext؛ بيتابع الـ entities المتتبّعة وحالتها.</dd></div>
+      <div><dt>EntityState</dt><dd>Detached / Unchanged / Added / Modified / Deleted.</dd></div>
+      <div><dt>Snapshot</dt><dd>القيم الأصلية اللي بيستخدمها تتبّع الـ Snapshot الافتراضي لاكتشاف الاختلاف.</dd></div>
+      <div><dt>AsNoTracking</dt><dd>قراءة بلا تتبّع افتراضي؛ التعديلات مش هتتحفظ تلقائيًا بدون Attach أو Update.</dd></div>
+      <div><dt>AddAsync</dt><dd>لحالة الـ key generator اللي بيكلّم الـ DB. مش بتحفظ في الـ DB.</dd></div>
+    </dl>
+  </section>
+
+  <p class="foot">Animations by Motion · motion.dev</p>
+</div>
+<script>
+(function(){
+  var M = window.Motion || {};
+  var animate = M.animate, stagger = M.stagger, inView = M.inView;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var EASE = [.2, .8, .2, 1];
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function rich(s){ return esc(s).replace(/`([^`]+)`/g, '<span class="ic">$1</span>'); }
+  function pop(el){ if(el && animate && !reduce) animate(el, { scale: [1, 1.04, 1] }, { duration: .25 }); }
+  function fade(el){ if(el && animate && !reduce) animate(el, { opacity: [0, 1], y: [8, 0] }, { duration: .3, ease: EASE }); }
+  function isPhone(){ return window.matchMedia('(max-width:760px)').matches; }
+
+  /* ---------- entrance ---------- */
+  if(animate && !reduce){
+    animate('[data-in]', { opacity: [0, 1], y: [18, 0] }, { duration: .6, delay: stagger(.09), ease: EASE });
+  }
+  if(inView && animate && !reduce){
+    inView('.reveal', function(info){ animate(info.target, { opacity: [0, 1], y: [24, 0] }, { duration: .6, ease: EASE }); }, { amount: .06 });
+  }
+
+  /* ================= SECTION 1: tracker lab ================= */
+  var lbDB, lbTr, lbP, lbFA, lbNext, lbTrips, lbUid, lbNewI, lbBusy = false, lbNT = false, lbPops = {}, lbFlash = {};
+  var LB_NEW = [['Webcam', 800], ['Headset', 650], ['Speaker', 300]];
+  var ES = {
+    Unchanged: ['es-unch', '=', 'Unchanged'], Added: ['es-add', '+', 'Added'],
+    Modified: ['es-mod', '~', 'Modified'], Deleted: ['es-del', '✕', 'Deleted']
+  };
+  var lbTrows = $('#lb-trows'), lbTempty = $('#lb-tempty'), lbDrows = $('#lb-drows'), lbWire = $('#lb-wire'), lbWl = $('#lb-wl'), lbDot = $('#lb-dot');
+  var lbCode = $('#lb-code'), lbSql = $('#lb-sql'), lbCap = $('#lb-cap');
+  var lbBtns = ['read', 'edit', 'add', 'remove', 'update', 'save'].map(function(k){ return $('#lb-' + k); });
+
+  function lbInit(){
+    lbUid = 1;
+    lbDB = [{ id: 1, name: 'Keyboard', price: 450 }, { id: 2, name: 'Mouse', price: 200 }, { id: 3, name: 'Monitor', price: 3000 }];
+    lbTr = []; lbP = null; lbNext = 4; lbTrips = 0; lbNewI = 0; lbPops = {}; lbFlash = {};
+    lbFA = { uid: lbUid++, id: 1, name: 'Keyboard', price: 500 };
+  }
+  function lbEntry(e){ for(var i = 0; i < lbTr.length; i++) if(lbTr[i].e === e) return lbTr[i]; return null; }
+  function lbByKey(id){ if(id == null) return null; for(var i = 0; i < lbTr.length; i++) if(lbTr[i].e.id === id) return lbTr[i]; return null; }
+  function lbDbRow(id){ for(var i = 0; i < lbDB.length; i++) if(lbDB[i].id === id) return lbDB[i]; return null; }
+  function lbDetect(){
+    lbTr.forEach(function(t){
+      if((t.state === 'Unchanged' || t.state === 'Modified') && t.orig && !t.all){
+        t.state = (t.e.name !== t.orig.name || t.e.price !== t.orig.price) ? 'Modified' : 'Unchanged';
+      }
+    });
+  }
+  function chipHtml(s){ var x = ES[s]; return '<span class="es ' + x[0] + '"><i>' + x[1] + '</i>' + x[2] + '</span>'; }
+  function entStr(e){ return 'Product { Id = ' + (e.id == null ? '?' : e.id) + ', Name = "' + e.name + '", Price = ' + e.price + ' }'; }
+
+  function lbRender(){
+    lbTrows.innerHTML = lbTr.map(function(t){
+      var e = t.e, price = String(e.price), note = '';
+      if(t.orig && e.price !== t.orig.price && !t.all) price = t.orig.price + ' → ' + e.price;
+      if(t.state === 'Added') note = 'الـ Id هيتحدد من الـ DB وقت الـ INSERT.';
+      else if(t.state === 'Deleted') note = 'الصف لسه في الـ DB لحد ما تعمل SaveChanges.';
+      else if(t.state === 'Modified' && t.all) note = 'كل الأعمدة متعلّمة Modified، لأن EF معندوش Snapshot يقارن بيه.';
+      else if(t.state === 'Modified') note = 'EF قارن بالـ Snapshot ولقى Price بس اتغيّر.';
+      else if(t.orig) note = 'Snapshot: ' + t.orig.price;
+      return '<div class="trow s-' + t.state + '" data-u="' + e.uid + '">' + chipHtml(t.state) +
+        '<span class="tnm">' + esc(e.name) + '</span><span class="tid">Id ' + (e.id == null ? '?' : e.id) + '</span>' +
+        '<span class="tpr">' + esc(price) + '</span>' + (note ? '<span class="tdet">' + esc(note) + '</span>' : '') + '</div>';
+    }).join('');
+    lbTempty.hidden = lbTr.length > 0;
+    lbDrows.innerHTML = lbDB.length ? lbDB.map(function(r){
+      return '<div class="drow' + (lbFlash[r.id] ? ' flash' : '') + '" data-id="' + r.id + '"><span class="tid">' + r.id + '</span><span class="tnm">' + esc(r.name) + '</span><span class="tpr">' + r.price + '</span></div>';
+    }).join('') : '<div class="tb-empty">الجدول فاضي</div>';
+    // variables
+    var pe = lbP ? lbEntry(lbP) : null, fe = lbEntry(lbFA);
+    $('#lb-vp').textContent = lbP ? entStr(lbP) : 'null (لسه ما قريتش)';
+    $('#lb-vf').textContent = entStr(lbFA);
+    var tp = $('#lb-tp'), tf = $('#lb-tf');
+    tp.innerHTML = lbP ? (pe ? chipHtml(pe.state) + ' <span class="trk yes">متتبَّع</span>' : '<span class="es es-det"><i>○</i>Detached</span> <span class="trk no">مش متتبَّع</span>') : '';
+    tf.innerHTML = fe ? chipHtml(fe.state) + ' <span class="trk yes">متتبَّع</span>' : '<span class="es es-det"><i>○</i>Detached</span> <span class="trk no">مش متتبَّع</span>';
+    $('#lb-trips').textContent = lbTrips;
+    $('#lb-tcount').textContent = lbTr.length;
+    // animations
+    Object.keys(lbPops).forEach(function(u){ pop($('.trow[data-u="' + u + '"]', lbTrows)); });
+    Object.keys(lbFlash).forEach(function(id){ pop($('.drow[data-id="' + id + '"]', lbDrows)); });
+    lbPops = {};
+    if(Object.keys(lbFlash).length){ var ids = lbFlash; lbFlash = {}; setTimeout(function(){ $$('.drow.flash', lbDrows).forEach(function(r){ r.classList.remove('flash'); }); }, reduce ? 300 : 1500); }
+  }
+  function lbLog(box, text, kind){
+    var d = document.createElement('div'); d.className = 'out' + (kind ? ' ' + kind : ''); d.textContent = text;
+    box.appendChild(d); box.scrollTop = box.scrollHeight;
+    if(animate && !reduce) animate(d, { opacity: [0, 1], x: [-10, 0] }, { duration: .25 });
+  }
+  function lbSay(t){ lbCap.innerHTML = rich(t); fade(lbCap); }
+  function lbSetBusy(b){ lbBusy = b; lbBtns.forEach(function(x){ x.disabled = b; }); $('#lb-reset').disabled = b; $('#lb-nt').disabled = b; }
+  function lbIdle(msg){
+    lbWl.textContent = msg || 'ساكتة. مفيش اتصال';
+    if(animate && !reduce) animate(lbWl, { opacity: [.2, 1] }, { duration: .5 });
+  }
+  async function lbTravel(dir, label){
+    lbWire.classList.add('live'); lbWl.textContent = label;
+    var vertical = isPhone();
+    var L = (vertical ? lbWire.offsetHeight : lbWire.offsetWidth) / 2 - 12;
+    var a = vertical ? (dir === 'db' ? -L : L) : (dir === 'db' ? L : -L);
+    var prop = vertical ? 'y' : 'x', kf = {}; kf[prop] = [a, -a];
+    lbDot.style.opacity = '1';
+    if(animate) await animate(lbDot, kf, { duration: reduce ? .01 : .8, ease: 'easeInOut' }); else await sleep(300);
+    lbDot.style.opacity = '0';
+    lbWire.classList.remove('live'); lbWl.textContent = 'ساكتة';
+  }
+
+  async function lbRead(){
+    lbSetBusy(true);
+    lbLog(lbCode, lbNT ? 'var p = await db.Products.AsNoTracking().FirstAsync();' : 'var p = await db.Products.FirstAsync();');
+    await lbTravel('tr', 'بيسأل الـ DB…');
+    lbTrips++;
+    lbLog(lbSql, 'SELECT TOP(1) Id, Name, Price FROM Products;', 'sql');
+    var row = lbDB[0];
+    if(!row){
+      lbLog(lbCode, '✕ InvalidOperationException: الجدول فاضي', 'bad');
+      lbSay('الجدول فاضي، فـ `FirstAsync` رمت Exception. رجّع من الأول عشان تكمّل.');
+    } else if(lbNT){
+      lbP = { uid: lbUid++, id: row.id, name: row.name, price: row.price };
+      lbSay('جاب الصف بس **من غير تتبّع**. الـ Tracker لسه فاضي، فأي تعديل على `p` هيتعمل في الذاكرة وبس ومحدش هيشوفه. ده الأنسب للقراءة بس.'.replace(/\*\*/g, ''));
+    } else {
+      var ex = lbByKey(row.id);
+      if(ex){
+        lbP = ex.e;
+        lbSay('الـ SELECT اتبعت، بس EF لقى الصف ده متتبّع عنده بالفعل، فرجّعلك **نفس الـ instance** ومسحش تعديلاتك. ده اسمه Identity Resolution.'.replace(/\*\*/g, ''));
+      } else {
+        lbP = { uid: lbUid++, id: row.id, name: row.name, price: row.price };
+        lbTr.push({ e: lbP, state: 'Unchanged', orig: { name: row.name, price: row.price }, all: false });
+        lbPops[lbP.uid] = 1;
+        lbSay('EF جاب الصف وحفظ منه نسخة (Snapshot) في الـ Tracker. الحالة `Unchanged`: مفيش حاجة اتغيّرت لسه.');
+      }
+    }
+    lbRender(); lbSetBusy(false);
+  }
+  function lbEdit(){
+    if(!lbP){ lbSay('`p` لسه `null`. اضغط على زر القراءة الأول.'); return; }
+    lbLog(lbCode, 'p.Price += 50;');
+    lbP.price += 50; lbDetect();
+    var t = lbEntry(lbP); if(t) lbPops[lbP.uid] = 1;
+    lbIdle();
+    if(!t) lbSay('غيّرت `p` في الذاكرة بس. بس الـ Tracker معندوش خبر بيه، فـ `SaveChanges` مش هيشوف التعديل ده. وطبعًا مفيش SQL اتبعت.');
+    else if(t.state === 'Added') lbSay('الـ entity لسه `Added`. التعديل هيدخل في الـ INSERT بالقيمة الجديدة. مفيش SQL اتبعت لسه.');
+    else if(t.state === 'Deleted') lbSay('الـ entity علامتها `Deleted`، فالتعديل مالوش لازمة. مفيش SQL اتبعت.');
+    else if(t.state === 'Modified') lbSay('الـ Tracker قارن بالـ Snapshot ولقى فرق، فبقت `Modified`. **ومحتجناش نناديّ `Update`.** والسلك ساكت: مفيش SQL لسه.'.replace(/\*\*/g, ''));
+    else lbSay('القيمة رجعت زي الـ Snapshot، فالحالة رجعت `Unchanged`.');
+    lbRender();
+  }
+  function lbAdd(){
+    var n = LB_NEW[lbNewI % LB_NEW.length]; lbNewI++;
+    var e = { uid: lbUid++, id: null, name: n[0], price: n[1] };
+    lbTr.push({ e: e, state: 'Added', orig: null, all: false });
+    lbPops[e.uid] = 1;
+    lbLog(lbCode, 'db.Products.Add(new Product { Name = "' + n[0] + '", Price = ' + n[1] + ' });');
+    lbIdle();
+    lbSay('`Add` سجّلت الـ entity في الـ Tracker بحالة `Added` وبس. **شوف السلك والعدّاد: ولا نداء للـ DB.** الصف مش في الجدول لحد ما تعمل `SaveChanges`.'.replace(/\*\*/g, ''));
+    lbRender();
+  }
+  function lbRemove(){
+    if(!lbP){ lbSay('`p` لسه `null`. اضغط على زر القراءة الأول.'); return; }
+    lbLog(lbCode, 'db.Products.Remove(p);');
+    var t = lbEntry(lbP); lbIdle();
+    if(!t){
+      lbTr.push({ e: lbP, state: 'Deleted', orig: { name: lbP.name, price: lbP.price }, all: false }); lbPops[lbP.uid] = 1;
+      lbSay('`p` مكانش متتبَّع، بس عنده `Id`، فـ `Remove` بدأت تتبّعه بحالة `Deleted`. لسه مفيش SQL.');
+    } else if(t.state === 'Added'){
+      lbTr.splice(lbTr.indexOf(t), 1);
+      lbSay('الـ entity كانت `Added` ولسه محفوظتش، فالـ Tracker شالها خلاص. مفيش SQL ولا هيبقى فيه.');
+    } else if(t.state === 'Deleted'){
+      lbSay('الـ entity بالفعل `Deleted`.');
+    } else {
+      t.state = 'Deleted'; lbPops[lbP.uid] = 1;
+      lbSay('`Remove` غيّرت الحالة لـ `Deleted` وبس. الصف **لسه موجود في الـ DB** لحد ما تعمل `SaveChanges`.'.replace(/\*\*/g, ''));
+    }
+    lbRender();
+  }
+  function lbUpdate(){
+    lbLog(lbCode, 'db.Products.Update(fromApi);');
+    lbIdle();
+    var self = lbEntry(lbFA);
+    if(self){ lbSay('`fromApi` متتبَّع بالفعل بحالة `' + self.state + '`.'); lbRender(); return; }
+    if(lbByKey(lbFA.id)){
+      lbLog(lbCode, '✕ InvalidOperationException: instance تانية بنفس الـ Id بتتتبّع', 'bad');
+      lbSay('الـ Tracker عنده بالفعل entity بـ `Id = ' + lbFA.id + '`، وEF مش بيقبل نسختين لنفس الصف. الحل: اقرا بـ `AsNoTracking`، أو عدّل الـ entity المتتبَّعة بدل ما تعمل `Update`.');
+      lbRender(); return;
+    }
+    lbTr.push({ e: lbFA, state: 'Modified', orig: null, all: true }); lbPops[lbFA.uid] = 1;
+    lbSay('`fromApi` جاي من برا ومش متتبَّع، فـ EF معرفش إيه اللي اتغيّر. علّم **كل الأعمدة** `Modified`. وده كله في الذاكرة: لسه ولا SQL.'.replace(/\*\*/g, ''));
+    lbRender();
+  }
+  async function lbSave(){
+    lbDetect();
+    lbLog(lbCode, 'await db.SaveChangesAsync();');
+    var pend = lbTr.filter(function(t){ return t.state !== 'Unchanged'; });
+    if(!pend.length){
+      lbIdle('مفيش حاجة تتبعت');
+      lbSay('كل الـ entities `Unchanged`، فـ EF **مبعتش أي SQL** والعدّاد زي ما هو.'.replace(/\*\*/g, ''));
+      return;
+    }
+    lbSetBusy(true);
+    await lbTravel('db', 'بيبعت الأوامر…');
+    lbTrips++;
+    var cmds = pend.map(function(t){
+      var e = t.e;
+      if(t.state === 'Added') return { t: t, sql: "INSERT INTO Products (Name, Price) VALUES ('" + e.name + "', " + e.price + ');' };
+      if(t.state === 'Deleted') return { t: t, sql: 'DELETE FROM Products WHERE Id = ' + e.id + ';' };
+      var cols = [];
+      if(t.all){ cols = ["Name = '" + e.name + "'", 'Price = ' + e.price]; }
+      else { if(e.name !== t.orig.name) cols.push("Name = '" + e.name + "'"); if(e.price !== t.orig.price) cols.push('Price = ' + e.price); }
+      return { t: t, sql: 'UPDATE Products SET ' + cols.join(', ') + ' WHERE Id = ' + e.id + ';' };
+    });
+    var multi = cmds.length > 1;
+    if(multi) lbLog(lbSql, 'BEGIN TRANSACTION;', 'bg');
+    cmds.forEach(function(c){ lbLog(lbSql, c.sql, 'sql'); });
+    var bad = pend.filter(function(t){ return (t.state === 'Modified' || t.state === 'Deleted') && !lbDbRow(t.e.id); })[0];
+    if(bad){
+      lbLog(lbSql, '✕ 0 rows affected (الصف Id=' + bad.e.id + ' مش موجود)', 'bad');
+      lbLog(lbSql, 'ROLLBACK;', 'bad');
+      lbLog(lbCode, '✕ DbUpdateConcurrencyException', 'bad');
+      lbSay('الصف اللي عايز تعدّله أو تمسحه **مش موجود** في الـ DB، فـ EF رمى `DbUpdateConcurrencyException` واتعمل Rollback لكل الأوامر. الـ Tracker لسه زي ما هو.'.replace(/\*\*/g, ''));
+      lbRender(); lbSetBusy(false); return;
+    }
+    if(multi) lbLog(lbSql, 'COMMIT;', 'bg');
+    cmds.forEach(function(c){
+      var t = c.t, e = t.e;
+      if(t.state === 'Added'){ e.id = lbNext++; lbDB.push({ id: e.id, name: e.name, price: e.price }); lbFlash[e.id] = 1; t.state = 'Unchanged'; t.orig = { name: e.name, price: e.price }; }
+      else if(t.state === 'Modified'){ var r = lbDbRow(e.id); r.name = e.name; r.price = e.price; lbFlash[e.id] = 1; t.state = 'Unchanged'; t.orig = { name: e.name, price: e.price }; t.all = false; }
+      else { lbDB = lbDB.filter(function(x){ return x.id !== e.id; }); lbTr.splice(lbTr.indexOf(t), 1); }
+      lbPops[e.uid] = 1;
+    });
+    lbSay('اتبعت ' + cmds.length + (cmds.length > 1 ? ' أوامر مرة واحدة جوه Transaction واحدة' : ' أمر') + '. **ده المكان الوحيد (غير الـ queries) اللي EF بيكلّم فيه الـ DB.** بعدها الحالات رجعت `Unchanged` والـ `Deleted` اتشالت من الـ Tracker.'.replace(/\*\*/g, ''));
+    lbRender(); lbSetBusy(false);
+  }
+  function lbReset(){
+    lbInit();
+    lbCode.innerHTML = '<span class="head">الكود اللي نفّذته</span>';
+    lbSql.innerHTML = '<span class="head">SQL اللي اتبعت للـ DB فعلًا</span>';
+    lbWl.textContent = 'ساكتة';
+    lbSay('ابدأ بزر القراءة. بعدها عدّل، وبعدها SaveChanges، وراقب إمتى بيتبعت SQL.');
+    lbRender();
+  }
+  $('#lb-read').addEventListener('click', lbRead);
+  $('#lb-edit').addEventListener('click', lbEdit);
+  $('#lb-add').addEventListener('click', lbAdd);
+  $('#lb-remove').addEventListener('click', lbRemove);
+  $('#lb-update').addEventListener('click', lbUpdate);
+  $('#lb-save').addEventListener('click', lbSave);
+  $('#lb-reset').addEventListener('click', lbReset);
+  $('#lb-nt').addEventListener('click', function(){
+    lbNT = !lbNT; this.setAttribute('aria-pressed', String(lbNT));
+    $('#lb-read-code').textContent = lbNT ? 'var p = await db.Products.AsNoTracking().FirstAsync();' : 'var p = await db.Products.FirstAsync();';
+  });
+  lbInit(); lbRender();
+
+  /* ================= SECTION 2: where does it run ================= */
+  var WH = [
+    { k: 'Add', tok: 'Add(p)', kind: 'mem', asy: 'AddAsync (لحالة خاصة، تحت)', txt: 'بتسجّل الـ entity في الـ Tracker بحالة `Added`. شغل في الذاكرة، مفيش حاجة تستناها.' },
+    { k: 'Update', tok: 'Update(p)', kind: 'mem', asy: null, txt: 'بتعلّم الـ entity `Modified` وتتبّعها لو مش متتبَّعة. تغيير حالة في الذاكرة، ولا I/O.' },
+    { k: 'Remove', tok: 'Remove(p)', kind: 'mem', asy: null, txt: 'بتعلّم الـ entity `Deleted`. الـ DELETE نفسه مش هنا، هيتبعت وقت `SaveChanges`.' },
+    { k: 'Attach', tok: 'Attach(p)', kind: 'mem', asy: null, txt: 'بتبدأ تتبّع entity موجودة بحالة `Unchanged`. ذاكرة بس.' },
+    { k: 'Entry', tok: 'Entry(p).State', kind: 'mem', asy: null, txt: 'بتحدد الحالة بإيدك: `Entry(p).State = EntityState.Modified`. ذاكرة بس.' },
+    { k: 'Save', tok: 'SaveChangesAsync', kind: 'io', asy: 'SaveChangesAsync', txt: 'هنا بيتبعت `INSERT` و`UPDATE` و`DELETE` فعلًا. شبكة وقاعدة بيانات، ممكن تاخد وقت. عشان كده `await` أحسن، والـ Thread ميقفش.' },
+    { k: 'Query', tok: 'ToListAsync', kind: 'io', asy: 'ToListAsync / FirstAsync / ...', txt: 'أي query بتتحوّل لـ SELECT وتروح للـ DB. I/O حقيقي.' },
+    { k: 'Find', tok: 'FindAsync', kind: 'maybe', asy: 'FindAsync', txt: 'بتدوّر في الـ Tracker الأول (ذاكرة). لو لقت الـ entity ترجّعها فورًا، ولو لأ بتروح للـ DB. I/O محتمل، فـ async.' },
+    { k: 'Exec', tok: 'ExecuteDeleteAsync', kind: 'io', asy: 'ExecuteDeleteAsync / ExecuteUpdateAsync', txt: 'بتبعت `DELETE` أو `UPDATE` فورًا للـ DB من غير Tracker (EF Core 7+). I/O، فـ async.' },
+    { k: 'AddAsync', tok: 'AddAsync(p)', kind: 'maybe', asy: 'AddAsync', txt: 'في الأغلب بتشتغل في الذاكرة زي `Add`. بس لو الـ key generator محتاج يسأل الـ DB (زي HiLo)، بتعمل ده async من غير ما توقّف الـ Thread.' }
+  ];
+  var whChips = $('#wh-chips'), whTok = $('#wh-tok'), whMem = $('#wh-mem'), whDb = $('#wh-db'), whBm = $('#wh-bm'), whBd = $('#wh-bd'), whRes = $('#wh-res');
+  var whRoute = $('#wh-route'), whRouteStatus = $('#wh-route-status');
+  var whMemState = $('#wh-mem-state'), whDbState = $('#wh-db-state');
+  var whRun = 0;
+  // Keep the method inside its own cell: moving an element with a transformed bounding box
+  // used to send the label outside the section when switching methods rapidly.
+  whChips.innerHTML = WH.map(function(m, i){
+    return '<button class="chip wh-choice" type="button" aria-pressed="false" data-i="' + i + '"><span dir="ltr" class="wh-method-name">' + esc(m.tok) + '</span></button>';
+  }).join('');
+  async function whGo(i){
+    var m = WH[i], my = ++whRun;
+    $$('.wh-choice', whChips).forEach(function(c){ c.setAttribute('aria-pressed', String(+c.dataset.i === i)); });
+    whTok.textContent = m.tok;
+    whMem.className = 'wh-box'; whDb.className = 'wh-box';
+    whRoute.className = 'wh-mid';
+    whBm.style.width = '0'; whBd.style.width = '0';
+    whMemState.textContent = 'جاهز'; whDbState.textContent = 'جاهز';
+    whRouteStatus.textContent = 'فحص مسار التنفيذ';
+    var asy = m.asy ? '<span class="bd ' + (m.kind === 'mem' ? 'mix' : m.kind === 'maybe' ? 'mix' : 'io') + '">Async: ' + esc(m.asy) + '</span>' : '<span class="bd mem">من غير Async</span>';
+    var loc = m.kind === 'mem' ? '<span class="bd mem">داخل الذاكرة</span>' : m.kind === 'io' ? '<span class="bd io">يتصل بقاعدة البيانات</span>' : '<span class="bd mix">ممكن يحتاج قاعدة البيانات</span>';
+    whRes.innerHTML = '<div class="wh-result-label">نتيجة التجربة</div><div class="row"><code>' + esc(m.tok) + '</code>' + loc + asy + '</div><p>' + rich(m.txt) + '</p>';
+    // No movement/transform of the selected method: highlight the actual execution path instead.
+    if (m.kind !== 'io') {
+      whMem.classList.add('hit');
+      whBm.style.width = '100%';
+      whMemState.textContent = 'تم التنفيذ';
+    } else {
+      whMemState.textContent = 'بدون تغيير';
+    }
+    whRoute.classList.add('mode-' + m.kind);
+    if (m.kind === 'mem') {
+      whRouteStatus.textContent = 'ذاكرة فقط · بدون DB';
+      whDbState.textContent = 'لا يوجد طلب';
+      return;
+    }
+    if (m.kind === 'maybe') {
+      whRouteStatus.textContent = 'قد يتطلب استعلامًا';
+      whMemState.textContent = 'فحص الذاكرة';
+      await sleep(reduce ? 0 : 180);
+      if (my !== whRun) return;
+      whDb.classList.add('maybe');
+      whBd.style.width = '45%';
+      whDbState.textContent = 'حسب الحالة';
+      return;
+    }
+    whRouteStatus.textContent = 'انتقال إلى قاعدة البيانات';
+    whMemState.textContent = 'بدون تغيير';
+    await sleep(reduce ? 0 : 220);
+    if (my !== whRun) return;
+    whMem.classList.remove('hit');
+    whBm.style.width = '0';
+    whMemState.textContent = 'بدون تغيير';
+    whDb.classList.add('hit','io');
+    whBd.style.width = '100%';
+    whDbState.textContent = 'تنفيذ I/O';
+    whRouteStatus.textContent = 'عملية I/O فعلية';
+  }
+  $$('.wh-choice', whChips).forEach(function(c){ c.addEventListener('click', function(){ whGo(+c.dataset.i); }); });
+
+  /* ================= SECTION 3: AddAsync lab ================= */
+  var adKey = 'identity', adBlock = [], adNext = 1, adN = 0, adTrips = 0, adBusy = false, adLost = 0, adPing = 0, adBlocked = false;
+  var BLOCK = 3;
+  var adSlots = $('#ad-slots'), adList = $('#ad-list'), adThr = $('#ad-thr'), adSp = $('#ad-sp'), adThrT = $('#ad-thr-t'), adPingB = $('#ad-ping'), adLog = $('#ad-log'), adCap = $('#ad-cap');
+  var adSub = $('#ad-sub');
+  function adSay(t){ adCap.innerHTML = rich(t); fade(adCap); }
+  function adSubText(){
+    adSub.textContent = adKey === 'identity' ? 'مفيش generator في الذاكرة. الـ DB هي اللي تحدد الـ Id وقت الـ INSERT.' :
+      adKey === 'guid' ? 'الـ Id بيتولّد في الذاكرة بـ Guid.NewGuid(). مفيش DB.' :
+      'الـ block ده أرقام محجوزة من الـ DB. لما يخلص، لازم نروح نجيب block جديد.';
+  }
+  function adDrawSlots(){
+    if(adKey !== 'hilo'){ adSlots.innerHTML = '<span class="hint">مش مستخدم في ' + (adKey === 'guid' ? 'Guid' : 'Identity') + '.</span>'; return; }
+    var cells = [], used = BLOCK - adBlock.length;
+    if(adNext === 1 && adBlock.length === 0 && adN === 0){ adSlots.innerHTML = '<span class="slot">—</span><span class="slot">—</span><span class="slot">—</span><span class="hint">الـ block فاضي. أول Add هتجيب واحد.</span>'; return; }
+    var start = adNext - BLOCK;
+    for(var i = 0; i < BLOCK; i++) cells.push('<span class="slot full' + (i < used ? ' used' : '') + '">' + (start + i) + '</span>');
+    adSlots.innerHTML = cells.join('') + (adBlock.length === 0 ? '<span class="hint">الـ block خلص.</span>' : '');
+  }
+  function adThread(state){
+    adThr.className = 'thr-state' + (state === 'blocked' ? ' blocked' : state === 'wait' ? ' wait' : '');
+    adSp.hidden = state === 'free';
+    adThrT.textContent = state === 'blocked' ? 'مشغول (محاكاة تنفيذ Sync)' : state === 'wait' ? 'متاح ✓ (محاكاة Async)' : 'متاح ✓ (داخل المحاكاة)';
+  }
+  function adBusyUi(b){ adBusy = b; $('#ad-add').disabled = b; $('#ad-addasync').disabled = b; $('#ad-reset').disabled = b; $$('#ad-chips .chip').forEach(function(c){ c.disabled = b; }); }
+  async function adDo(mode){
+    if(adBusy) return;
+    adN++;
+    var name = 'Product ' + adN, key, why, fetched = false, call = mode === 'sync' ? 'db.Products.Add(p);' : 'await db.Products.AddAsync(p);';
+    if(adKey === 'identity'){ key = '؟'; why = 'الـ DB هتحدده وقت الـ INSERT'; }
+    else if(adKey === 'guid'){ key = Math.random().toString(16).slice(2, 10) + '…'; why = 'اتولّد في الذاكرة'; }
+    else {
+      if(adBlock.length === 0){
+        fetched = true; adBusyUi(true); adPing = 0; $('#ad-pn').textContent = '0'; adBlocked = mode === 'sync';
+        var from = adNext, to = adNext + BLOCK - 1;
+        adLog.insertAdjacentHTML('beforeend', '<div class="out bad">' + esc(call) + '</div>');
+        adLog.insertAdjacentHTML('beforeend', '<div class="out sql">SELECT NEXT VALUE FOR ProductHiLo; → block [' + from + '..' + to + ']</div>');
+        adThread(mode === 'sync' ? 'blocked' : 'wait');
+        await sleep(reduce ? 250 : 1500);
+        adBlocked = false; adTrips++;
+        for(var i = from; i <= to; i++) adBlock.push(i);
+        adNext = to + 1;
+        adThread('free');
+        adBusyUi(false);
+      }
+      key = String(adBlock.shift()); why = fetched ? 'من block جديد' : 'من الـ block اللي في الذاكرة (من غير DB)';
+    }
+    $('#ad-trips').textContent = adTrips;
+    if(adN === 1 || adList.querySelector('.hint')) adList.innerHTML = '';
+    adList.insertAdjacentHTML('beforeend', '<div class="ad-item"><b>' + esc(name) + '</b><code>Id = ' + esc(key) + '</code><span class="muted">' + esc(why) + '</span></div>');
+    fade(adList.lastElementChild);
+    if(!fetched) adLog.insertAdjacentHTML('beforeend', '<div class="out bg">' + esc(call) + ' (من غير DB)</div>');
+    adLog.scrollTop = adLog.scrollHeight;
+    adDrawSlots();
+    if(adKey === 'identity') adSay('الـ `Id` هيتحدد وقت الـ `INSERT`، فـ `Add` ما راحتش للـ DB خالص. **`AddAsync` هنا مفيهاش أي فايدة**: نفس الشيء بالظبط.'.replace(/\*\*/g, ''));
+    else if(adKey === 'guid') adSay('المفتاح اتولّد في الذاكرة، ومفيش DB. `Add` كفاية.');
+    else if(!fetched) adSay('لسه فيه أرقام في الـ block اللي في الذاكرة، فخدنا رقم من غير DB. `Add` و`AddAsync` نفس الشيء.');
+    else if(mode === 'sync'){
+      adSay('الـ block خلص، فـ `Add` لازم تروح تجيب block جديد من الـ DB. وهي مش async، فالـ Thread اتعلّم كأنه مشغول في المحاكاة لحد ما الرد جه. الضغطات أثناء الفترة دي اتسجّلت كأنها اتتجاهلت.'.replace(/\*\*/g, ''));
+    } else {
+      adSay('نفس الرحلة للـ DB، بس الـ Thread فضل حر. ضغطت ' + adPing + ' مرة أثناء الانتظار. ده بيوضّح الفكرة من `AddAsync` من غير حجب الـ Thread خلال انتظار الـ I/O.'.replace(/\*\*/g, ''));
+    }
+  }
+  adPingB.addEventListener('click', function(){
+    if(adBlocked){ adLost++; $('#ad-lost').textContent = adLost; return; }
+    adPing++; $('#ad-pn').textContent = adPing; pop(adPingB);
+  });
+  function adReset(){
+    adBlock = []; adNext = 1; adN = 0; adTrips = 0; adLost = 0; adPing = 0; adBlocked = false;
+    $('#ad-trips').textContent = '0'; $('#ad-lost').textContent = '0'; $('#ad-pn').textContent = '0';
+    adList.innerHTML = '<span class="hint">لسه مفيش.</span>';
+    adLog.innerHTML = '<span class="head">DB LOG</span>';
+    adThread('free'); adDrawSlots(); adSubText();
+    adSay('جرّب `Add` و`AddAsync` بالـ Identity الأول، وبعدها غيّر لـ HiLo.');
+  }
+  $('#ad-add').addEventListener('click', function(){ adDo('sync'); });
+  $('#ad-addasync').addEventListener('click', function(){ adDo('async'); });
+  $('#ad-reset').addEventListener('click', adReset);
+  $$('#ad-chips .chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      adKey = c.dataset.k;
+      $$('#ad-chips .chip').forEach(function(x){ x.setAttribute('aria-pressed', String(x === c)); });
+      adReset();
+    });
+  });
+  adReset();
+
+  /* ================= SECTION 4: code stepper ================= */
+  function hi(raw){
+    var ci = raw.indexOf('//'), code = ci < 0 ? raw : raw.slice(0, ci), com = ci < 0 ? '' : raw.slice(ci);
+    var out = esc(code).replace(/(\$?"(?:[^"\\]|\\.)*")|\b(var|await|async|new|return)\b|\b(Console|Product|EntityState|Guid)\b/g, function(m, st, kw){
+      return st ? '<span class="st">' + m + '</span>' : kw ? '<span class="kw">' + m + '</span>' : '<span class="ty">' + m + '</span>';
+    });
+    return out + (com ? '<span class="cm">' + esc(com) + '</span>' : '');
+  }
+  /* output item: [text, kind('' | bg | bad | good | sql)] */
+  var EX = [
+    { name: 'tracked ولا لأ', scenario: 'عايزين نزوّد سعر أول منتج بـ 50. الفرق في سطر القراءة بس.', tabs: ['قراءة عادية (tracked)', 'AsNoTracking'],
+      v: [
+        { lines: [
+            'var p = await db.Products.FirstAsync();   // tracked',
+            'p.Price += 50;                            // just change it',
+            'await db.SaveChangesAsync();              // no Update() needed'
+          ],
+          steps: [
+            { line: 0, text: 'EF بعت `SELECT` وجاب الصف، وحفظ منه Snapshot في الـ Tracker. الحالة `Unchanged`.', out: [['SELECT TOP(1) Id, Name, Price FROM Products;', 'sql']] },
+            { line: 1, text: 'عدّلنا في الذاكرة بس. الـ Tracker لاحظ الفرق عن الـ Snapshot فبقت `Modified`. لسه مفيش SQL.', out: [['state = Modified', '']] },
+            { line: 2, text: '`SaveChanges` لقى `Price` بس اتغيّر، فبعت `UPDATE` للعمود ده لوحده.', out: [['UPDATE Products SET Price = 500 WHERE Id = 1;', 'good']] }
+          ] },
+        { lines: [
+            'var p = await db.Products.AsNoTracking().FirstAsync();',
+            'p.Price += 50;                            // EF doesn\'t know',
+            'await db.SaveChangesAsync();              // nothing to save!'
+          ],
+          steps: [
+            { line: 0, text: 'نفس الـ `SELECT`، بس EF مسابش أي أثر في الـ Tracker. `p` object عادي.', out: [['SELECT TOP(1) Id, Name, Price FROM Products;', 'sql'], ['Tracker: فاضي', 'bg']] },
+            { line: 1, text: 'عدّلنا الـ object، بس الـ Tracker معندوش خبر بيه.', out: [] },
+            { line: 2, text: '`SaveChanges` ملقاش أي تغيير يبعته. التعديل ضاع من غير أي Exception.', out: [['مفيش SQL اتبعت', 'bad'], ['DB: Price لسه 450', 'bad']] }
+          ] }
+      ] },
+    { name: 'Update محتاجها؟', scenario: 'الـ API وصلها JSON فيه سعر جديد للمنتج رقم `id`.', tabs: ['اقرا وعدّل', 'Update على entity جاي من برا'],
+      v: [
+        { lines: [
+            'var p = await db.Products.FindAsync(id);',
+            'p.Price = dto.Price;',
+            'await db.SaveChangesAsync();'
+          ],
+          steps: [
+            { line: 0, text: '`FindAsync` بتدوّر في الـ Tracker الأول، ملقتش، فراحت للـ DB. دلوقتي `p` متتبَّع.', out: [['SELECT ... FROM Products WHERE Id = 1;', 'sql']] },
+            { line: 1, text: 'عدّلنا خاصية على entity متتبَّع. Modified لعمود `Price` بس.', out: [['state = Modified (Price)', '']] },
+            { line: 2, text: '`UPDATE` لعمود `Price` لوحده. أقل بيانات، وأمان أكتر.', out: [['UPDATE Products SET Price = 500 WHERE Id = 1;', 'good']] }
+          ] },
+        { lines: [
+            'var p = new Product { Id = id, Name = dto.Name, Price = dto.Price };',
+            'db.Products.Update(p);                    // in memory only',
+            'await db.SaveChangesAsync();'
+          ],
+          steps: [
+            { line: 0, text: 'object جديد من الـ DTO. الـ Tracker معندوش خبر بيه (`Detached`)، ومفيش `SELECT`.', out: [['state = Detached', 'bg']] },
+            { line: 1, text: '`Update` علّمت الـ entity `Modified` لـ **كل** الأعمدة، لأن EF معندوش Snapshot يعرف منه إيه اللي اتغيّر. وكله في الذاكرة.', out: [['state = Modified (كل الأعمدة)', '']] },
+            { line: 2, text: '`UPDATE` بكل الأعمدة، حتى اللي ماتغيّرتش. مقبولة لو الـ DTO كامل، وإلا ممكن تمسح بيانات بالغلط.', out: [["UPDATE Products SET Name = 'Keyboard', Price = 500 WHERE Id = 1;", 'good']] }
+          ] }
+      ] },
+    { name: 'Remove ولا ExecuteDelete', scenario: 'عايزين نمسح المنتج رقم `id`.', tabs: ['Remove + SaveChanges', 'ExecuteDeleteAsync'],
+      v: [
+        { lines: [
+            'var p = await db.Products.FindAsync(id);',
+            'db.Products.Remove(p);                    // state = Deleted',
+            'await db.SaveChangesAsync();              // DELETE is sent here'
+          ],
+          steps: [
+            { line: 0, text: 'قرينا الصف عشان نتتبّعه (`SELECT`).', out: [['SELECT ... FROM Products WHERE Id = 1;', 'sql']] },
+            { line: 1, text: '`Remove` غيّرت الحالة لـ `Deleted` بس. الصف لسه في الـ DB، ولا SQL اتبعت. عشان كده مفيش `RemoveAsync`.', out: [['state = Deleted', '']] },
+            { line: 2, text: 'هنا بيتبعت الـ `DELETE` فعلًا.', out: [['DELETE FROM Products WHERE Id = 1;', 'good']] }
+          ] },
+        { lines: [
+            'await db.Products',
+            '        .Where(p => p.Id == id)',
+            '        .ExecuteDeleteAsync();            // EF Core 7+'
+          ],
+          steps: [
+            { line: 0, text: 'من غير ما نقرا الصف ولا نتتبّعه.', out: [] },
+            { line: 1, text: 'الشرط بيتحوّل لـ `WHERE` في الـ SQL.', out: [] },
+            { line: 2, text: 'بتبعت `DELETE` فورًا للـ DB. دي I/O حقيقي، عشان كده ليها `Async`. ولو الـ entity كانت متتبَّعة عندك، الـ Tracker مش هيعرف إنها اتمسحت.', out: [['DELETE FROM Products WHERE Id = 1;', 'good'], ['Tracker: متعرفش حاجة', 'bg']] }
+          ] }
+      ] },
+    { name: 'Add ولا AddAsync', scenario: 'بنضيف منتج جديد. الفرق بيظهر حسب إزاي الـ Id بيتولّد.', tabs: ['Add + Identity', 'Add + HiLo', 'AddAsync + HiLo'],
+      v: [
+        { lines: [
+            '// Id = IDENTITY column (set by the DB)',
+            'db.Products.Add(p);                       // no DB call',
+            'await db.SaveChangesAsync();              // INSERT, DB picks the Id'
+          ],
+          steps: [
+            { line: 1, text: '`Add` سجّلت الـ entity `Added`. الـ `Id` لسه صفر لأن الـ DB هي اللي هتحدده. مفيش نداء للـ DB.', out: [['state = Added, Id = 0 (مؤقت)', '']] },
+            { line: 2, text: '`INSERT`، والـ DB رجّعت الـ `Id`. استخدام `AddAsync` هنا مفيهوش أي فايدة.', out: [["INSERT INTO Products (Name, Price) VALUES ('Webcam', 800);", 'good'], ['Id = 4', 'good']] }
+          ] },
+        { lines: [
+            '// Id generated by a HiLo sequence',
+            'db.Products.Add(p);                       // may call the DB!',
+            'await db.SaveChangesAsync();'
+          ],
+          steps: [
+            { line: 1, text: 'الـ block اللي في الذاكرة خلص، فـ `Add` لازم تروح للـ DB تجيب block جديد. وهي مش async، فـ **الـ Thread واقف** لحد ما الرد يجي.', out: [['SELECT NEXT VALUE FOR ProductHiLo;', 'sql'], ['Thread blocked ⏳', 'bad']] },
+            { line: 2, text: '`INSERT` بالـ `Id` اللي جه من الـ block.', out: [["INSERT INTO Products (Id, Name, Price) VALUES (4, 'Webcam', 800);", 'good']] }
+          ] },
+        { lines: [
+            '// Id generated by a HiLo sequence',
+            'await db.Products.AddAsync(p);            // frees the thread',
+            'await db.SaveChangesAsync();'
+          ],
+          steps: [
+            { line: 1, text: 'نفس الرحلة للـ DB لجلب الـ block، بس بـ `await`. الـ Thread اتحرر وكمل شغل تاني لحد ما الرد جه.', out: [['SELECT NEXT VALUE FOR ProductHiLo;', 'sql'], ['Thread free ✓', 'good']] },
+            { line: 2, text: '`INSERT` بالـ `Id` اللي جه من الـ block. `AddAsync` ما حفظتش حاجة بنفسها.', out: [["INSERT INTO Products (Id, Name, Price) VALUES (4, 'Webcam', 800);", 'good']] }
+          ] }
+      ] }
+  ];
+  var exi = 0, vi = 0, si = 0, LH = 0;
+  var cxChips = $('#cx-chips'), cxTabs = $('#cx-tabs'), cxScen = $('#cx-scenario'), cxLines = $('#cx-lines'), cxHl = $('#cx-hl');
+  var cxExp = $('#cx-explain'), cxCons = $('#cx-console'), cxNext = $('#cx-next');
+  function cur(){ return EX[exi].v[vi]; }
+  function drawTabs(){
+    cxTabs.innerHTML = EX[exi].tabs.map(function(t, i){ return '<button role="tab" type="button" data-v="' + i + '" aria-selected="' + (i === vi) + '">' + esc(t) + '</button>'; }).join('');
+    $$('button', cxTabs).forEach(function(b){ b.addEventListener('click', function(){ vi = +b.dataset.v; loadCx(); }); });
+  }
+  function loadCx(){
+    si = 0; drawTabs();
+    cxScen.innerHTML = rich(EX[exi].scenario);
+    cxLines.innerHTML = cur().lines.map(function(l){ return '<div class="ln">' + hi(l) + '</div>'; }).join('');
+    cxCons.innerHTML = '<span class="head">OUTPUT</span>';
+    cxExp.textContent = 'اضغط "الخطوة اللي بعدها" عشان نبدأ.';
+    if(animate){ animate(cxHl, { y: 0, opacity: 0 }, { duration: 0 }); } else { cxHl.style.transform = 'translateY(0px)'; cxHl.style.opacity = '0'; }
+    cxNext.disabled = false; cxNext.textContent = 'الخطوة اللي بعدها';
+  }
+  function stepCx(){
+    var S = cur().steps;
+    if(si >= S.length) return;
+    var s = S[si]; si++;
+    LH = $('.ln', cxLines).offsetHeight;
+    if(animate && !reduce){
+      animate(cxHl, { y: s.line * LH, opacity: 1 }, { type: 'spring', stiffness: 420, damping: 34 });
+      animate(cxExp, { opacity: [0, 1], y: [6, 0] }, { duration: .3 });
+    } else { cxHl.style.transform = 'translateY(' + (s.line * LH) + 'px)'; cxHl.style.opacity = '1'; }
+    cxExp.innerHTML = rich(s.text.replace(/\*\*/g, ''));
+    s.out.forEach(function(o){
+      var d = document.createElement('div'); d.className = 'out' + (o[1] ? ' ' + o[1] : ''); d.textContent = o[0];
+      cxCons.appendChild(d);
+      if(animate && !reduce) animate(d, { opacity: [0, 1], x: [-12, 0] }, { duration: .3, ease: EASE });
+    });
+    if(si >= S.length){ cxNext.disabled = true; cxNext.textContent = 'خلصنا'; }
+  }
+  cxChips.innerHTML = EX.map(function(e, i){ return '<button class="chip" type="button" aria-pressed="' + (i === 0) + '" data-i="' + i + '">' + esc(e.name) + '</button>'; }).join('');
+  $$('.chip', cxChips).forEach(function(b){
+    b.addEventListener('click', function(){
+      exi = +b.dataset.i; vi = 0;
+      $$('.chip', cxChips).forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      loadCx();
+    });
+  });
+  cxNext.addEventListener('click', stepCx);
+  $('#cx-restart').addEventListener('click', loadCx);
+  loadCx();
+
+  /* ================= SECTION 6: quiz ================= */
+  var Q = [
+    { t: 'ليه مفيش `UpdateAsync` ولا `RemoveAsync`؟',
+      o: ['لأنهم بيغيّروا حالة الـ entity في الـ Tracker (الذاكرة) من غير أي I/O', 'لأنهم بيبعتوا SQL فورًا وبسرعة', 'عشان لسه ما اتضافوش في EF Core'], a: 0,
+      why: 'الـ Async بيتحط على الشغل اللي ممكن يستنى شبكة أو DB. تغيير حالة في الذاكرة مفيش فيه حاجة تستناها.' },
+    { t: 'إمتى EF Core بيبعت `UPDATE` أو `DELETE` فعلًا للـ DB؟',
+      o: ['وقت ما تنادي `Update` أو `Remove`', 'وقت ما تنادي `SaveChanges`', 'وقت ما تعدّل الخاصية'], a: 1,
+      why: 'الميثودات التانية بتسجّل التغيير في الـ Tracker بس. `SaveChanges` هو اللي بيبعت.' },
+    { t: 'قريت entity بـ `AsNoTracking()` وعدّلت `Price` وعملت `SaveChangesAsync`. إيه اللي بيحصل؟',
+      o: ['اتحفظ، لأن `SaveChanges` بتشوف كل الـ objects', 'ما اتحفظش، لأن الـ Tracker معندوش خبر بالـ object', 'بيرمي Exception'], a: 1,
+      why: 'من غير تتبّع مفيش حد بيراقب التغيير. ومفيش Exception، التعديل بيضيع في صمت.' },
+    { t: 'entity اتقرت عادي (tracked) وعدّلت `Price`. محتاج تنادي `Update()`؟',
+      o: ['أيوه، من غيرها مش هتتحفظ', 'لأ، الـ Tracker لاحظ التغيير لوحده', 'أيوه، عشان تبقى `Modified`'], a: 1,
+      why: 'الـ Tracker بيقارن بالـ Snapshot وقت الحفظ، فبيعرف التغيير من غير ما تقوله.' },
+    { t: 'عملت `Update` على entity جاية من API (Detached) وغيّرت `Price` بس. الـ `UPDATE` اللي هيتبعت؟',
+      o: ['عمود `Price` بس', 'كل الأعمدة', 'مفيش حاجة هتتبعت'], a: 1,
+      why: 'EF معندوش Snapshot يعرف منه إيه اللي اتغيّر، فبيعلّم كل الأعمدة Modified.' },
+    { t: '`await db.Products.AddAsync(p)` بتحفظ الـ entity في الـ DB؟',
+      o: ['أيوه', 'لأ، لسه محتاجة `SaveChangesAsync`', 'أيوه، بس لو الـ Id مش Identity'], a: 1,
+      why: '`Add` و`AddAsync` بيسجّلوا الـ entity `Added` في الـ Tracker. الحفظ في `SaveChanges`.' },
+    { t: 'إمتى `AddAsync` بتفرق عن `Add` فعلًا؟',
+      o: ['لما الـ key generator بيكلّم الـ DB (زي HiLo)', 'دايمًا، لأنها أسرع', 'لما تضيف أكتر من entity'], a: 0,
+      why: 'هي موجودة عشان الـ value generators اللي محتاجة تسأل الـ DB من غير ما توقّف الـ Thread.' },
+    { t: 'الـ Id عندك `IDENTITY`. استخدام `AddAsync` بدل `Add` بيفيد؟',
+      o: ['أيوه، بيقلل الوقت', 'لأ، `Add` أصلًا مبتكلّمش الـ DB، والـ Id بيتحدد وقت الـ INSERT', 'أيوه، لأنها Thread-safe'], a: 1,
+      why: 'مفيش I/O في `Add` هنا، فـ `AddAsync` مجرد تكلفة زيادة.' },
+    { t: 'عملت `Remove` على entity لسه `Added` ومحفظتهاش. إيه اللي بيحصل؟',
+      o: ['بيتبعت `DELETE`', 'الـ Tracker بيشيلها ومفيش أي SQL', 'بيرمي Exception'], a: 1,
+      why: 'الصف أصلًا مش في الـ DB، فمفيش حاجة تتمسح.' },
+    { t: 'ليه `ExecuteDeleteAsync` ليها `Async`؟',
+      o: ['لأنها بتبعت `DELETE` للـ DB فورًا (I/O)', 'لأنها بتتتبّع كل الصفوف', 'لأن `Remove` بطيئة'], a: 0,
+      why: 'بتروح للـ DB على طول من غير Tracker، يعني I/O حقيقي.' },
+    { t: '`FindAsync` ممكن ما تروحش للـ DB. ليه برضو ليها `Async`؟',
+      o: ['لأنها بتدوّر في الـ Tracker الأول، ولو ملقتش بتروح للـ DB', 'لأنها بتغيّر حالة الـ entity', 'لأنها بتعمل `Update`'], a: 0,
+      why: 'احتمال I/O كفاية إن الميثود تبقى async.' },
+    { t: 'عملت `Update(fromApi)` لـ `Id = 1` وفيه entity تانية بنفس الـ `Id` متتبَّعة في نفس الـ DbContext. إيه اللي بيحصل؟',
+      o: ['`InvalidOperationException`: في instance تانية بنفس الـ key متتبَّعة', 'بتكتب فوقها عادي', 'بتتجاهل الأمر'], a: 0,
+      why: 'EF مبيسمحش بنسختين لنفس الصف في نفس الـ Tracker.' },
+    { t: 'ليه الأفضل الـ DbContext يكون عمره قصير (Scoped لكل Request)؟',
+      o: ['عشان الـ Tracker بيكبر وبيفضل ماسك entities قديمة ممكن تتعارض', 'عشان الـ Connection بتتقفل', 'مفيش سبب'], a: 0,
+      why: 'كل entity بتقراها بتتخزّن في الـ Tracker. كل ما عمر الـ DbContext كبر، استهلك ذاكرة أكتر وزادت احتمالات التعارض.' }
+  ];
+  var qi = 0, score = 0, answered = false, finished = false;
+  var qcount = $('#qcount'), dots = $('#dots'), qtext = $('#qtext'), options = $('#options'), fb = $('#fb'), qnext = $('#qnext'), quiz = $('#quiz');
+  function shuffle(a){ for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function drawDots(){ dots.innerHTML = Q.map(function(_, i){ return '<i class="' + (i <= qi ? 'on' : '') + '"></i>'; }).join(''); }
+  function showQ(){
+    answered = false; finished = false;
+    var q = Q[qi];
+    qcount.textContent = 'سؤال ' + (qi + 1) + ' من ' + Q.length; drawDots();
+    qtext.innerHTML = rich(q.t);
+    var order = shuffle(q.o.map(function(_, i){ return i; }));
+    options.innerHTML = order.map(function(i){ return '<button class="opt" type="button" data-i="' + i + '">' + rich(q.o[i]) + '</button>'; }).join('');
+    $$('.opt', options).forEach(function(b){ b.addEventListener('click', function(){ answer(+b.dataset.i); }); });
+    options.hidden = false; fb.innerHTML = ''; qnext.hidden = true;
+    if(animate && !reduce) animate(qtext, { opacity: [0, 1], y: [8, 0] }, { duration: .35, ease: EASE });
+  }
+  function answer(i){
+    if(answered) return; answered = true;
+    var q = Q[qi], ok = i === q.a; if(ok) score++;
+    $$('.opt', options).forEach(function(b){
+      b.disabled = true; var bi = +b.dataset.i;
+      if(bi === q.a) b.classList.add('right'); else if(bi === i) b.classList.add('wrong'); else b.classList.add('dim');
+    });
+    fb.innerHTML = '<b>' + (ok ? 'صح' : 'غلط') + '</b><span class="muted">' + rich(q.why) + '</span>';
+    qnext.hidden = false; qnext.textContent = qi === Q.length - 1 ? 'شوف النتيجة' : 'اللي بعده';
+    if(animate && !reduce){
+      if(ok) animate(quiz, { scale: [1, 1.012, 1] }, { duration: .35 }); else animate(quiz, { x: [0, -9, 9, -6, 6, 0] }, { duration: .4 });
+      animate(fb, { opacity: [0, 1], y: [6, 0] }, { duration: .3 });
+    }
+  }
+  function finish(){
+    finished = true; options.hidden = true; qnext.hidden = false; qnext.textContent = 'العب تاني';
+    qcount.textContent = 'خلصت'; dots.innerHTML = '';
+    qtext.innerHTML = '<span class="score">' + score + ' / ' + Q.length + '</span>';
+    fb.innerHTML = '<b>' + (score >= Q.length - 1 ? 'ممتاز. فاهم إمتى EF بيكلّم الـ DB وإمتى بيشتغل في الذاكرة.' : (score >= Q.length - 4 ? 'قريب جدًا. ارجع للمعمل وراقب السلك: بيتحرّك إمتى؟' : 'جرّب تاني بعد المعمل. ركّز: الـ Tracker في الذاكرة، والـ DB مبتتكلّمش إلا وقت SaveChanges والـ queries.')) + '</b>';
+    if(animate && !reduce) animate(qtext, { opacity: [0, 1], scale: [.96, 1] }, { duration: .4, ease: EASE });
+  }
+  qnext.addEventListener('click', function(){
+    if(finished){ qi = 0; score = 0; showQ(); return; }
+    if(qi >= Q.length - 1){ finish(); return; }
+    qi++; showQ();
+  });
+  showQ();
+})();
+</script>
+
+<script>
+(function(){
+  'use strict';
+  var root = document.documentElement;
+  var toggle = document.getElementById('theme-switch');
+  var themeLabel = toggle.querySelector('.theme-text');
+  var themeIcon = document.getElementById('theme-icon');
+  var saved = null;
+  try { saved = localStorage.getItem('ef-core-theme'); } catch(e) {}
+  var theme = saved === 'dark' || saved === 'light' ? saved : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setTheme(t){
+    theme = t; root.setAttribute('data-theme', t);
+    toggle.setAttribute('aria-pressed', String(t === 'dark'));
+    themeLabel.textContent = t === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن';
+    themeIcon.textContent = t === 'dark' ? '☀' : '☾';
+    try { localStorage.setItem('ef-core-theme', t); } catch(e) {}
+  }
+  setTheme(theme);
+  toggle.addEventListener('click', function(){ setTheme(theme === 'dark' ? 'light' : 'dark'); });
+
+  var bar = document.getElementById('page-progress-bar');
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+  var heads = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  var scheduled = false;
+  function refresh(){
+    scheduled = false;
+    var h = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    bar.style.width = Math.max(0,Math.min(100,window.scrollY/h*100)) + '%';
+    var active = 0;
+    heads.forEach(function(head,i){ if(head && head.getBoundingClientRect().top <= 160) active=i; });
+    links.forEach(function(link,i){
+      link.classList.toggle('active',i === active);
+      if(i === active) link.setAttribute('aria-current','location'); else link.removeAttribute('aria-current');
+    });
+  }
+  function onScroll(){ if(!scheduled){ scheduled=true; requestAnimationFrame(refresh); } }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize',onScroll);
+  refresh();
+
+  var copy = document.getElementById('cx-copy');
+  var lines = document.getElementById('cx-lines');
+  copy.addEventListener('click', async function(){
+    var content = Array.prototype.map.call(lines.querySelectorAll('.ln'),function(l){ return l.textContent; }).join('\n').trim();
+    if(!content) return;
+    var ok = false;
+    try { if(navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(content); ok = true; } }catch(e){}
+    if(!ok){
+      var ta = document.createElement('textarea'); ta.value=content; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+      try { ok=document.execCommand('copy'); } catch(e) {} ta.remove();
+    }
+    var old = copy.textContent;
+    copy.textContent = ok ? '✓ تم نسخ الكود' : 'حدّد الكود وانسخه';
+    window.setTimeout(function(){ copy.textContent=old; },1700);
+  });
+})();
+</script>
+</body>
+</html>
