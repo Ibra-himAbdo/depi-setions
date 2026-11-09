@@ -3,16 +3,17 @@
 Training material for the DEPI .NET track, split into branches so each group
 gets exactly the sessions they need.
 
-> **This `main` branch is only the map.** The code lives on the branches below.
+> **This `main` branch holds the map and the shared materials.** The session
+> code lives on the branches below.
 
 ## Which branch do I need?
 
 | Branch | Who it's for | Contents |
 | ------ | ------------ | -------- |
-| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 21 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC5 |
-| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 27 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD), MVC5 (toasts + form partials), MVC6–MVC7 (ASP.NET Core Identity) |
+| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 23 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC7 (Identity, roles, login) |
+| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 29 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD), MVC5 (toasts + form partials), MVC6–MVC9 (Identity, roles, file upload, service layer + `Result` pattern) |
 | `Depi-SHR4-SWD5` | graduated group | archived work, kept for the record |
-| `main` | everyone | this map only |
+| `main` | everyone | the map + shared materials |
 
 **Start here if you are in Section 1 → `Depi-SHR5-SWD5-S1`.**
 **Section 2 → `Depi-SHR5-SWD5-S2`.**
@@ -53,8 +54,23 @@ Depi-SHR5-SWD5-S2/
 ├── 01. ConsoleApp1/         ← session 1
 ├── 02. CSharp2/             ← session 2
 ├── ...
-└── 27. MVC7/                ← session 27
+└── 29. MVC9/                ← session 29
 ```
+
+## Shared materials (both sections)
+
+The [`materials/`](materials/) folder holds interactive HTML labs that apply to
+both sections. Open any file in your browser — no setup needed.
+
+| Lab | Topic |
+| --- | ----- |
+| [EF Core change tracking](materials/01-ef-core-change-tracking.html) | Entity states, `Add` / `Update` / `Remove`, `AsNoTracking`, async |
+| [Sync vs async](materials/02-sync-vs-async.html) | Blocking vs non-blocking code, `async` / `await` |
+| [Middleware pipeline](materials/03-middleware-pipeline.html) | Pipeline order, authN / authZ, where MVC fits |
+| [Architecture thinking](materials/04-architecture-thinking-lab.html) | Business rules → entities, operations, validation, requests |
+| [ASP.NET Core API & onion architecture](materials/05-aspnet-api-onion-architecture.html) | REST APIs, controllers vs minimal APIs, layers |
+
+See [`materials/README.md`](materials/README.md) for details.
 
 ## Running a lesson
 
@@ -77,14 +93,14 @@ EF Core lessons.
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC
-   01–05      06–07      08–12         13–14         15–16       17–21
+   01–05      06–07      08–12         13–14         15–16       17–23
 ```
 
 **Section 2 — `Depi-SHR5-SWD5-S2`**
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC
-   01–05      05–10      10–15         16–17      18,20     19     21–27
+   01–05      05–10      10–15         16–17      18,20     19     21–29
 ```
 
 ## Tips for students
@@ -92,6 +108,7 @@ C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─�
 - Work through the sessions **in order** — each one reuses the previous concepts.
 - Folders named `- Copy` / `- Copy - Copy` are **revision variants**, not new topics.
 - Each session folder is self-contained: open it, run it, break it, fix it.
+- The HTML labs in [`materials/`](materials/) open directly in a browser — no .NET install needed.
 - Commit your own experiments in your fork — the branch history is your syllabus.
 
 ## License
