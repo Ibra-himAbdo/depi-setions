@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Demo.BLL/Demo.BLL.csproj" Id="64ff3933-b15d-49b5-a881-3d83022eebf0" />
+  <Project Path="Demo.DAL/Demo.DAL.csproj" Id="76d0eef5-83ce-432b-b228-b5615f55f17d" />
+  <Project Path="Demo.MVC/Demo.MVC.csproj" Id="2e2d23f2-8fdc-4810-9b18-4866f6cf68bb" />
+</Solution>

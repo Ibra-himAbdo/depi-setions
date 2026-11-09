@@ -1,0 +1,14 @@
+﻿@model Department
+
+
+<div class="m-0 p-5">
+    @ViewBag.Name
+</div>
+
+<form asp-action="Create">
+    <partial name="DepartmentFormFiledPartial" model="Model" />
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
