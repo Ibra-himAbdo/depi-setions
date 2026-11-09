@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.MVC.Controllers;
+/* TODO:
+Task1 refactor for AdminsController
+upload will be in IfileService
+that will has 2 methods one for save anad the other for delete the file
+ */
 
 [Authorize(Roles = AppRoles.Admin)]
 public class AdminsController : Controller
