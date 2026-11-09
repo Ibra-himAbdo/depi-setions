@@ -1,22 +1,28 @@
 ﻿using Demo.BLL.Interfaces;
+using Demo.BLL.Models;
+using Demo.BLL.Services;
 using Demo.DAL.Models;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 
 namespace Demo.MVC.Controllers
 {
     [Authorize]
-    public class DepartmentsController : Controller
+    public class DepartmentsController : BaseController
     {
         private readonly IDepartmentRepository _departmentRepository;
         private readonly IValidator<Department> _validator;
+        private readonly IDepartmentService _departmentService;
 
-        public DepartmentsController(IDepartmentRepository departmentRepository, IValidator<Department> validator)
+        public DepartmentsController(
+            IDepartmentRepository departmentRepository,
+            IValidator<Department> validator,
+            IDepartmentService departmentService)
         {
             _departmentRepository = departmentRepository;
             _validator = validator;
+            _departmentService = departmentService;
         }
 
         [AllowAnonymous]
@@ -37,39 +43,24 @@ namespace Demo.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Department department)
         {
-            ValidationResult valdaiton = await _validator.ValidateAsync(department);
-
-            if (valdaiton.IsValid)
+            Result result = await _departmentService.CreateDepartmentAsync(department);
+            if (result.IsSuccess)
             {
-                try
-                {
-                    await _departmentRepository.AddAsync(department);
+                TempData[AppConsts.TosterMessageKey] = JsonSerializer.Serialize(new TosterViewModel() { Content = $"Department Created with 'id': {department.Id}" });
 
-                    TempData[AppConsts.TosterMessageKey] = JsonSerializer.Serialize(
-                        new TosterViewModel()
-                        {
-                            Content = $"Department Created with 'id': {department.Id}"
-                        });
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, ex.Message + " - " + ex.InnerException?.Message);
-                }
-            }
-            else
-            {
-                foreach (ValidationFailure? error in valdaiton.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(department);
+            //IActionResult? errorResult = HandelErrors(result.Errors);
+            //if(errorResult is not null) return errorResult;
+
+            //return View(department);
+
+            return HandelErrors(result.Errors) ?? View(department);
         }
 
-        [Authorize(Roles = AppRoles.Manger)]
+
+        [Authorize(Roles = $"{AppRoles.Manger},{AppRoles.Admin}")] // admin or manager
         public async Task<IActionResult> Edit(int id)
         {
             Department? department = await _departmentRepository.GetByIdAsync(id);
@@ -83,33 +74,12 @@ namespace Demo.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int id, Department department)
         {
-            if (id != department.Id)
-                return BadRequest();
+            if (id != department.Id) return BadRequest();
 
-            ValidationResult valdaiton = await _validator.ValidateAsync(department);
+            var result = await _departmentService.UpdateDepartmentAsync(department);
+            if (result.IsSuccess) return RedirectToAction(nameof(Index));
 
-            if (valdaiton.IsValid)
-            {
-                try
-                {
-                    await _departmentRepository.EditAsync(department);
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                }
-            }
-            else
-            {
-                foreach (ValidationFailure? error in valdaiton.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
-            }
-
-            return View(department);
+            return HandelErrors(result.Errors) ?? View(department);
         }
     }
 }
