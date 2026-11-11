@@ -1,0 +1,78 @@
+﻿@using Demo.MVC.Controllers
+@model List<State>
+
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Location Selector</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">State</label>
+                        <select id="stateSelect"  class="form-select">
+                            <option value="">--Select State--</option>
+                            @foreach (var item in Model)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+                        <select id="citySelect" class="form-select" disabled>
+                            <option value="">--Select City--</option>
+                        </select>
+                    </div>
+                    
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts{
+    <script>
+        document.getElementById('stateSelect')?.addEventListener('change', async function () { 
+        
+            debugger;
+            let stateId = this.value;
+            let citySelect = document.getElementById('citySelect');
+
+            citySelect.innerHTML = '<option value="">--Select City--</option>';
+            citySelect.disabled = true;
+
+            if (stateId == "") return;
+
+            let response = await fetch('/Cascading/getcities?stateId=' + stateId);
+            let cities = await response.json();
+
+            cities.forEach(city => {
+                let option = document.createElement('option');
+
+                option.value = city.id;
+                option.textContent = city.name;
+
+                citySelect?.appendChild(option);
+            })
+
+
+            citySelect.disabled = false;
+
+        });
+    </script>
+}
