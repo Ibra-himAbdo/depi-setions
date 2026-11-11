@@ -1,8 +1,9 @@
 # DEPI — Section 1 (SWD5-S1) — Student Map
 
-A guided tour of the **23 sessions** in this section: from C# basics to a layered
-ASP.NET Core MVC application with validation, full CRUD, toast notifications and
-ASP.NET Core Identity.
+A guided tour of the **24 sessions** in this section: from C# basics to a layered
+ASP.NET Core MVC application with validation, full CRUD, toast notifications,
+ASP.NET Core Identity, a service layer with the `Result` pattern, image upload
+and cascading dropdowns.
 
 > **Branch:** `Depi-SHR5-SWD5-S1`
 > Everything for this section lives here — one folder per session.
@@ -57,7 +58,7 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 13 | `13. FromAdoToDapper` | Data access from raw ADO.NET to Dapper |
 | 14 | `14. EfCore` | Entity Framework Core + database-first scaffolding (`EfCore_Scaffolding`) |
 
-### Part C — Web (sessions 15–23)
+### Part C — Web (sessions 15–24)
 
 | # | Folder | What you learn |
 | - | ------ | -------------- |
@@ -70,12 +71,13 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 21 | `21. MVC5` | Reusable form partials + toast notifications (`hcg-toast`), `TempData`-driven messages, async repository |
 | 22 | `22. MVC6` | ASP.NET Core Identity persistence: `AppUser`, `AddIdentityTables` migration, admin user CRUD (`AdminsController`) |
 | 23 | `23. MVC7` | Roles + seeding, user ↔ department relation, login/logout (`AccountsController`), role-based authorization, `UserRolesTagHelper` |
+| 24 | `24. MVC8` | Service layer (`IDepretmetService`), `Result` / `Error`, `BaseController` error handling, `IFileService` + profile image upload, cascading state/city dropdowns |
 
 ## Suggested study order
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC
-   01–05      06–07      08–12         13–14         15–16       17–23
+   01–05      06–07      08–12         13–14         15–16       17–24
 ```
 
 Do the sessions in order — every web session reuses concepts from the C# ones.
@@ -85,10 +87,10 @@ lesson; use them for revision, not as a separate topic.
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–23)
+Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–24)
 ├── 01. Csharp1/
 ├── ...
-├── 23. MVC7/
+├── 24. MVC8/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -98,10 +100,15 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–23 |
-| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–28 (includes `ApiCall`, `MVC4`–`MVC8`) |
+| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–24 |
+| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–29 (includes `ApiCall`, `MVC4`–`MVC9`) |
 | `Depi-SHR4-SWD5` | graduated group — archived |
-| `main` | repo map / entry point only |
+| `main` | repo map + shared materials (`materials/`) |
+
+> Shared interactive HTML labs (EF Core tracking, sync/async, middleware,
+> architecture, onion API) live on `main` under
+> [`materials/`](https://github.com/Ibra-himAbdo/depi-setions/tree/main/materials).
+> They apply to both sections.
 
 ## License
 
