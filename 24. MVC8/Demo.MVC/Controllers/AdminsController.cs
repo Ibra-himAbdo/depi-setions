@@ -1,0 +1,118 @@
+﻿using Demo.BLL.Interfaces;
+using Demo.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+namespace Demo.MVC.Controllers
+{
+    [Authorize(Roles = AppRoles.Admin)]
+    public class AdminsController : Controller
+    {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IDepartmentRepository _departmentRepository;
+
+        public AdminsController(UserManager<AppUser> userManager, IDepartmentRepository departmentRepository)
+        {
+            _userManager = userManager;
+            _departmentRepository = departmentRepository;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            List<AppUser> user = await _userManager.Users.ToListAsync();
+            return View(user);
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            //ViewBag.Departments = await _departmentRepository.GetAllAsync();
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(UserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser user = new AppUser()
+                {
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    UserName = model.Email,
+                    DepartmentId = model.Department
+                };
+
+                IdentityResult result = await _userManager.CreateAsync(user, model.Password!);
+
+                if (result.Succeeded)
+                {
+                    if(model.SelectedRoles is not null && model.SelectedRoles.Count > 0)
+                    {
+                        await _userManager.AddToRolesAsync(user, model.SelectedRoles);
+                    }
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null) return NotFound();
+
+            IdentityResult result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                ViewBag.Errors = result.Errors;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword([FromRoute] string id, ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(id);
+
+                if (user is null) return NotFound();
+
+                string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword!);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return View(model);
+        }
+    }
+}
