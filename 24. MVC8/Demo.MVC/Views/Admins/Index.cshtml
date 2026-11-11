@@ -27,6 +27,7 @@ else
                 <th>Full Name</th>
                 <th>Email</th>
                 <th>Roles</th>
+                <th>Image</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -38,6 +39,12 @@ else
                     <td>@user.FullName</td>
                     <td>@user.Email</td>
                     <td i-user="@user.Id"></td>
+                    <td>
+                        @if(!string.IsNullOrWhiteSpace(user.ImagePath))
+                        {
+                            <img src="@user.ImagePath" width="64" />
+                        }
+                    </td>
                     <td>
                         <a asp-action="Edit"
                            asp-route-id="@user.Id"

@@ -19,5 +19,7 @@ namespace Demo.MVC.Models
         public int Department { get; set; }
 
         public List<string>? SelectedRoles { get; set; }
+
+        public IFormFile? Image { get; set; }
     }
 }

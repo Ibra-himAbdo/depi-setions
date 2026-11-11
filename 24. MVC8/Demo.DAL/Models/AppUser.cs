@@ -7,4 +7,6 @@ public class AppUser : IdentityUser
 
     public int? DepartmentId { get; set; }
     public Department? Department { get; set; }
+
+    public string? ImagePath { get; set; }
 }

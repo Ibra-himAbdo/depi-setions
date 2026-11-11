@@ -35,7 +35,7 @@
 
                 <div class="card-body">
 
-                    <form asp-action="Create" method="post">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="All"></div>
                         <div class="row">
                             <div class="mb-3">
@@ -69,6 +69,13 @@
                                 <select asp-for="SelectedRoles" asp-items="roleSelectListItems" multiple class="form-select">
                                 </select>
                             </div>
+                            <div class="mb-3">
+                                <label asp-for="Image" class="form-label"></label>
+                                <input type="file" asp-for="Image" class="form-control" accept="image/*" />
+                            </div>
+                            <div class="mb-3">
+                                <img id="preview" width="250" style="display:none;"
+                            </div>
                         </div>
                         <div class="mb-3">
                             <button type="submit" class="btn btn-primary">Create</button>
@@ -98,5 +105,19 @@
             placeholderValue: 'Select Roles',
             searchPlaceholderValue: 'Search roles...'
         });
+
+        document.getElementById('Image').onchange = function () {
+
+            let file = this.files[0];
+
+            if (file) { 
+                let preview = document.getElementById('preview');
+
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+            }
+
+        }
+
     </script>
 }
