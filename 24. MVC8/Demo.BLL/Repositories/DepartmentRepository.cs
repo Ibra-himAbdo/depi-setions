@@ -21,7 +21,7 @@
 
         public async Task<int> AddAsync(Department department)
         {
-            await _context.Departments.AddAsync(department);
+            _context.Departments.Add(department);
             return await _context.SaveChangesAsync();
         }
 
