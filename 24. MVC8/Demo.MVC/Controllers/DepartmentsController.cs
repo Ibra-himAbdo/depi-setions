@@ -1,22 +1,23 @@
 ﻿using Demo.BLL.Interfaces;
+using Demo.BLL.Models;
+using Demo.BLL.Services;
 using Demo.MVC.Models;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 
 namespace Demo.MVC.Controllers
 {
     [Authorize]
-    public class DepartmentsController : Controller
+    public class DepartmentsController : BaseController
     {
         private readonly IDepartmentRepository _departmentRepository;
-        private readonly IValidator<Department> _validator;
+        private readonly IDepretmetService _depretmetService;
 
-        public DepartmentsController(IDepartmentRepository departmentRepository, IValidator<Department> validator)
+        public DepartmentsController(IDepartmentRepository departmentRepository, IDepretmetService depretmetService)
         {
             _departmentRepository = departmentRepository;
-            _validator = validator;
+            _depretmetService = depretmetService;
         }
 
         [AllowAnonymous]
@@ -36,43 +37,27 @@ namespace Demo.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Department department)
         {
-            ValidationResult result = _validator.Validate(department);
+            Result result = await _depretmetService.CreateDepartmentAsync(department);
 
-            if (result.IsValid)
+            if (result.IsSuccess)
             {
-                try
-                {
-                    _ = await _departmentRepository.AddAsync(department);
+                TempData[AppConsts.TossterMessageKey] = JsonSerializer.Serialize(new TosterViewModel { Content = $"Departmet with name {department.Name} Added and has Id: '{department.Id}'!" });
 
-                    TempData[AppConsts.TossterMessageKey] =
-                        JsonSerializer.Serialize(new TosterViewModel
-                        {
-                            Content = $"Departmet with name {department.Name} Added and has Id: '{department.Id}'!"
-                        });
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", ex.Message + " - " + ex.InnerException?.Message);
-
-                    TempData[AppConsts.TossterMessageKey] = JsonSerializer.Serialize(new TosterViewModel
-                    {
-                        Content = ex.Message + " - " + ex.InnerException?.Message,
-                        Type = TosterType.Error
-                    });
-                }
-            }
-            else
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(department);
+            //var errorResult = HandelErrors(result.Errors);
+            //if(errorResult is not null)
+            //{
+            //    return errorResult;
+            //}
+
+            //return View(department);
+
+            return HandelErrors(result.Errors) ?? View(department);
         }
+
+        
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -86,44 +71,18 @@ namespace Demo.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int id, Department department)
         {
-            if (id != department.Id)
-                return BadRequest();
+            if (id != department.Id) return BadRequest();
 
-            ValidationResult result = _validator.Validate(department);
+            Result result = await _depretmetService.EditDepartmentAsync(department);
 
-            if (result.IsValid)
+            if (result.IsSuccess)
             {
-                try
-                {
-                    _ = await _departmentRepository.UpdateAsync(department);
+                TempData[AppConsts.TossterMessageKey] = JsonSerializer.Serialize(new TosterViewModel { Content = $"Departmet with name {department.Name} Edited!" });
 
-                    TempData[AppConsts.TossterMessageKey] =
-                        JsonSerializer.Serialize(new TosterViewModel
-                        {
-                            Content = $"Departmet with name {department.Name} Edited!"
-                        });
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", ex.Message + " - " + ex.InnerException?.Message);
-                    TempData[AppConsts.TossterMessageKey] = JsonSerializer.Serialize(new TosterViewModel
-                    {
-                        Content = ex.Message + " - " + ex.InnerException?.Message,
-                        Type = TosterType.Error
-                    });
-                }
-            }
-            else
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(department);
+            return HandelErrors(result.Errors) ?? View(department);
         }
 
     }
