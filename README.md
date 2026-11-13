@@ -1,9 +1,9 @@
 # DEPI — Section 1 (SWD5-S1) — Student Map
 
-A guided tour of the **24 sessions** in this section: from C# basics to a layered
+A guided tour of the **25 sessions** in this section: from C# basics to a layered
 ASP.NET Core MVC application with validation, full CRUD, toast notifications,
-ASP.NET Core Identity, a service layer with the `Result` pattern, image upload
-and cascading dropdowns.
+ASP.NET Core Identity, a service layer with the `Result` pattern, image upload,
+cascading dropdowns, and a Web API with DTO validation.
 
 > **Branch:** `Depi-SHR5-SWD5-S1`
 > Everything for this section lives here — one folder per session.
@@ -58,7 +58,7 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 13 | `13. FromAdoToDapper` | Data access from raw ADO.NET to Dapper |
 | 14 | `14. EfCore` | Entity Framework Core + database-first scaffolding (`EfCore_Scaffolding`) |
 
-### Part C — Web (sessions 15–24)
+### Part C — Web & API (sessions 15–25)
 
 | # | Folder | What you learn |
 | - | ------ | -------------- |
@@ -72,12 +72,13 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 22 | `22. MVC6` | ASP.NET Core Identity persistence: `AppUser`, `AddIdentityTables` migration, admin user CRUD (`AdminsController`) |
 | 23 | `23. MVC7` | Roles + seeding, user ↔ department relation, login/logout (`AccountsController`), role-based authorization, `UserRolesTagHelper` |
 | 24 | `24. MVC8` | Service layer (`IDepretmetService`), `Result` / `Error`, `BaseController` error handling, `IFileService` + profile image upload, cascading state/city dropdowns |
+| 25 | `25.API` | ASP.NET Core Web API: `TodoItemsController` CRUD, `CreateTodoItemDto` validation, `ApiResponse`, status-code error endpoint, sample `.http` requests |
 
 ## Suggested study order
 
 ```
-C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC
-   01–05      06–07      08–12         13–14         15–16       17–24
+C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC/API
+   01–05      06–07      08–12         13–14         15–16       17–25
 ```
 
 Do the sessions in order — every web session reuses concepts from the C# ones.
@@ -87,10 +88,10 @@ lesson; use them for revision, not as a separate topic.
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–24)
+Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–25)
 ├── 01. Csharp1/
 ├── ...
-├── 24. MVC8/
+├── 25.API/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -100,8 +101,8 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–24 |
-| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–29 (includes `ApiCall`, `MVC4`–`MVC9`) |
+| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–25 |
+| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–30 (includes `ApiCall`, `MVC4`–`MVC9`, Web API) |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map + shared materials (`materials/`) |
 
