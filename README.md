@@ -10,8 +10,8 @@ gets exactly the sessions they need.
 
 | Branch | Who it's for | Contents |
 | ------ | ------------ | -------- |
-| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 23 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC7 (Identity, roles, login) |
-| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 29 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD), MVC5 (toasts + form partials), MVC6–MVC9 (Identity, roles, file upload, service layer + `Result` pattern) |
+| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 25 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC8 (Identity, roles, services, file upload) → Web API |
+| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 30 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD), MVC5 (toasts + form partials), MVC6–MVC9 (Identity, roles, file upload, service layer + `Result` pattern), and a Web API |
 | `Depi-SHR4-SWD5` | graduated group | archived work, kept for the record |
 | `main` | everyone | the map + shared materials |
 
@@ -54,7 +54,7 @@ Depi-SHR5-SWD5-S2/
 ├── 01. ConsoleApp1/         ← session 1
 ├── 02. CSharp2/             ← session 2
 ├── ...
-└── 29. MVC9/                ← session 29
+└── 30.API/                  ← session 30
 ```
 
 ## Shared materials (both sections)
@@ -92,15 +92,15 @@ EF Core lessons.
 **Section 1 — `Depi-SHR5-SWD5-S1`**
 
 ```
-C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC
-   01–05      06–07      08–12         13–14         15–16       17–23
+C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC/API
+   01–05      06–07      08–12         13–14         15–16       17–25
 ```
 
 **Section 2 — `Depi-SHR5-SWD5-S2`**
 
 ```
-C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC
-   01–05      05–10      10–15         16–17      18,20     19     21–29
+C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC/API
+   01–05      05–10      10–15         16–17      18,20     19     21–30
 ```
 
 ## Tips for students
