@@ -2,16 +2,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.API.Controllers
 {
+    // /api/WeatherForecast
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries =
         [
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         ];
-
-        [HttpGet(Name = "GetWeatherForecast")]
+        // /api/WeatherForecast
+        [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
@@ -21,6 +22,12 @@ namespace Demo.API.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+        // /api/WeatherForecast/GetData
+        [HttpGet("GetData")]
+        public IActionResult GetData()
+        {
+            return Ok();
         }
     }
 }
