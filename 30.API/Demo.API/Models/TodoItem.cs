@@ -7,4 +7,9 @@
         public bool IsCompleted { get; set; }
         public DateTime? DueDate { get; set; }
     }
+    /* create
+     * Title
+     * Description
+     * DueDate
+     */
 }
