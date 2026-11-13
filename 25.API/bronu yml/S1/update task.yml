@@ -1,0 +1,27 @@
+info:
+  name: update task
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: https://localhost:7145/api/TodoItems
+  body:
+    type: json
+    data: |-
+      {
+          "title": "Learn ASP.NET Core Updated",
+          "description": "Study Web API fundamentals and middleware. Updated Updated Updated",
+          "isCompleted": true,
+          "dueDate": "2026-11-15T18:48:17.5031234+02:00",
+          "id": "11111111-1111-1111-1111-111111111111",
+          "createdAt": "2026-11-13T18:48:17.503235+02:00"
+        }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
