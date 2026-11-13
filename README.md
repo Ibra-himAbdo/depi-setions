@@ -1,9 +1,10 @@
 # DEPI — Section 2 (SWD5-S2) — Student Map
 
-A guided tour of the **29 sessions** in this section: C# fundamentals all the way
+A guided tour of the **30 sessions** in this section: C# fundamentals all the way
 to a layered ASP.NET Core MVC application with validation, full CRUD, toast
 notifications, ASP.NET Core Identity (users, roles, seeding, login),
-role-based authorization and a service layer with the Result pattern.
+role-based authorization, a service layer with the Result pattern, and a Web API
+with DTO validation and consistent error responses.
 
 > **Branch:** `Depi-SHR5-SWD5-S2`
 > Everything for this section lives here — one folder per session.
@@ -61,7 +62,7 @@ dotnet run --project "21. MVC1/Demo.MVC"
 | 16 | `16. FromAdoToDapper` | Data access: raw ADO.NET → Dapper (`Ado_Net`) |
 | 17 | `17. EfCore` | Entity Framework Core + database-first scaffolding |
 
-### Part C — Web (sessions 18–24)
+### Part C — Web & API (sessions 18–30)
 
 | # | Folder | What you learn |
 | - | ------ | -------------- |
@@ -77,12 +78,13 @@ dotnet run --project "21. MVC1/Demo.MVC"
 | 27 | `27. MVC7` | Identity login flow (`AccountsController`, `LoginViewModel`), user ↔ department relation, admin change-password |
 | 28 | `28. MVC8` | Role seeding + default admin, `[Authorize(Roles = ...)]`, user roles tag helper, cascading state/city dropdowns, profile image upload |
 | 29 | `29. MVC9` | Business service layer (`IDepartmentService`), `Result` / `Error` models, `BaseController` error handling |
+| 30 | `30.API` | ASP.NET Core Web API: `TodoItemsController` CRUD, `CreateTodoItemDto` validation, `ApiResponse`, status-code error endpoint, Bruno requests |
 
 ## Suggested study order
 
 ```
-C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC
-   01–05      05–10      10–15         16–17      18,20     19     21–29
+C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC/API
+   01–05      05–10      10–15         16–17      18,20     19     21–30
 ```
 
 Sessions 06–09 repeat sessions 01–05 with variations. Use them as **revision**
@@ -101,14 +103,15 @@ and extra practice, not as new topics.
 | 27 | Full auth flow: login/logout, password change, assigning a user to a department |
 | 28 | Roles & seeding, `[Authorize(Roles = ...)]`, a custom tag helper, AJAX cascading dropdowns, file upload |
 | 29 | Service layer over repositories, `Result` / `Error` instead of exceptions, shared `BaseController` |
+| 30 | Web API: controllers + routes, DTOs with data annotations, `ApiResponse` for errors, `UseStatusCodePagesWithReExecute`, testing with Bruno |
 
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S2/          ← you are here (sessions 01–29)
+Depi-SHR5-SWD5-S2/          ← you are here (sessions 01–30)
 ├── 01. ConsoleApp1/
 ├── ...
-├── 29. MVC9/
+├── 30.API/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -118,10 +121,15 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | sister section — sessions 01–23 |
-| `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–29 |
+| `Depi-SHR5-SWD5-S1` | sister section — sessions 01–24 |
+| `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–30 |
 | `Depi-SHR4-SWD5` | graduated group — archived |
-| `main` | repo map / entry point only |
+| `main` | repo map + shared materials (`materials/`) |
+
+> Shared interactive HTML labs (EF Core tracking, sync/async, middleware,
+> architecture, onion API) live on `main` under
+> [`materials/`](https://github.com/Ibra-himAbdo/depi-setions/tree/main/materials).
+> They apply to both sections.
 
 ## License
 
