@@ -36,6 +36,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Redirects to the error page using HTTP 302 (changes the browser URL).
+// The original request is lost, and a new request is made to /errors/{statusCode}.
+//app.UseStatusCodePagesWithRedirects("/errors/{0}");
+
+// Re-executes the request using the same HTTP context (does NOT change the browser URL).
+// The original request URL is preserved
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
 
 app.UseAuthorization();
 
