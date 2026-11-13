@@ -72,7 +72,7 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 22 | `22. MVC6` | ASP.NET Core Identity persistence: `AppUser`, `AddIdentityTables` migration, admin user CRUD (`AdminsController`) |
 | 23 | `23. MVC7` | Roles + seeding, user ↔ department relation, login/logout (`AccountsController`), role-based authorization, `UserRolesTagHelper` |
 | 24 | `24. MVC8` | Service layer (`IDepretmetService`), `Result` / `Error`, `BaseController` error handling, `IFileService` + profile image upload, cascading state/city dropdowns |
-| 25 | `25.API` | ASP.NET Core Web API: `TodoItemsController` CRUD, `CreateTodoItemDto` validation, `ApiResponse`, status-code error endpoint, sample `.http` requests |
+| 25 | `25.API` | ASP.NET Core Web API: `TodoItemsController` CRUD, `CreateTodoItemDto` validation, `ApiResponse`, status-code error endpoint, sample `.http` and Bruno requests |
 
 ## Suggested study order
 
