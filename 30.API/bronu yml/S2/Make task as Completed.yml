@@ -1,0 +1,16 @@
+info:
+  name: "Make task as Completed "
+  type: http
+  seq: 6
+
+http:
+  method: PATCH
+  url: https://localhost:7007/api/TodoItems/11111111-1111-1111-1111-111111111111
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
