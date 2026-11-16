@@ -1,10 +1,10 @@
 # DEPI — Section 2 (SWD5-S2) — Student Map
 
-A guided tour of the **30 sessions** in this section: C# fundamentals all the way
+A guided tour of the **31 sessions** in this section: C# fundamentals all the way
 to a layered ASP.NET Core MVC application with validation, full CRUD, toast
 notifications, ASP.NET Core Identity (users, roles, seeding, login),
-role-based authorization, a service layer with the Result pattern, and a Web API
-with DTO validation and consistent error responses.
+role-based authorization, a service layer with the Result pattern, and a layered
+Web API with EF Core, repositories, logging and error middleware.
 
 > **Branch:** `Depi-SHR5-SWD5-S2`
 > Everything for this section lives here — one folder per session.
@@ -62,7 +62,7 @@ dotnet run --project "21. MVC1/Demo.MVC"
 | 16 | `16. FromAdoToDapper` | Data access: raw ADO.NET → Dapper (`Ado_Net`) |
 | 17 | `17. EfCore` | Entity Framework Core + database-first scaffolding |
 
-### Part C — Web & API (sessions 18–30)
+### Part C — Web & API (sessions 18–31)
 
 | # | Folder | What you learn |
 | - | ------ | -------------- |
@@ -79,18 +79,32 @@ dotnet run --project "21. MVC1/Demo.MVC"
 | 28 | `28. MVC8` | Role seeding + default admin, `[Authorize(Roles = ...)]`, user roles tag helper, cascading state/city dropdowns, profile image upload |
 | 29 | `29. MVC9` | Business service layer (`IDepartmentService`), `Result` / `Error` models, `BaseController` error handling |
 | 30 | `30.API` | ASP.NET Core Web API: `TodoItemsController` CRUD, `CreateTodoItemDto` validation, `ApiResponse`, status-code error endpoint, Bruno requests |
+| 31 | `31.API` | Layered API: `Demo.Core` / `Demo.Infrastructure` / `Demo.Services` / `Demo.API`, EF Core + SQL Server, generic repository, migrations + seeding, exception middleware, Serilog, Scalar |
+
+### Session 31 in a nutshell
+
+`31.API` turns the single-project demo into a layered, database-backed API:
+
+- **`Demo.Core`** — entities (`BaseEntity`, `Category`, `TodoItem`) and repository contracts.
+- **`Demo.Infrastructure`** — EF Core `AppDbContext`, `GenericRepository<T>`, `TodoItemRepository` with eager loading (`Include`), and the initial migration.
+- **`Demo.Services`** — reserved for business logic in the next session.
+- **`Demo.API`** — controllers, DTOs, exception middleware, Serilog and Scalar.
+- **Database** — SQL Server; `DatabaseMigrator` applies migrations and seeds the three categories on startup.
+- **Errors** — one `ApiResponse` shape for validation, 404 and unhandled exceptions (stack trace only in development).
+- **Logging** — Serilog writes to the console and to per-level daily files under `Logs/`.
+- **API docs** — Scalar UI at `/scalar/v1`; `ReferenceHandler.IgnoreCycles` stops entity navigation loops.
 
 ## Suggested study order
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC/API
-   01–05      05–10      10–15         16–17      18,20     19     21–30
+   01–05      05–10      10–15         16–17      18,20     19     21–31
 ```
 
 Sessions 06–09 repeat sessions 01–05 with variations. Use them as **revision**
 and extra practice, not as new topics.
 
-## What to look for in the MVC sessions
+## What to look for in the web sessions
 
 | Session | Key idea |
 | ------- | -------- |
@@ -104,14 +118,15 @@ and extra practice, not as new topics.
 | 28 | Roles & seeding, `[Authorize(Roles = ...)]`, a custom tag helper, AJAX cascading dropdowns, file upload |
 | 29 | Service layer over repositories, `Result` / `Error` instead of exceptions, shared `BaseController` |
 | 30 | Web API: controllers + routes, DTOs with data annotations, `ApiResponse` for errors, `UseStatusCodePagesWithReExecute`, testing with Bruno |
+| 31 | Layered API: Core / Infrastructure / Services / API, EF Core repositories, migrations + seed data, exception middleware, Serilog, Scalar |
 
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S2/          ← you are here (sessions 01–30)
+Depi-SHR5-SWD5-S2/          ← you are here (sessions 01–31)
 ├── 01. ConsoleApp1/
 ├── ...
-├── 30.API/
+├── 31.API/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -122,7 +137,7 @@ Other branches in this repository:
 | Branch | Contents |
 | ------ | -------- |
 | `Depi-SHR5-SWD5-S1` | sister section — sessions 01–25 |
-| `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–30 |
+| `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–31 |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map + shared materials (`materials/`) |
 
