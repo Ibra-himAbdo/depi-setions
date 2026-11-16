@@ -11,7 +11,7 @@ gets exactly the sessions they need.
 | Branch | Who it's for | Contents |
 | ------ | ------------ | -------- |
 | [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 25 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC8 (Identity, roles, services, file upload) → Web API |
-| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 30 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD), MVC5 (toasts + form partials), MVC6–MVC9 (Identity, roles, file upload, service layer + `Result` pattern), and a Web API |
+| [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 31 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD), MVC5 (toasts + form partials), MVC6–MVC9 (Identity, roles, file upload, service layer + `Result` pattern), and a layered Web API (EF Core, repositories, logging, error middleware) |
 | `Depi-SHR4-SWD5` | graduated group | archived work, kept for the record |
 | `main` | everyone | the map + shared materials |
 
@@ -54,7 +54,7 @@ Depi-SHR5-SWD5-S2/
 ├── 01. ConsoleApp1/         ← session 1
 ├── 02. CSharp2/             ← session 2
 ├── ...
-└── 30.API/                  ← session 30
+└── 31.API/                  ← session 31
 ```
 
 ## Shared materials (both sections)
@@ -100,7 +100,7 @@ C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS �
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► frontend ─► API ─► MVC/API
-   01–05      05–10      10–15         16–17      18,20     19     21–30
+   01–05      05–10      10–15         16–17      18,20     19     21–31
 ```
 
 ## Tips for students
