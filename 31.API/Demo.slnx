@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Demo.API/Demo.API.csproj" Id="295c46e5-9f6d-4529-8a92-27165ee5bf8f" />
+  <Project Path="Demo.Core/Demo.Core.csproj" Id="f4b98be2-433b-48f1-b0a5-85f0150d2af5" />
+  <Project Path="Demo.Infrastructure/Demo.Infrastructure.csproj" Id="d5690e65-030d-4b26-bb53-1f57b33aae3b" />
+  <Project Path="Demo.Services/Demo.Services.csproj" Id="47c58ae6-b3a2-4261-86c4-c6be7fd25452" />
+</Solution>
