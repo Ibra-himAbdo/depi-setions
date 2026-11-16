@@ -102,7 +102,7 @@ Other branches in this repository:
 | Branch | Contents |
 | ------ | -------- |
 | `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–25 |
-| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–30 (includes `ApiCall`, `MVC4`–`MVC9`, Web API) |
+| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–31 (includes `ApiCall`, `MVC4`–`MVC9`, layered Web API) |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map + shared materials (`materials/`) |
 
