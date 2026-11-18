@@ -10,7 +10,7 @@ gets exactly the sessions they need.
 
 | Branch | Who it's for | Contents |
 | ------ | ------------ | -------- |
-| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 25 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC8 (Identity, roles, services, file upload) → Web API |
+| [`Depi-SHR5-SWD5-S1`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S1) | **Section 1 (SWD5-S1)** | 26 sessions: C# basics → OOP → advanced C# → ADO.NET/Dapper → EF Core → HTML/CSS/JS → MVC1–MVC8 (Identity, roles, services, file upload) → Web API → layered Web API (EF Core, repositories, logging, error middleware) |
 | [`Depi-SHR5-SWD5-S2`](https://github.com/Ibra-himAbdo/depi-setions/tree/Depi-SHR5-SWD5-S2) | **Section 2 (SWD5-S2)** | 31 sessions: same track extended with `ApiCall`, MVC4 (FluentValidation + full CRUD), MVC5 (toasts + form partials), MVC6–MVC9 (Identity, roles, file upload, service layer + `Result` pattern), and a layered Web API (EF Core, repositories, logging, error middleware) |
 | `Depi-SHR4-SWD5` | graduated group | archived work, kept for the record |
 | `main` | everyone | the map + shared materials |
@@ -93,7 +93,7 @@ EF Core lessons.
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC/API
-   01–05      06–07      08–12         13–14         15–16       17–25
+   01–05      06–07      08–12         13–14         15–16       17–26
 ```
 
 **Section 2 — `Depi-SHR5-SWD5-S2`**
