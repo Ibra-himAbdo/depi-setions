@@ -1,9 +1,10 @@
 # DEPI — Section 1 (SWD5-S1) — Student Map
 
-A guided tour of the **25 sessions** in this section: from C# basics to a layered
+A guided tour of the **26 sessions** in this section: from C# basics to a layered
 ASP.NET Core MVC application with validation, full CRUD, toast notifications,
 ASP.NET Core Identity, a service layer with the `Result` pattern, image upload,
-cascading dropdowns, and a Web API with DTO validation.
+cascading dropdowns, a Web API with DTO validation, and a layered Web API with
+EF Core, repositories, logging and error middleware.
 
 > **Branch:** `Depi-SHR5-SWD5-S1`
 > Everything for this section lives here — one folder per session.
@@ -58,7 +59,7 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 13 | `13. FromAdoToDapper` | Data access from raw ADO.NET to Dapper |
 | 14 | `14. EfCore` | Entity Framework Core + database-first scaffolding (`EfCore_Scaffolding`) |
 
-### Part C — Web & API (sessions 15–25)
+### Part C — Web & API (sessions 15–26)
 
 | # | Folder | What you learn |
 | - | ------ | -------------- |
@@ -73,12 +74,27 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 23 | `23. MVC7` | Roles + seeding, user ↔ department relation, login/logout (`AccountsController`), role-based authorization, `UserRolesTagHelper` |
 | 24 | `24. MVC8` | Service layer (`IDepretmetService`), `Result` / `Error`, `BaseController` error handling, `IFileService` + profile image upload, cascading state/city dropdowns |
 | 25 | `25.API` | ASP.NET Core Web API: `TodoItemsController` CRUD, `CreateTodoItemDto` validation, `ApiResponse`, status-code error endpoint, sample `.http` and Bruno requests |
+| 26 | `26.API` | Layered API: `Dome.Core` / `Dome.Infrastructure` / `Dome.Services` / `Demo.API`, EF Core + SQL Server, generic repository, two migrations + seeding, exception middleware, Serilog, Scalar, Bruno requests |
+
+## Session 26 in a nutshell
+
+`26.API` turns the single-project API from session 25 into a layered,
+database-backed API:
+
+- **`Dome.Core`** — entities (`BaseEntity`, `Category`, `TodoItem`) and repository contracts.
+- **`Dome.Infrastructure`** — EF Core `AppDbContext`, `GenericRepository<T>`, `TodoItemRepository` with eager loading (`Include`), and two migrations (`IniailCreate`, then `AddCatigoryAndTodoItemRelationshep`).
+- **`Dome.Services`** — reserved for business logic in a later session.
+- **`Demo.API`** — controllers, DTOs (`CreateTodoItemDto`, `TodoItemToReturn`), exception middleware, Serilog and Scalar.
+- **Database** — SQL Server; `DatabaseMigrator` applies migrations and seeds the three categories on startup.
+- **Errors** — one `ApiResponse` shape for validation, 404 and unhandled exceptions (stack trace only in development).
+- **Logging** — Serilog writes to the console and to per-level daily files under `Logs/`.
+- **API docs** — Scalar UI at `/scalar/v1`; `ReferenceHandler.IgnoreCycles` stops entity navigation loops.
 
 ## Suggested study order
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC/API
-   01–05      06–07      08–12         13–14         15–16       17–25
+   01–05      06–07      08–12         13–14         15–16       17–26
 ```
 
 Do the sessions in order — every web session reuses concepts from the C# ones.
@@ -88,10 +104,10 @@ lesson; use them for revision, not as a separate topic.
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–25)
+Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–26)
 ├── 01. Csharp1/
 ├── ...
-├── 25.API/
+├── 26.API/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -101,7 +117,7 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–25 |
+| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–26 |
 | `Depi-SHR5-SWD5-S2` | sister section — sessions 01–31 (includes `ApiCall`, `MVC4`–`MVC9`, layered Web API) |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map + shared materials (`materials/`) |
