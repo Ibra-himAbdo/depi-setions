@@ -1,0 +1,16 @@
+info:
+  name: TEST copy
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: https://localhost:7145/api/WeatherForecast/getdata
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
