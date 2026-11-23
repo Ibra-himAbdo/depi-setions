@@ -1,0 +1,1 @@
+﻿global using Demo.Core.Entities;
