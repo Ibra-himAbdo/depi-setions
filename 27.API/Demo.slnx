@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Demo.API/Demo.API.csproj" Id="b9199dd1-33e6-4406-b331-ca982d7740af" />
+  <Project Path="Dome.Core/Dome.Core.csproj" Id="73d55e92-c2fa-4fc9-8962-93658314fb5f" />
+  <Project Path="Dome.Infrastructure/Dome.Infrastructure.csproj" Id="1a4298fe-d91a-4de9-ac1e-b72c2b9ef555" />
+  <Project Path="Dome.Services/Dome.Services.csproj" Id="5d19fc6e-06a8-4273-8c10-db37ef6efd5a" />
+</Solution>
