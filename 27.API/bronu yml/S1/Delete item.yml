@@ -1,0 +1,16 @@
+info:
+  name: Delete item
+  type: http
+  seq: 7
+
+http:
+  method: DELETE
+  url: https://localhost:7145/api/TodoItems/44444444-4444-4444-4444-444444444444
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
