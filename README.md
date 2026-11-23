@@ -1,10 +1,11 @@
 # DEPI — Section 1 (SWD5-S1) — Student Map
 
-A guided tour of the **26 sessions** in this section: from C# basics to a layered
+A guided tour of the **27 sessions** in this section: from C# basics to a layered
 ASP.NET Core MVC application with validation, full CRUD, toast notifications,
 ASP.NET Core Identity, a service layer with the `Result` pattern, image upload,
-cascading dropdowns, a Web API with DTO validation, and a layered Web API with
-EF Core, repositories, logging and error middleware.
+cascading dropdowns, a Web API with DTO validation, a layered Web API with
+EF Core, repositories, logging and error middleware, and an AI chat endpoint
+with a unit of work and Mapster.
 
 > **Branch:** `Depi-SHR5-SWD5-S1`
 > Everything for this section lives here — one folder per session.
@@ -59,7 +60,7 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 13 | `13. FromAdoToDapper` | Data access from raw ADO.NET to Dapper |
 | 14 | `14. EfCore` | Entity Framework Core + database-first scaffolding (`EfCore_Scaffolding`) |
 
-### Part C — Web & API (sessions 15–26)
+### Part C — Web & API (sessions 15–27)
 
 | # | Folder | What you learn |
 | - | ------ | -------------- |
@@ -75,6 +76,17 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 24 | `24. MVC8` | Service layer (`IDepretmetService`), `Result` / `Error`, `BaseController` error handling, `IFileService` + profile image upload, cascading state/city dropdowns |
 | 25 | `25.API` | ASP.NET Core Web API: `TodoItemsController` CRUD, `CreateTodoItemDto` validation, `ApiResponse`, status-code error endpoint, sample `.http` and Bruno requests |
 | 26 | `26.API` | Layered API: `Dome.Core` / `Dome.Infrastructure` / `Dome.Services` / `Demo.API`, EF Core + SQL Server, generic repository, two migrations + seeding, exception middleware, Serilog, Scalar, Bruno requests |
+| 27 | `27.API` | Unit of work + transaction, Mapster mapping, category + todo item endpoint, AI chat endpoint (Groq), HTTP client factory |
+
+## Session 27 in a nutshell
+
+`27.API` builds on the layered API and adds three practical patterns:
+
+- **Unit of work** — `IUnitOfWork` exposes `CommitAsync`, `Repository<T>()` and `CustomRepository<TRepo>()`, so one `SaveChanges` call ends a request.
+- **Transactions** — `ExecuteInTransactionAsync` wraps the category + todo item creation; any failure rolls both changes back.
+- **Mapster** — `MapConfigs` maps `TodoItem` to `TodoItemToReturn` (renaming `Title` to `Name` and flattening `Category` to its name) with `Adapt<T>()`.
+- **AI chat** — `AisController` calls a Groq-hosted model through `IHttpClientFactory`; add your own key where the code says `<your api key>`.
+- **Secrets** — API keys and the JWT secret are placeholders in the repo; never commit real keys.
 
 ## Session 26 in a nutshell
 
@@ -94,7 +106,7 @@ database-backed API:
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC/API
-   01–05      06–07      08–12         13–14         15–16       17–26
+   01–05      06–07      08–12         13–14         15–16       17–27
 ```
 
 Do the sessions in order — every web session reuses concepts from the C# ones.
@@ -104,10 +116,10 @@ lesson; use them for revision, not as a separate topic.
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–26)
+Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–27)
 ├── 01. Csharp1/
 ├── ...
-├── 26.API/
+├── 27.API/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -117,8 +129,8 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–26 |
-| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–31 (includes `ApiCall`, `MVC4`–`MVC9`, layered Web API) |
+| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–27 |
+| `Depi-SHR5-SWD5-S2` | sister section — sessions 01–33 (includes `ApiCall`, `MVC4`–`MVC9`, layered Web API, AI chat, JWT auth) |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map + shared materials (`materials/`) |
 
