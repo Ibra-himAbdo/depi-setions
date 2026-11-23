@@ -1,0 +1,27 @@
+info:
+  name: Update item
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: https://localhost:7007/api/TodoItems
+  body:
+    type: json
+    data: |-
+      {
+        "title": "1st Task updated",
+        "description": "1st task Description updated",
+        "isCompleted": true,
+        "dueDate": "2026-11-20T00:00:00",
+        "id": "910100a5-291c-4f3e-ae56-f97ba32143c7",
+        "createdAt": "2026-11-13T13:53:01.7692171Z"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
