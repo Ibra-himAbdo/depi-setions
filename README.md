@@ -162,7 +162,7 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | sister section — sessions 01–27 |
+| `Depi-SHR5-SWD5-S1` | sister section — sessions 01–28 |
 | `Depi-SHR5-SWD5-S2` | **this section** — sessions 01–33 |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map + shared materials (`materials/`) |
