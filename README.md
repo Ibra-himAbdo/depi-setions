@@ -1,11 +1,11 @@
 # DEPI — Section 1 (SWD5-S1) — Student Map
 
-A guided tour of the **27 sessions** in this section: from C# basics to a layered
+A guided tour of the **28 sessions** in this section: from C# basics to a layered
 ASP.NET Core MVC application with validation, full CRUD, toast notifications,
 ASP.NET Core Identity, a service layer with the `Result` pattern, image upload,
 cascading dropdowns, a Web API with DTO validation, a layered Web API with
-EF Core, repositories, logging and error middleware, and an AI chat endpoint
-with a unit of work and Mapster.
+EF Core, repositories, logging and error middleware, an AI chat endpoint with a
+unit of work and Mapster, and JWT authentication.
 
 > **Branch:** `Depi-SHR5-SWD5-S1`
 > Everything for this section lives here — one folder per session.
@@ -60,7 +60,7 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 13 | `13. FromAdoToDapper` | Data access from raw ADO.NET to Dapper |
 | 14 | `14. EfCore` | Entity Framework Core + database-first scaffolding (`EfCore_Scaffolding`) |
 
-### Part C — Web & API (sessions 15–27)
+### Part C — Web & API (sessions 15–28)
 
 | # | Folder | What you learn |
 | - | ------ | -------------- |
@@ -77,6 +77,19 @@ dotnet run --project "17. MVC1/Demo.MVC"
 | 25 | `25.API` | ASP.NET Core Web API: `TodoItemsController` CRUD, `CreateTodoItemDto` validation, `ApiResponse`, status-code error endpoint, sample `.http` and Bruno requests |
 | 26 | `26.API` | Layered API: `Dome.Core` / `Dome.Infrastructure` / `Dome.Services` / `Demo.API`, EF Core + SQL Server, generic repository, two migrations + seeding, exception middleware, Serilog, Scalar, Bruno requests |
 | 27 | `27.API` | Unit of work + transaction, Mapster mapping, category + todo item endpoint, AI chat endpoint (Groq), HTTP client factory |
+| 28 | `28.API` | JWT authentication: ASP.NET Core Identity, `AppUser`, `Update` migration for Identity tables, `TokenService`, login endpoint, `[Authorize]`, bearer scheme in Scalar, AI tools over the database |
+
+## Session 28 in a nutshell
+
+`28.API` adds real authentication to the API:
+
+- **Identity** — `AppDbContext` now extends `IdentityDbContext<AppUser>`; the `Update` migration creates the Identity tables and adds `FullName` to `AppUser`.
+- **JWT** — `TokenService` builds a signed token from the user's id, email, name and roles; `JWT:SecritKey` and `JWT:DurationInMininsts` live in `appsettings.json`.
+- **Login** — `POST /api/Auth/login` checks the password with `UserManager` and returns the access token.
+- **Authorization** — `UseAuthentication()` + `[Authorize]` protect endpoints; Scalar shows the bearer padlock through `BearerSecuritySchemeTransformer`.
+- **Seeding** — startup creates the `Admin` and `User` roles and an `admin@demo.com` user.
+- **AI tools** — `AisController` v2 uses `Microsoft.Extensions.AI` with function calling over the repositories (read categories, read todo items, mark a task completed).
+- **Secrets** — the API key and JWT secret are placeholders; replace `<your api key>` and `<your jwt secret key>` locally and never commit real values.
 
 ## Session 27 in a nutshell
 
@@ -106,7 +119,7 @@ database-backed API:
 
 ```
 C# basics ─► OOP ─► advanced C# ─► data access ─► HTML/CSS/JS ─► MVC/API
-   01–05      06–07      08–12         13–14         15–16       17–27
+   01–05      06–07      08–12         13–14         15–16       17–28
 ```
 
 Do the sessions in order — every web session reuses concepts from the C# ones.
@@ -116,10 +129,10 @@ lesson; use them for revision, not as a separate topic.
 ## Repo layout
 
 ```
-Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–27)
+Depi-SHR5-SWD5-S1/          ← you are here (sessions 01–28)
 ├── 01. Csharp1/
 ├── ...
-├── 27.API/
+├── 28.API/
 ├── .gitignore
 ├── LICENSE
 └── README.md               ← this map
@@ -129,7 +142,7 @@ Other branches in this repository:
 
 | Branch | Contents |
 | ------ | -------- |
-| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–27 |
+| `Depi-SHR5-SWD5-S1` | **this section** — sessions 01–28 |
 | `Depi-SHR5-SWD5-S2` | sister section — sessions 01–33 (includes `ApiCall`, `MVC4`–`MVC9`, layered Web API, AI chat, JWT auth) |
 | `Depi-SHR4-SWD5` | graduated group — archived |
 | `main` | repo map + shared materials (`materials/`) |
