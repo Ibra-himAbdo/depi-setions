@@ -1,0 +1,24 @@
+info:
+  name: Create new Item
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: https://localhost:7145/api/TodoItems
+  body:
+    type: json
+    data: |-
+      {
+        "title" : "123",
+        "description" : "1st task Description Description",
+        "dueDate" : "2026-11-20T14:30:00"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
